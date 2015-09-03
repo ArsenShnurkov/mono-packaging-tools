@@ -1,64 +1,64 @@
-<пробелы> ::= ( ' ' | '\t' ) + ;
+spaces = ( " " | "\t" ) + ;
 
-<разделитель-строк> ::= '\n\r' | '\n' | '\r' ; 
+line-separator = "\n\r" | "\n" | "\r" ; 
 
-<знаки-пунктуации> ::= '[' | ']' | '"' | '-' | '.' | ';' | '#' ;
+punctuation-marks = "[" | "]" | """ | "-" | "." | ";" | "#" ;
 
-<символ-комментария> ::= '#' | ';' ;
+start-of-comment = "#" | ";" ;
 
-<хитрый-перенос> ::= '\' <разделитель-строк> ;
+line-continuation = "\" line-separator ;
 
-<буква-английская-большая> ::= [A-Z] ;
+letter-english-large = [A-Z] ;
 
-<буква-английская-маленькая> ::= [a-z] ;
+letter-english-small = [a-z] ;
 
-<буква> ::= <буква-английская-большая> | <буква--английская-маленькая> ;
+letter-english = letter-english-large | letter-english-small ;
 
-<специальная-последовательность> ::= '\"' | '\\' | '\n' | '\t' | '\b' ;
+special-sequence = "\\""" | "\\\\" | "\\\n" | "\\t" | "\\b" ;
 
-<обобщенный-разделитель-строк> ::= ( <пробелы> ? <разделитель-строк> <пробелы> ? ) + ;
+united-line-separator = ( spaces ? line-separator spaces ? ) + ;
 
-<символ> ::= <допустимый-символ> | <недопустимый-символ>;
+symbol = allowed-symbol | non-allowed-symbol;
 
-<допустимый-символ> ::= <буква-русская> | <буква-английская> | <цифра> | <знаки-пунктуации> | <пробелы> ;
+allowed-symbol = letter-russian | letter-english | digit | punctuation-marks | spaces ;
 
-<комментарий> ::= <символ-комментария> <текст-комментария> * ;
+comment = start-of-comment text-of-comment * ;
 
-<текст-комментария> ::= . ;
+text-of-comment = . ;
 
-<разделитель> ::= <пробелы> | <обобщенный-разделитель-строк> | <комментарий> ;
+separator = spaces | united-line-separator | comment ;
 
-<текстовая-строка> ::= '"' ( <допустимый-символ> | <пробелы> | <специальная-последовательность> ) * '"' ;
+section = section-header separator * section-body ;
 
-<полезное-содержимое> ::= ( <секция разделитель> * ) * ;
+section-body = (variable separator *) * | (subsection separator *) * ;
 
-<секция> ::= <заголовок-секции> <разделитель> * <тело-секции> ;
+section = ( subsection separator * ) * ;
 
-<тело-секции> ::= (<переменная разделитель> *) * | (<подсекция> <разделитель> *) * ;
+section-header = "[" spaces * section-title spaces* "]" ;
 
-<секция> ::= ( <подсекция> <разделитель> * ) * ;
+section-title = ( letter | "-" | "." ) + ;
 
-<заголовок-секции> ::= '[' <пробелы> * <название-секции> <пробелы>* ']' ;
+subsection = subsection-header separator * subsection-body ;
 
-<название-секции> ::= ( <буква> | '-' | '.' ) + ;
+section-header = "[" spaces * section-title spaces * """ subsection-header """ spaces * "]" ;
 
-<подсекция> ::= <заголовок-подсекции> <разделитель> * <тело-подсекции> ;
+subsection-body = ( variable separator * ) * ;
 
-<заголовок-секции> ::= '[' <пробелы> * <название-секции> <пробелы> * '"' <заголовок-подсекции> '"' <пробелы> * ']' ;
-
-<тело-подсекции> ::= ( <переменная> <разделитель> * ) * ;
-
-<переменная> ::= <имя-переменной> ( <разделитель> * '=' <разделитель> * <значение-переменной> ) ?
-             || 'include.path' <разделитель> * '=' <разделитель>* <путь-до-файла>
+variable = variable-name ( separator * "=" separator * variable-value ) ?
+             || "include.path" separator * "=" separator* file-path
 ;
 
-<заголовок-подсекции> ::= ( '\"' | '\\' | <допустимый-символ> | <пробелы> ) + ;
+subsection-header = ( "\\\"" | "\\\\" | allowed-symbol | spaces ) + ;
 
-<имя-переменной> ::= <буква-английская> ( <буква-английская> | '-' ) * ;
+variable-name = letter-english ( letter-english | "-" ) * ;
 
-<значение-переменной> ::= <строка-переносами-в-кавычках> | <строка-переносами-без-кавычек> ;
+variable-value = quoted-string-with-continuations | unquoted-string-in-the-wild ;
 
-<строка-с-переносами-в-кавычках> ::= '"' ( <допустимый-символ> | <пробелы> | <специальная-последовательность> | <хитрый-перенос> ) * '"' ;
+quoted-string-with-continuations = "\"" ( allowed-symbol | spaces | special-sequence | line-continuation ) * "\"" ;
 
-<строка-переносами-без-кавычек> ::= ( ( <допустимый-символ> | <специальная-последовательность> )*
-     <пробелы> | <хитрый-перенос> ) * ( <допустимый-символ> | <специальная-последовательность> ) <разделитель> ? ;
+unquoted-string-in-the-wild = ( ( allowed-symbol | special-sequence ) *
+     spaces | line-continuation ) * ( allowed-symbol | special-sequence ) separator ? ;
+
+quoted-string = """ ( allowed-symbol | spaces | special-sequence ) * """ ;
+
+file-content = separator ? ( section separator * ) * separator ? ;
