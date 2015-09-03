@@ -1,64 +1,83 @@
-spaces = ( " " | "\t" ) + ;
+space = " " | "\t" ;
 
-line-separator = "\n\r" | "\n" | "\r" ; 
+separator = "\n\r" | "\n" | "\r"  ;
 
-punctuation-marks = "[" | "]" | """ | "-" | "." | ";" | "#" ;
+spaces = space, {space} ;
 
-start-of-comment = "#" | ";" ;
+minus =  "-" ;
 
-line-continuation = "\" line-separator ;
+dquote = '"' ;
 
-letter-english-large = [A-Z] ;
+backslash = "\" ;
 
-letter-english-small = [a-z] ;
+punctuationmarks = "[" | "]" | dquote | minus | "." | ";" | "#" ;
 
-letter-english = letter-english-large | letter-english-small ;
+startofcomment = "#" | ";" ;
 
-special-sequence = "\\""" | "\\\\" | "\\\n" | "\\t" | "\\b" ;
+linecontinuation = "\", lineseparator ;
 
-united-line-separator = ( spaces ? line-separator spaces ? ) + ;
+letterenglishlarge = [A-Z] ;
 
-symbol = allowed-symbol | non-allowed-symbol;
+letterenglishsmall = [a-z] ;
 
-allowed-symbol = letter-russian | letter-english | digit | punctuation-marks | spaces ;
+letterenglish = letterenglishlarge | letterenglishsmall ;
 
-comment = start-of-comment text-of-comment * ;
+specialsequence = backslash, dquote | backslash, backslash | backslash, "\n" | backslash, "t" | backslash, "b" ;
 
-text-of-comment = . ;
+digitexcludingzero = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
-separator = spaces | united-line-separator | comment ;
+digit = "0" | digitexcludingzero ;
 
-section = section-header separator * section-body ;
+textofcomment = { digit | letter | punctuationmarks } ;
 
-section-body = (variable separator *) * | (subsection separator *) * ;
+unitedlineseparator = {spaces} , { lineseparator, {spaces} } ;
 
-section = ( subsection separator * ) * ;
+symbol = allowedsymbol | nonallowedsymbol;
 
-section-header = "[" spaces * section-title spaces* "]" ;
+allowedsymbol = letterrussian | letterenglish | digit | punctuationmarks | spaces ;
 
-section-title = ( letter | "-" | "." ) + ;
+comment = startofcomment , {textofcomment} ;
 
-subsection = subsection-header separator * subsection-body ;
+separator = spaces | unitedlineseparator | comment ;
 
-section-header = "[" spaces * section-title spaces * """ subsection-header """ spaces * "]" ;
+section = sectionheader, {separator}, sectionbody ;
 
-subsection-body = ( variable separator * ) * ;
+sectionbody = { variable, {separator} } | { subsection, {separator} } ;
 
-variable = variable-name ( separator * "=" separator * variable-value ) ?
-             || "include.path" separator * "=" separator* file-path
+section = { subsection, {separator} } ;
+
+sectionheader = "[", {spaces}, sectiontitle, {spaces}, "]" ;
+
+sectiontitleunit = letter | minus | "." ;
+
+sectiontitle = sectiontitleunit, {sectiontitleunit} ;
+
+subsection = subsectionheader, {separator}, subsectionbody ;
+
+sectionheader = "[" , {spaces} , sectiontitle , {spaces} , dquote , subsectionheader , dquote , {spaces} , "]" ;
+
+subsectionbody = {variable , {separator} } ;
+
+variable = variablename, { {separator}, "=", {separator}, variablevalue }
+             |  "include.path",  {separator},  "=",  {separator},  filepath 
 ;
 
-subsection-header = ( "\\\"" | "\\\\" | allowed-symbol | spaces ) + ;
+subsectionheadersymbol = backslash , dquote | backslash , backslash | allowedsymbol | spaces ;
 
-variable-name = letter-english ( letter-english | "-" ) * ;
+subsectionheader = subsectionheadersymbol, {subsectionheadersymbol} ;
 
-variable-value = quoted-string-with-continuations | unquoted-string-in-the-wild ;
+variablename = letterenglish, { letterenglish | [minus], letterenglish} ;
 
-quoted-string-with-continuations = "\"" ( allowed-symbol | spaces | special-sequence | line-continuation ) * "\"" ;
+variablevalue = quotedstringwithcontinuations | unquotedstringinthewild ;
 
-unquoted-string-in-the-wild = ( ( allowed-symbol | special-sequence ) *
-     spaces | line-continuation ) * ( allowed-symbol | special-sequence ) separator ? ;
+quotedstring = dquote, {allowedsymbol | spaces | specialsequence}, dquote ;
 
-quoted-string = """ ( allowed-symbol | spaces | special-sequence ) * """ ;
+quotedstringwithcontinuations = dquote , { allowedsymbol | spaces | specialsequence | linecontinuation }, dquote ;
 
-file-content = separator ? ( section separator * ) * separator ? ;
+unquotedstringinthewildmeat = allowedsymbol | specialsequence ;
+
+unquotedstringinthewild = unquotedstringinthewildmeat , { unquotedstringinthewildmeat } ,
+    { { spaces | linecontinuation} , unquotedstringinthewildmeat } , [separator] ;
+
+filecontent = [separator] , {section , {separator} } , [separator] ;
+
