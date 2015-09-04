@@ -30,11 +30,7 @@ specialsequence = backslash, dquote | backslash, backslash | backslash, "n" | ba
 
 linecontinuation = backslash, line_separator ;
 
-spaces = space, {space} ;
-
 line_separator = "\n\r" | "\n" | "\r"  ;
-
-line_separators = {spaces} , line_separator, { { spaces } , line_separator } ;
 
 startofcomment = "#" | ";" ;
 
@@ -46,63 +42,77 @@ textofcomment = { raw_symbol_in_comment } ;
 
 comment = startofcomment , { textofcomment } ;
 
-separator = spaces | line_separators | comment ;
+(* at least one SPACE, comments are threated like spaces *)
+spaces = ( space | comment ) , [ { ( space | comment ) } ] ; 
+
+optional_spaces = [ spaces ] ;
+
+(* at least one EOL *)
+line_separators = line_separator, [ { [ { spaces } ] , line_separator } ]; 
+
+line_break = line_separators , {spaces} ;
+
+(* at least one separator *)
+separators = ( spaces | line_break ) , { spaces | line_break } ;
+
+optional_separators = [ separators ] ;
 
 
+variablename = letterenglish, { { ( letterenglish | digit | minus | "." ) } , ( letterenglish | digit ) } ;
+
+variable_assignment_long = variablename, { separators } , "=", { separators } , variablevalue ;
+
+special_include_syntax = "include.path" ,  { separators } ,  "=" ,  { separators } ,  filepath ;
+
+not_a_section_start = raw_symbol_in_comment - ( sectionheader | subsectionheader ) ;
+
+malformed_body_entry =  not_a_section_start, { { separators } ,  not_a_section_start } ;
+
+bodyentry = variablename | variable_assignment_long | special_include_syntax 
+	| malformed_body_entry
+	;
 
 
-
-
-
-
-
-variable_assignment = variablename, [ {separator}, "=", {separator}, variablevalue ] ;
-
-special_include_syntax = "include.path",  {separator},  "=",  {separator},  filepath ;
-
-variable = variable_assignment |  special_include_syntax ;
-
-
-variablename = letterenglish, { ( letterenglish | digit | [minus] | "." ) , ( letterenglish | digit )} ;
 
 variablevalue = quotedstringwithcontinuations | unquoted_string_in_the_wild ;
 
 filepath = variablevalue;
 
-quotedstring = dquote, {raw_symbol_inside_quotes | specialsequence}, dquote ;
+quotedstring = dquote, {raw_symbol_inside_quotes | specialsequence} , dquote ;
 
-quotedstringwithcontinuations = dquote , { raw_symbol_inside_quotes | specialsequence | linecontinuation }, dquote ;
+quotedstringwithcontinuations = dquote , { raw_symbol_inside_quotes | specialsequence | linecontinuation } , dquote ;
 
 unquoted_string_in_the_wild_unit = raw_symbol_inside_quotes | specialsequence ;
 
 unquoted_string_in_the_wild = unquoted_string_in_the_wild_unit , { unquoted_string_in_the_wild_unit } ,
-    { { linecontinuation} ,
+    { { linecontinuation } ,
     unquoted_string_in_the_wild_unit , { unquoted_string_in_the_wild_unit } } ;
 
 
 subsectiontitleunit = raw_symbol_inside_quotes | specialsequence ;
 
-subsectiontitle = subsectiontitleunit, {subsectiontitleunit} ;
+subsectiontitle = subsectiontitleunit, { subsectiontitleunit } ;
 
 sectiontitleunit = letter | minus | "." ;
 
 sectiontitle = sectiontitleunit, { sectiontitleunit } ;
 
-subsectionbody = variable , { separator , variable } ;
+subsectionheader = lbracket , optional_spaces , sectiontitle , spaces , dquote , subsectiontitle , dquote , optional_spaces , rbracket ;
 
-subsection = subsectionheader, {separator}, subsectionbody ;
+sectionheader = lbracket, optional_spaces , sectiontitle, optional_spaces , rbracket ;
 
-sectionbody = variable , { separator , variable } , { {separator} , subsection } ;
 
-subsectionheader = lbracket , {spaces} , sectiontitle , {spaces} , dquote , subsectiontitle , dquote , {spaces} , rbracket ;
+subsectionbody = bodyentry , { separators , bodyentry } ;
 
-sectionheader = lbracket, {spaces}, sectiontitle, {spaces}, rbracket ;
+sectionbody = bodyentry , { separators , bodyentry } , { separators , subsection } ;
 
-headless_section = subsection, { {separator}, subsection } ;
+subsection = subsectionheader, { optional_separators , subsectionbody } ;
 
-section = ( sectionheader, {separator}, sectionbody ) 
-	|  headless_section
-	;
+section_with_head = sectionheader, { optional_separators , sectionbody };
 
-filecontent = [separator] , { section , {separator} } , [separator] ;
+headless_section = subsection, { optional_separators , subsection } ;
+
+section = section_with_head | headless_section ;
+
+filecontent = optional_separators , { section , { optional_separators , section } } , optional_separators ;
 
