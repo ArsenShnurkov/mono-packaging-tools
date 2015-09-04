@@ -1,10 +1,10 @@
-letterenglishlarge = [ABCDEFGHIJKLMNOPQRSTUVWXYZ] ;
+letterenglishlarge = "A"|"B"|"C"|"D"|"E"|"F"|"G"|"H"|"I"|"J"|"K"|"L"|"M"|"N"|"O"|"P"|"Q"|"R"|"S"|"T"|"U"|"V"|"W"|"X"|"Y"|"Z" ;
 
-letterenglishsmall = [abcdefghijklmnopqrstuvwxyz] ;
+letterenglishsmall = "a"|"b"|"c"|"d"|"e"|"f"|"g"|"h"|"i"|"j"|"k"|"l"|"m"|"n"|"o"|"p"|"q"|"r"|"s"|"t"|"u"|"v"|"w"|"x"|"y"|"z" ;
 
-letterrussianlarge = [АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ] ;
+letterrussianlarge = "А"|"Б"|"В"|"Г"|"Д"|"Е"|"Ё"|"Ж"|"З"|"И"|"Й"|"К"|"Л"|"М"|"Н"|"О"|"П"|"Р"|"С"|"Т"|"У"|"Ф"|"Х"|"Ц"|"Ч"|"Ш"|"Щ"|"Ъ"|"Ы"|"Ь"|"Э"|"Ю"|"Я" ;
 
-letterrussiansmall = [абвгдеёжзийклмнопрстуфхцчшщъыьэюя] ;
+letterrussiansmall = "а"|"б"|"в"|"г"|"д"|"е"|"ё"|"ж"|"з"|"и"|"й"|"к"|"л"|"м"|"н"|"о"|"п"|"р"|"с"|"т"|"у"|"ф"|"х"|"ц"|"ч"|"ш"|"щ"|"ъ"|"ы"|"ь"|"э"|"ю"|"я" ;
 
 letterenglish = letterenglishlarge | letterenglishsmall ;
 
@@ -12,9 +12,9 @@ letterrussian = letterrussianlarge | letterrussiansmall ;
 
 letter = letterenglish | letterrussian;
 
-digitexcludingzero = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
-digit = "0" | digitexcludingzero ;
+digitexcludingzero = digit - "0" ;
 
 space = " " | "\t" ;
 
@@ -25,8 +25,6 @@ spaces = space, {space} ;
 minus =  "-" ;
 
 dquote = '"' ;
-
-non_dquote = ? Terminals.AnyChar ? - dquote ;
 
 backslash = "\\" ;
 
@@ -41,6 +39,8 @@ punctuationmarks = lbracket | rbracket | dquote | minus | "." | ";" | "#" ;
 startofcomment = "#" | ";" ;
 
 linecontinuation = backslash, lineseparator ;
+
+raw_symbol_inside_quotes = ? Terminals.AnyChar ? - ( dquote | specialsequence | linecontinuation );
 
 textofcomment = { digit | letter | punctuationmarks } ;
 
@@ -85,7 +85,7 @@ unquotedstringinthewild = unquotedstringinthewildmeat , { unquotedstringinthewil
     { { spaces | linecontinuation} , unquotedstringinthewildmeat } , [separator] ;
 
 
-subsectiontitleunit = non_dquote | specialsequence ;
+subsectiontitleunit = raw_symbol_inside_quotes | specialsequence ;
 
 subsectiontitle = sectiontitleunit, {sectiontitleunit} ;
 
@@ -93,13 +93,13 @@ sectiontitleunit = letter | minus | "." ;
 
 sectiontitle = sectiontitleunit, { sectiontitleunit } ;
 
-subsectionheader = lbracket , {spaces} , sectiontitle , {spaces} , dquote , subsectiontitle , dquote , {spaces} , rbracket ;
-
 subsectionbody = variable , { {separator} , variable } ;
 
 subsection = subsectionheader, {separator}, subsectionbody ;
 
 sectionbody = variable , { {separator} , variable } , { {separator} , subsection } ;
+
+subsectionheader = lbracket , {spaces} , sectiontitle , spaces, {spaces} , dquote , subsectiontitle , dquote , {spaces} , rbracket ;
 
 sectionheader = lbracket, {spaces}, sectiontitle, {spaces}, rbracket ;
 
