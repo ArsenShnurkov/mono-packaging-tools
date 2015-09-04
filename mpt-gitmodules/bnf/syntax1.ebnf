@@ -16,43 +16,39 @@ digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
 digitexcludingzero = digit - "0" ;
 
-space = " " | "\t" ;
-
-separator = "\n\r" | "\n" | "\r"  ;
-
-spaces = space, {space} ;
-
 minus =  "-" ;
 
 dquote = '"' ;
 
 backslash = "\\" ;
 
-specialsequence = backslash, dquote | backslash, backslash | backslash, "n" | backslash, "t" | backslash, "b" ;
-
 lbracket = "[";
 
 rbracket = "]";
 
-punctuationmarks = lbracket | rbracket | dquote | minus | "." | ";" | "#" ;
+space = " " | "\t" ;
+
+specialsequence = backslash, dquote | backslash, backslash | backslash, "n" | backslash, "t" | backslash, "b" ;
+
+linecontinuation = backslash, line_separator ;
+
+spaces = space, {space} ;
+
+line_separator = "\n\r" | "\n" | "\r"  ;
+
+line_separators = {spaces} , { line_separator, {spaces} } ;
 
 startofcomment = "#" | ";" ;
 
-linecontinuation = backslash, lineseparator ;
+raw_symbol_inside_quotes = ? Terminals.AnyChar ? - ( dquote | specialsequence | linecontinuation | line_separator );
 
-raw_symbol_inside_quotes = ? Terminals.AnyChar ? - ( dquote | specialsequence | linecontinuation );
+raw_symbol_in_comment = ? Terminals.AnyChar ? - line_separator ;
 
-textofcomment = { digit | letter | punctuationmarks } ;
+textofcomment = { raw_symbol_in_comment } ;
 
-unitedlineseparator = {spaces} , { lineseparator, {spaces} } ;
+comment = startofcomment , { textofcomment } ;
 
-symbol = allowedsymbol | nonallowedsymbol;
-
-allowedsymbol = letterrussian | letterenglish | digit | punctuationmarks | spaces ;
-
-comment = startofcomment , {textofcomment} ;
-
-separator = spaces | unitedlineseparator | comment ;
+separator = spaces | line_separators | comment ;
 
 
 
@@ -62,27 +58,30 @@ separator = spaces | unitedlineseparator | comment ;
 
 
 
+variable_assignment = variablename, [ {separator}, "=", {separator}, variablevalue ] ;
+
+special_include_syntax = "include.path",  {separator},  "=",  {separator},  filepath ;
+
+variable = variable_assignment |  special_include_syntax ;
 
 
+variablename = letterenglish, { ( letterenglish | digit | [minus] | "." ) , ( letterenglish | digit )} ;
 
+variablevalue = quotedstringwithcontinuations
+    | ( unquoted_string_in_the_wild , [spaces] )
+    ;
 
-variable = ( variablename, { {separator}, "=", {separator}, variablevalue } )
-             |  ( "include.path",  {separator},  "=",  {separator},  filepath )
-;
+filepath = variablevalue;
 
+quotedstring = dquote, {raw_symbol_inside_quotes | specialsequence}, dquote ;
 
-variablename = letterenglish, { letterenglish | [minus], letterenglish} ;
+quotedstringwithcontinuations = dquote , { raw_symbol_inside_quotes | specialsequence | linecontinuation }, dquote ;
 
-variablevalue = quotedstringwithcontinuations | unquotedstringinthewild ;
+unquoted_string_in_the_wild_unit = raw_symbol_inside_quotes | specialsequence ;
 
-quotedstring = dquote, {allowedsymbol | spaces | specialsequence}, dquote ;
-
-quotedstringwithcontinuations = dquote , { allowedsymbol | spaces | specialsequence | linecontinuation }, dquote ;
-
-unquotedstringinthewildmeat = allowedsymbol | specialsequence ;
-
-unquotedstringinthewild = unquotedstringinthewildmeat , { unquotedstringinthewildmeat } ,
-    { { spaces | linecontinuation} , unquotedstringinthewildmeat } , [separator] ;
+unquoted_string_in_the_wild = unquoted_string_in_the_wild_unit , { unquoted_string_in_the_wild_unit } ,
+    { { linecontinuation} ,
+    unquoted_string_in_the_wild_unit , { unquoted_string_in_the_wild_unit } } ;
 
 
 subsectiontitleunit = raw_symbol_inside_quotes | specialsequence ;
@@ -93,19 +92,21 @@ sectiontitleunit = letter | minus | "." ;
 
 sectiontitle = sectiontitleunit, { sectiontitleunit } ;
 
-subsectionbody = variable , { {separator} , variable } ;
+subsectionbody = variable , { separator , variable } ;
 
 subsection = subsectionheader, {separator}, subsectionbody ;
 
-sectionbody = variable , { {separator} , variable } , { {separator} , subsection } ;
+sectionbody = variable , { separator , variable } , { {separator} , subsection } ;
 
-subsectionheader = lbracket , {spaces} , sectiontitle , spaces, {spaces} , dquote , subsectiontitle , dquote , {spaces} , rbracket ;
+subsectionheader = lbracket , {spaces} , sectiontitle , {spaces} , dquote , subsectiontitle , dquote , {spaces} , rbracket ;
 
 sectionheader = lbracket, {spaces}, sectiontitle, {spaces}, rbracket ;
 
+headless_section = subsection, { {separator}, subsection } ;
+
 section = ( sectionheader, {separator}, sectionbody ) 
-	| ( subsection, { {separator}, subsection } ) 
+	|  headless_section
 	;
 
-filecontent = [separator] , {section , {separator} } , [separator] ;
+filecontent = [separator] , { section , {separator} } , [separator] ;
 
