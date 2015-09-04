@@ -87,7 +87,7 @@ unquotedstringinthewild = unquotedstringinthewildmeat , { unquotedstringinthewil
 
 subsectiontitleunit = raw_symbol_inside_quotes | specialsequence ;
 
-subsectiontitle = sectiontitleunit, {sectiontitleunit} ;
+subsectiontitle = subsectiontitleunit, {subsectiontitleunit} ;
 
 sectiontitleunit = letter | minus | "." ;
 
