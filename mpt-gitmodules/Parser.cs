@@ -1,31 +1,70 @@
-﻿// https://www.kernel.org/pub/software/scm/git/docs/gitmodules.html
-// The .gitmodules file, located in the top-level directory of a Git working tree, 
-// is a text file with a syntax matching the requirements of git-config(1).
-// https://www.kernel.org/pub/software/scm/git/docs/git-config.html
-// git config [<file-option>] --remove-section name
-// git config --global --remove-section test user
-// You can edit the ~/.gitconfig file in your home folder. This is where all --global settings are saved.
-
-// The syntax is fairly flexible and permissive; whitespaces are mostly ignored.
-// The # and ; characters begin comments to the end of line, blank lines are ignored.
-// The file consists of sections and variables.
-// A section begins with the name of the section in square brackets and continues until the next section begins.
-// Section names are case-insensitive.
-// Only alphanumeric characters, - and . are allowed in section names. 
-// Each variable must belong to some section, which means that there must be a section header before the first setting of a variable.
-// Sections can be further divided into subsections.
-// The following escape sequences (beside \" and \\) are recognized:
-// \n for newline character (NL), \t for horizontal tabulation (HT, TAB) and \b for backspace (BS)
-
+﻿
 
 namespace mptgitmodules
 {
 	using System;
+	using System.IO;
+	using System.Text;
+	using System.Diagnostics;
+	using Eto.Parse;
+	using Eto.Parse.Grammars;
 
 	public class Parser
 	{
-		public Parser ()
+		Grammar grammar;
+		public Parser()
 		{
+			grammar = LoadGrammar ("/var/calculate/remote/distfiles/egit-src/mono-packaging-tools.git/mpt-gitmodules/bnf/syntax1.ebnf");
+		}
+
+		string LoadFile(string filename)
+		{
+			string fileContent = String.Empty;
+			using (var s = new FileStream (filename, FileMode.Open, FileAccess.Read)) {
+				using (var sr = new StreamReader (s)) {
+					fileContent = sr.ReadToEnd ();
+					return fileContent;
+				}
+			}
+		}
+
+		Grammar LoadGrammar(string filename)
+		{
+			string myEbnfString = LoadFile(filename);
+			var ebnfGrammar = new Eto.Parse.Grammars.EbnfGrammar(EbnfStyle.Iso14977);
+			var myGrammar = ebnfGrammar.Build(myEbnfString, "filecontent"); 
+			return myGrammar;
+		}
+			
+		public string Parse (string filename, string SectionType, string SectionName)
+		{
+			var fileContent = LoadFile (filename);
+			var res = new StringBuilder (fileContent.Length);
+			var ast = grammar.Match (fileContent);
+			if (ast.Success == false) {
+				Trace.WriteLine (ast.ErrorMessage);
+				Console.ReadLine ();
+				return String.Empty;
+			}
+			foreach (var subnode in ast.Matches)
+			{
+				if (IsSubnodeToRemove (subnode, SectionType, SectionName) == false)
+				{
+					res.Append (subnode.StringValue);
+				}
+			}
+			return res.ToString ();
+		}
+		public bool IsSubnodeToRemove(Eto.Parse.Match node, string SectionType, string SectionName)
+		{
+			var type = node["sectiontitle",true].StringValue.ToLowerInvariant();
+			var name = node["subsectionheader",true].StringValue.ToLowerInvariant();
+			if (type.CompareTo (SectionType.ToLowerInvariant ()) == 0
+			    && name.CompareTo (SectionType.ToLowerInvariant ()) == 0)
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 }
