@@ -14,8 +14,6 @@ letter = letterenglish | letterrussian;
 
 digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
-digitexcludingzero = digit - "0" ;
-
 minus =  "-" ;
 
 dquote = '"' ;
@@ -36,7 +34,7 @@ spaces = space, {space} ;
 
 line_separator = "\n\r" | "\n" | "\r"  ;
 
-line_separators = {spaces} , { line_separator, {spaces} } ;
+line_separators = {spaces} , line_separator, { { spaces } , line_separator } ;
 
 startofcomment = "#" | ";" ;
 
@@ -67,9 +65,7 @@ variable = variable_assignment |  special_include_syntax ;
 
 variablename = letterenglish, { ( letterenglish | digit | [minus] | "." ) , ( letterenglish | digit )} ;
 
-variablevalue = quotedstringwithcontinuations
-    | ( unquoted_string_in_the_wild , [spaces] )
-    ;
+variablevalue = quotedstringwithcontinuations | unquoted_string_in_the_wild ;
 
 filepath = variablevalue;
 
