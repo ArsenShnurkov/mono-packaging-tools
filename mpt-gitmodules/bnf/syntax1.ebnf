@@ -8,13 +8,13 @@ minus =  "-" ;
 
 dquote = '"' ;
 
-backslash = "\" ;
+backslash = "\\" ;
 
 punctuationmarks = "[" | "]" | dquote | minus | "." | ";" | "#" ;
 
 startofcomment = "#" | ";" ;
 
-linecontinuation = "\", lineseparator ;
+linecontinuation = backslash, lineseparator ;
 
 letterenglishlarge = [A-Z] ;
 
@@ -58,8 +58,8 @@ sectionheader = "[" , {spaces} , sectiontitle , {spaces} , dquote , subsectionhe
 
 subsectionbody = {variable , {separator} } ;
 
-variable = variablename, { {separator}, "=", {separator}, variablevalue }
-             |  "include.path",  {separator},  "=",  {separator},  filepath 
+variable = ( variablename, { {separator}, "=", {separator}, variablevalue } )
+             |  ( "include.path",  {separator},  "=",  {separator},  filepath )
 ;
 
 subsectionheadersymbol = backslash , dquote | backslash , backslash | allowedsymbol | spaces ;
