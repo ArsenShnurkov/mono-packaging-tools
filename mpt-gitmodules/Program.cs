@@ -12,13 +12,13 @@ namespace mptgitmodules
 		readonly static string myEbnfString = @"
 file_content := { file_unit } ;
 
-file_unit := eol | nbody | myws ;
+file_unit := eol | myws | nbody ;
 
 eol := ? Terminals.Eol ? ;
 
-nbody := { 'A' } ;
+myws := ' ' ;
 
-myws := '-' ;
+nbody := 'A', { 'A' } ;
 ";
 		readonly static string fileContent = "\nA-AA\n-AAAA-AA-A-\n";
 
