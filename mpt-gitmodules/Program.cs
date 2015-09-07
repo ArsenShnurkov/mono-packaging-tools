@@ -16,11 +16,11 @@ file_unit := eol | myws | nbody ;
 
 eol := ? Terminals.Eol ? ;
 
-myws := ' ' ;
+nbody := { 'A' } ;
 
-nbody := 'A', { 'A' } ;
+myws := ' ' ;
 ";
-		readonly static string fileContent = "\nA-AA\n-AAAA-AA-A-\n";
+		readonly static string fileContent = "\nA AA\n AAAA AA A \n";
 
 		public static void Main (string[] args)
 		{
