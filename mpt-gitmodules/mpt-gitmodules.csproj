@@ -39,11 +39,19 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="New Folder\" />
     <Folder Include="bnf\" />
+    <Folder Include="bnf2\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bnf\syntax1.ebnf" />
+    <None Include="bnf\syntax2.ebnf" />
+    <None Include="bnf\subsection_headers_was_found.ebnf" />
+    <None Include="bnf\lines_are_glued_together.ebnf" />
+    <None Include="bnf\ultimate_simplicity.ebnf" />
+    <None Include="bnf\SpaceAwareSyntax.ebnf" />
+    <None Include="bnf2\syntax1.ebnf" />
+    <None Include="bnf2\syntax2.ebnf" />
+    <None Include="bnf2\syntax3.ebnf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Eto.Parse.git\Eto.Parse\Eto.Parse.csproj">

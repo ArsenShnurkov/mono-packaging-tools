@@ -1,0 +1,65 @@
+letterenglishlarge = "A"|"B"|"C"|"D"|"E"|"F"|"G"|"H"|"I"|"J"|"K"|"L"|"M"|"N"|"O"|"P"|"Q"|"R"|"S"|"T"|"U"|"V"|"W"|"X"|"Y"|"Z" ;
+
+letterenglishsmall = "a"|"b"|"c"|"d"|"e"|"f"|"g"|"h"|"i"|"j"|"k"|"l"|"m"|"n"|"o"|"p"|"q"|"r"|"s"|"t"|"u"|"v"|"w"|"x"|"y"|"z" ;
+
+letterrussianlarge = "А"|"Б"|"В"|"Г"|"Д"|"Е"|"Ё"|"Ж"|"З"|"И"|"Й"|"К"|"Л"|"М"|"Н"|"О"|"П"|"Р"|"С"|"Т"|"У"|"Ф"|"Х"|"Ц"|"Ч"|"Ш"|"Щ"|"Ъ"|"Ы"|"Ь"|"Э"|"Ю"|"Я" ;
+
+letterrussiansmall = "а"|"б"|"в"|"г"|"д"|"е"|"ё"|"ж"|"з"|"и"|"й"|"к"|"л"|"м"|"н"|"о"|"п"|"р"|"с"|"т"|"у"|"ф"|"х"|"ц"|"ч"|"ш"|"щ"|"ъ"|"ы"|"ь"|"э"|"ю"|"я" ;
+
+letterenglish = letterenglishlarge | letterenglishsmall ;
+
+letterrussian = letterrussianlarge | letterrussiansmall ;
+
+letter = letterenglish | letterrussian;
+
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+
+minus =  "-" ;
+
+dquote = '"' ;
+
+backslash = "\\" ;
+
+lbracket = "[";
+
+rbracket = "]";
+
+space = " " | "\t" ;
+
+whitespace = " " | "\t" ;
+
+eol = ? Terminals.Eol ? ;
+
+specialsequence = backslash, dquote | backslash, backslash | backslash, "n" | backslash, "t" | backslash, "b" ;
+
+linecontinuation = backslash, eol ;
+
+lf = "\n" ;
+cr = "\r" ;
+
+non_eol = ? Terminals.AnyChar ? - ( eol | cr | lf );
+
+startofcomment = "#" | ";" ;
+
+comment = startofcomment , { non_eol } ;
+
+spaces = { space | comment | eol } ;
+
+
+
+leading_separators = spaces ;
+finishing_separators = spaces ;
+file_content = [leading_separators] , { filebody } , [finishing_separators] ;
+
+filebody = subsection , { [ eol ] , subsection } ;
+
+section_start =  '[',  { ? Terminals.AnyChar ? - ']' },  ']' ;
+subsection = section_start, { [eol] , section_line } ;
+
+section_line = not_a_section_start
+	;
+
+nonline_symbol = eol | "[" ;
+line_symbol = ? Terminals.AnyChar ? - nonline_symbol ;
+
+not_a_section_start = { line_symbol } ;

@@ -32,44 +32,44 @@ linecontinuation = backslash, line_separator ;
 
 line_separator = "\n\r" | "\n" | "\r"  ;
 
-startofcomment = "#" | ";" ;
-
 raw_symbol_inside_quotes = ? Terminals.AnyChar ? - ( dquote | specialsequence | linecontinuation | line_separator );
 
-raw_symbol_in_comment = ? Terminals.AnyChar ? - line_separator ;
+non_eol = ? Terminals.AnyChar ? - line_separator ;
 
-textofcomment = { raw_symbol_in_comment } ;
+startofcomment = "#" | ";" ;
 
-comment = startofcomment , { textofcomment } ;
+comment = startofcomment , { non_eol } ;
 
 (* at least one SPACE, comments are threated like spaces *)
-spaces = ( space | comment ) , [ { ( space | comment ) } ] ; 
+spaces = ( space | comment ) , { ( space | comment ) } ; 
 
 optional_spaces = [ spaces ] ;
 
 (* at least one EOL *)
-line_separators = line_separator, [ { [ { spaces } ] , line_separator } ]; 
+line_separators = line_separator, { optional_spaces , line_separator }; 
 
-line_break = line_separators , {spaces} ;
+line_break = { spaces }, line_separators;
 
 (* at least one separator *)
 separators = ( spaces | line_break ) , { spaces | line_break } ;
 
 optional_separators = [ separators ] ;
 
+ospace = optional_separators | optional_spaces ;
+
 
 variablename = letterenglish, { { ( letterenglish | digit | minus | "." ) } , ( letterenglish | digit ) } ;
 
-variable_assignment_long = variablename, { separators } , "=", { separators } , variablevalue ;
+variable_assignment_long = variablename, ospace , "=", ospace , variablevalue ;
 
 special_include_syntax = "include.path" ,  { separators } ,  "=" ,  { separators } ,  filepath ;
 
-not_a_section_start = raw_symbol_in_comment - ( sectionheader | subsectionheader ) ;
+not_a_section_start = non_eol - lbrace ;
 
-malformed_body_entry =  not_a_section_start, { { separators } ,  not_a_section_start } ;
+malformed_line =  not_a_section_start, { not_a_section_start } ;
 
 bodyentry = variablename | variable_assignment_long | special_include_syntax 
-	| malformed_body_entry
+	| malformed_line
 	;
 
 
@@ -82,7 +82,7 @@ quotedstring = dquote, {raw_symbol_inside_quotes | specialsequence} , dquote ;
 
 quotedstringwithcontinuations = dquote , { raw_symbol_inside_quotes | specialsequence | linecontinuation } , dquote ;
 
-unquoted_string_in_the_wild_unit = raw_symbol_inside_quotes | specialsequence ;
+unquoted_string_in_the_wild_unit = ? Terminals.AnyChar ? - ( line_separator | linecontinuation | comment ) ;
 
 unquoted_string_in_the_wild = unquoted_string_in_the_wild_unit , { unquoted_string_in_the_wild_unit } ,
     { { linecontinuation } ,
@@ -97,22 +97,27 @@ sectiontitleunit = letter | minus | "." ;
 
 sectiontitle = sectiontitleunit, { sectiontitleunit } ;
 
-subsectionheader = lbracket , optional_spaces , sectiontitle , spaces , dquote , subsectiontitle , dquote , optional_spaces , rbracket ;
+subsectionheader = lbracket , ospaces , sectiontitle , ospaces , dquote , subsectiontitle , dquote , ospaces , rbracket ;
 
-sectionheader = lbracket, optional_spaces , sectiontitle, optional_spaces , rbracket ;
+sectionheader = lbracket, ospaces , sectiontitle, ospaces , rbracket ;
 
 
-subsectionbody = bodyentry , { separators , bodyentry } ;
+subsectionbody = bodyentry , { ospace , bodyentry } ;
 
-sectionbody = bodyentry , { separators , bodyentry } , { separators , subsection } ;
+sectionbody = { ospace , bodyentry } , { ospace , subsection } ;
 
-subsection = subsectionheader, { optional_separators , subsectionbody } ;
+subsection = subsectionheader, { ospace , subsectionbody } ;
 
-section_with_head = sectionheader, { optional_separators , sectionbody };
-
-headless_section = subsection, { optional_separators , subsection } ;
-
+section_with_head_separators = ospace;
+section_with_head = sectionheader, { section_with_head_separators , sectionbody };
+headless_section_separators = ospace;
+headless_section = subsection, { headless_section_separators , subsection } ;
 section = section_with_head | headless_section ;
 
-filecontent = optional_separators , { section , { optional_separators , section } } , optional_separators ;
+intersection_separators = ospace ;
+sectionlist = section , { intersection_separators , section } ;
+
+leading_separators = ospace ;
+finishing_separators = ospace ;
+file_content = leading_separators , { sectionlist } , finishing_separators ;
 
