@@ -14,7 +14,8 @@ namespace mptgitmodules
 		public static void Main (string[] args)
 		{
 			//Parse_AutoSpaces ("bnf3/syntax1");
-			Parse_NoSpaces ("bnf3/syntax2");
+			// Parse_ManualSpaces ("bnf3/syntax2");
+			Parse_ManualSpaces ("bnf3/syntax3");
 		}
 
 		readonly static string location = 
@@ -34,7 +35,7 @@ namespace mptgitmodules
 			Parser.DoProcessing (textContent);
 		}
 
-		public static void Parse_NoSpaces(string variant)
+		public static void Parse_ManualSpaces(string variant)
 		{
 			var grammar = string.Format("{0}/{1}.ebnf", location, variant);
 			var textGrammar = LoadFile (grammar);
