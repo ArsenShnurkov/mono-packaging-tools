@@ -15,14 +15,14 @@ list_of_subsections := subsection, { space_between_subsections, subsection } ;
 subsection := subsection_header, [ space_after_subsection_header, list_of_body_units ] ;
 subsection_header := "_ss_";
 
-space_at_start_of_file := { space | tab | cr | lf } ;
-space_between_sections := { space | tab | cr | lf } ;
-space_before_section_body := { space | tab | cr | lf } ;
-space_between_variable_lines := { space | tab | cr | lf } ;
-space_between_variables_and_subsections := { space | tab | cr | lf } ;
-space_after_subsection_header := { space | tab | cr | lf } ;
-space_between_subsections := { space | tab | cr | lf } ;
-space_at_end_of_file := { space | tab | cr | lf } ;
+space_at_start_of_file := [ws] ;
+space_between_sections := [ws] ;
+space_before_section_body := [ws] ;
+space_between_variable_lines := [ws] ;
+space_between_variables_and_subsections := [ws] ;
+space_after_subsection_header := [ws] ;
+space_between_subsections := [ws] ;
+space_at_end_of_file := [ws] ;
 
 ac := ? Terminals.AnyChar ? ;
 eol := ? Terminals.Eol ? ;
