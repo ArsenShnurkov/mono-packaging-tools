@@ -10,18 +10,44 @@ namespace mptgitmodules
 {
 	class Globals
 	{
+
 		public static void Main (string[] args)
 		{
-			var grammar = "/var/calculate/remote/distfiles/egit-src/mono-packaging-tools.git/mpt-gitmodules/bnf2/syntax4.ebnf";
-			var textGrammar = LoadFile (grammar);
-			var root_rule = "file_content";
-			var Parser = new Parser (textGrammar, root_rule);
+			//Parse_AutoSpaces ("bnf3/syntax1");
+			Parse_NoSpaces ("bnf3/syntax2");
+		}
 
-			var content = "/var/calculate/remote/distfiles/egit-src/monodevelop.git/.gitmodules";
+		readonly static string location = 
+			"/var/calculate/remote/distfiles/egit-src/mono-packaging-tools.git/mpt-gitmodules";
+		
+		public static void Parse_AutoSpaces(string variant)
+		{
+			var grammar = string.Format("{0}/{1}.ebnf", location, variant);
+			var textGrammar = LoadFile (grammar);
+			var content = string.Format("{0}/{1}.txt", location, variant);
 			var textContent = LoadFile (content);
+			var root_rule = "file_content";
+			EbnfStyle style = (EbnfStyle)(
+				(uint)EbnfStyle.Iso14977 
+				| (uint) EbnfStyle.EscapeTerminalStrings);
+			var Parser = new Parser (textGrammar, root_rule, style);
 			Parser.DoProcessing (textContent);
 		}
 
+		public static void Parse_NoSpaces(string variant)
+		{
+			var grammar = string.Format("{0}/{1}.ebnf", location, variant);
+			var textGrammar = LoadFile (grammar);
+			var content = string.Format("{0}/{1}.txt", location, variant);
+			var textContent = LoadFile (content);
+			var root_rule = "file_content";
+			EbnfStyle style = (EbnfStyle)(
+				(uint)EbnfStyle.Iso14977 
+				& ~(uint) EbnfStyle.WhitespaceSeparator	
+				| (uint) EbnfStyle.EscapeTerminalStrings);
+			var Parser = new Parser (textGrammar, root_rule, style);
+			Parser.DoProcessing (textContent);
+		}
 
 		public static string LoadFile(string filename)
 		{

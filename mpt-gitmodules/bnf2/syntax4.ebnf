@@ -37,32 +37,30 @@ ws := ws_unit | {ws_unit} ;
 
 
 file_content := { [ws], section }, [ws] ;
-
-section := [ section_header ] , [ws] , section_body ;
-
+section := [ section_header ] , [[ws] , section_body];
 section_header := lbracket, [sp] , sectiontitle, [sp] , rbracket ;
+section_body := [ list_of_body_units ] , [[ws] , list_of_subsections];
 
 section_title_unit := letter_english | minus | "." ;
 section_title := section_title_unit, {section_title_unit};
 
-section_body := [ list_of_body_units ] , [list_of_subsections];
-
-list_of_body_units := [ws] , variable_line, { [ws] , variable_line } ;
+variable_line := special_include_syntax | variable_assignment_long | variable_name ;
+list_of_body_units := variable_line, { ( [ws] , variable_line ) } ;
 
 list_of_subsections := [ws] , subsection, { [ws] , subsection } ;
 
-subsection := subsection_header, [ [ws] , list_of_body_units ] ;
 
+
+subsection := subsection_header, [ [ws], list_of_body_units ] ;
 subsection_header := lbracket , [sp], section_title , [sp] , dquote , subsection_title , dquote , [sp] , rbracket ;
 
 subsection_title_unit := ac - dquote;
 subsection_title := subsection_title_unit, {subsection_title_unit};
 
-variable_line := special_include_syntax | variable_assignment_long | variable_name ;
 
 vmid := letter_english | digit | minus | ".";
 vend := letter_english | digit;
-variable_name := letter_english , { vend } ;
+variable_name := letter_english , { vmid } ;
 
 variable_assignment_long := variablename, [ws] , "=", [ws], variable_value ;
 
@@ -73,7 +71,8 @@ dquoted_string_unit_raw := ac - dquote;
 dquoted_string_body := dquoted_string_unit_raw, {dquoted_string_unit_raw} ;
 dquoted_string := dquote, [dquoted_string_body] , dquote ;
 
-unquoted_string_unit_raw := ( ac - line_separator ) | ( line_continuation , line_separator ) ;
+unquoted_string_unit_raw := ( ac - (line_separator_raw | line_continuation) )
+	| ( line_continuation , line_separator_raw ) ;
 unquoted_string_body := unquoted_string_unit_raw, { unquoted_string_unit_raw } ;
 unquoted_string := unquoted_string_body;
 

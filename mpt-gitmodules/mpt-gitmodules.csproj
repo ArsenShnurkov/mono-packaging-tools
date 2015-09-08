@@ -36,11 +36,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="GrammarExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="bnf\" />
     <Folder Include="bnf2\" />
+    <Folder Include="bnf3\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bnf\syntax1.ebnf" />
@@ -53,6 +55,10 @@
     <None Include="bnf2\syntax2.ebnf" />
     <None Include="bnf2\syntax3.ebnf" />
     <None Include="bnf2\syntax4.ebnf" />
+    <None Include="bnf3\syntax1.ebnf" />
+    <None Include="bnf3\syntax1.txt" />
+    <None Include="bnf3\syntax2.ebnf" />
+    <None Include="bnf3\syntax2.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Eto.Parse.git\Eto.Parse\Eto.Parse.csproj">
