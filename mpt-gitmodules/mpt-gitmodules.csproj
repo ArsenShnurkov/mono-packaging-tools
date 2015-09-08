@@ -61,6 +61,8 @@
     <None Include="bnf3\syntax2.txt" />
     <None Include="bnf3\syntax3.ebnf" />
     <None Include="bnf3\syntax3.txt" />
+    <None Include="bnf3\syntax4.ebnf" />
+    <None Include="bnf3\syntax4.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Eto.Parse.git\Eto.Parse\Eto.Parse.csproj">
