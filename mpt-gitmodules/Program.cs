@@ -14,7 +14,7 @@ namespace mptgitmodules
 		public static void Main (string[] args)
 		{
 			//Parse_AutoSpaces ("bnf3/syntax1");
-			// Parse_ManualSpaces ("bnf3/syntax2");
+			//Parse_ManualSpaces ("bnf3/syntax2");
 			//Parse_ManualSpaces ("bnf3/syntax3");
 			Parse_ManualSpaces ("bnf3/syntax4");
 		}
