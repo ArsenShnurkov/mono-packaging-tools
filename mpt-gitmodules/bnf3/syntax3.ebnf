@@ -1,9 +1,6 @@
 (* Any whitespace *)
 ws_unit := space | tab | cr | lf ;
-ws := ws_unit | {ws_unit} ;
-
-
-
+ws := ws_unit, {ws_unit} ;
 
 file_content := space_at_start_of_file, [section, { space_between_sections , section }], space_at_end_of_file ;
 section := [ section_header ] , [ space_before_section_body, section_body ] ;
@@ -31,4 +28,4 @@ tab := "\x0009" ;
 lf := "\x000A" ;
 cr := "\x000D" ;
 backslash := "\x005C" ;
-dquote := '\x0022' ;
+dquote := "\x0022" ;
