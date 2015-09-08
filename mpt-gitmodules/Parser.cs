@@ -18,7 +18,7 @@ namespace mptgitmodules
 		public void DoProcessing(string textToParse)
 		{
 			var ast = myGrammar.Match (textToParse);
-			var mmm = ast.Matches ["section", true];
+			var mmm = ast.Matches ["list_of_sections", true];
 			var mm = ast.Matches ["list_of_subsections", true];
 			var m = ast.Matches ["section_body", true].Matches; // for "evaluate" window of debugger
 			if (ast.Success == false) {

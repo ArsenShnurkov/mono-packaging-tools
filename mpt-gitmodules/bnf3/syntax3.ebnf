@@ -4,16 +4,15 @@ ws := ws_unit | {ws_unit} ;
 
 
 
-
 file_content := { [ws], section }, [ws];
 section := [ [ws], section_header ] , [ [ws], section_body];
-section_header := "_section_" ;
+section_header := "_s_" ;
 section_body := [ list_of_body_units ] , [[ws], list_of_subsections];
-variable_line :=  "_variable_";
-list_of_body_units := variable_line, { ( [ws], variable_line ) } ;
+variable_line :=  [ws], "_v_";
+list_of_body_units := [ws], variable_line, { [ws], variable_line } ;
 list_of_subsections := subsection, { [ws], subsection } ;
 subsection := subsection_header, [ [ws], list_of_body_units ] ;
-subsection_header := "_subsection_";
+subsection_header := "_ss_";
 
 
 ac := ? Terminals.AnyChar ? ;
