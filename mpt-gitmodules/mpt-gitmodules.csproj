@@ -14,20 +14,21 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
-    <PlatformTarget>x86</PlatformTarget>
+    <Commandlineparameters>!</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
-    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>Trace</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -36,13 +37,43 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="GrammarExtensions.cs" />
+    <Compile Include="UsageInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="New Folder\" />
     <Folder Include="bnf\" />
+    <Folder Include="bnf2\" />
+    <Folder Include="bnf3\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bnf\syntax1.ebnf" />
+    <None Include="bnf\syntax2.ebnf" />
+    <None Include="bnf\subsection_headers_was_found.ebnf" />
+    <None Include="bnf\lines_are_glued_together.ebnf" />
+    <None Include="bnf\ultimate_simplicity.ebnf" />
+    <None Include="bnf\SpaceAwareSyntax.ebnf" />
+    <None Include="bnf2\syntax1.ebnf" />
+    <None Include="bnf2\syntax2.ebnf" />
+    <None Include="bnf2\syntax3.ebnf" />
+    <None Include="bnf2\syntax4.ebnf" />
+    <None Include="bnf3\syntax1.ebnf" />
+    <None Include="bnf3\syntax1.txt" />
+    <None Include="bnf3\syntax2.ebnf" />
+    <None Include="bnf3\syntax2.txt" />
+    <None Include="bnf3\syntax3.ebnf" />
+    <None Include="bnf3\syntax3.txt" />
+    <None Include="bnf3\syntax4.ebnf" />
+    <None Include="bnf3\syntax4.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Eto.Parse.git\Eto.Parse\Eto.Parse.csproj">
+      <Project>{C068996C-0949-4550-B21C-EF724D1894DA}</Project>
+      <Name>Eto.Parse</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\syntax4.ebnf" />
   </ItemGroup>
 </Project>

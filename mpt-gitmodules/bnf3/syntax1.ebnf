@@ -1,0 +1,19 @@
+file_content = { section } ;
+section = [ section_header ] , [section_body];
+section_header = "_section_" ;
+section_body = [ list_of_body_units ] , [list_of_subsections];
+variable_line =  "_variable_";
+list_of_body_units = variable_line, { ( variable_line ) } ;
+list_of_subsections = subsection, { subsection } ;
+subsection = subsection_header, [ [ws], list_of_body_units ] ;
+subsection_header = "_subsection_";
+
+
+ac := ? Terminals.AnyChar ? ;
+eol := ? Terminals.Eol ? ;
+space := " " ;
+tab := "\x0009" ;
+lf := "\x000A" ;
+cr := "\x000D" ;
+backslash := "\x005C" ;
+dquote := '\x0022' ;
