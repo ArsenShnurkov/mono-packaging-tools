@@ -5,6 +5,7 @@ using Eto.Parse.Writers;
 using Eto.Parse;
 using System.Text;
 using System.IO;
+using System.Reflection;
 
 namespace mptgitmodules
 {
@@ -13,52 +14,52 @@ namespace mptgitmodules
 
 		public static void Main (string[] args)
 		{
-			//Parse_AutoSpaces ("bnf3/syntax1");
-			//Parse_ManualSpaces ("bnf3/syntax2");
-			//Parse_ManualSpaces ("bnf3/syntax3");
-			Parse_ManualSpaces ("bnf3/syntax4");
+			if (args.Length == 0) {
+				var ui = new UsageInfo();
+				ui.Dump (Console.Out);
+				return;
+			}
+			Parse_ManualSpaces (args);
 		}
 
-		readonly static string location = 
-			"/var/calculate/remote/distfiles/egit-src/mono-packaging-tools.git/mpt-gitmodules";
-		
-		public static void Parse_AutoSpaces(string variant)
+		public static void Parse_ManualSpaces(string[] args)
 		{
-			var grammar = string.Format("{0}/{1}.ebnf", location, variant);
-			var textGrammar = LoadFile (grammar);
-			var content = string.Format("{0}/{1}.txt", location, variant);
-			var textContent = LoadFile (content);
-			var root_rule = "file_content";
-			EbnfStyle style = (EbnfStyle)(
-				(uint)EbnfStyle.Iso14977 
-				| (uint) EbnfStyle.EscapeTerminalStrings);
-			var Parser = new Parser (textGrammar, root_rule, style);
-			Parser.DoProcessing (textContent);
-		}
-
-		public static void Parse_ManualSpaces(string variant)
-		{
-			var grammar = string.Format("{0}/{1}.ebnf", location, variant);
-			var textGrammar = LoadFile (grammar);
-			var content = string.Format("{0}/{1}.txt", location, variant);
-			var textContent = LoadFile (content);
+			var textGrammar = Resources("syntax4.ebnf");
+			var textContent = String.Empty;
+			using (var s = Console.OpenStandardOutput ()) {
+				textContent = LoadStream (s);
+			}
 			var root_rule = "file_content";
 			EbnfStyle style = (EbnfStyle)(
 				(uint)EbnfStyle.Iso14977 
 				& ~(uint) EbnfStyle.WhitespaceSeparator	
 				| (uint) EbnfStyle.EscapeTerminalStrings);
 			var Parser = new Parser (textGrammar, root_rule, style);
-			Parser.DoProcessing (textContent);
+			Parser.DoProcessing (textContent, args);
+		}
+
+		public static string LoadStream(Stream s)
+		{
+			using (var sr = new StreamReader (s)) {
+				var fileContent = sr.ReadToEnd ();
+				return fileContent;
+			}
 		}
 
 		public static string LoadFile(string filename)
 		{
-			string fileContent = String.Empty;
 			using (var s = new FileStream (filename, FileMode.Open, FileAccess.Read)) {
-				using (var sr = new StreamReader (s)) {
-					fileContent = sr.ReadToEnd ();
-					return fileContent;
-				}
+				return LoadStream (s);
+			}
+		}
+
+		public static string Resources(string name_of_grammar)
+		{
+			// Resource ID: mptgitmodules.Resources.syntax4.ebnf
+			var fullname = string.Format ("mptgitmodules.Resources.{0}", name_of_grammar);
+			using (var s = Assembly.GetExecutingAssembly().GetManifestResourceStream (fullname))
+			{
+				return LoadStream(s);
 			}
 		}
 	}
