@@ -29,7 +29,8 @@ namespace mptgitmodules
 			}
 			var subsections = ast.FindUniq("subsection", true);
 
-			StringBuilder result = new StringBuilder (textToParse.Length);
+			StringBuilder result = new StringBuilder (textToParse);
+			int excluded_total = 0;
 			foreach (var sec in subsections)
  			{
 				var start = sec.Index;
@@ -40,11 +41,22 @@ namespace mptgitmodules
 				string msg = string.Format("{0} - from [{1},{2}] to [{3},{4}]", name,
 				startLoc.line + 1, startLoc.position + 1, endLoc.line + 1, endLoc.position + 1);
 				Trace.WriteLine (msg);
-				foreach (var exclude in args) {
-					if (string.Compare (name, exclude, true, CultureInfo.InvariantCulture) == 0) {
-					} else {
-						result.Append (textToParse.Substring (sec.Index, sec.Length));
+				bool cut = false;
+				foreach (var exclude in args)
+				{
+					// string strA
+					// string strB
+					// bool ignoreCase
+					// CultureInfo culture
+					if (string.Compare (name, exclude, true, CultureInfo.InvariantCulture) == 0)
+					{
+						cut = true;
+						break;
 					}
+				}
+				if (cut) {
+					result.Remove(sec.Index - excluded_total, sec.Length);
+					excluded_total += sec.Length;
 				}
 			}
 			Console.WriteLine (result.ToString ());
