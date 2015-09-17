@@ -32,48 +32,28 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="Eto.Parse">
+      <HintPath>..\packages\Eto.Parse.1.3.1\lib\net45\Eto.Parse.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="GrammarExtensions.cs" />
     <Compile Include="UsageInfo.cs" />
+    <Compile Include="..\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="bnf\" />
-    <Folder Include="bnf2\" />
-    <Folder Include="bnf3\" />
     <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bnf\syntax1.ebnf" />
-    <None Include="bnf\syntax2.ebnf" />
-    <None Include="bnf\subsection_headers_was_found.ebnf" />
-    <None Include="bnf\lines_are_glued_together.ebnf" />
-    <None Include="bnf\ultimate_simplicity.ebnf" />
-    <None Include="bnf\SpaceAwareSyntax.ebnf" />
-    <None Include="bnf2\syntax1.ebnf" />
-    <None Include="bnf2\syntax2.ebnf" />
-    <None Include="bnf2\syntax3.ebnf" />
-    <None Include="bnf2\syntax4.ebnf" />
-    <None Include="bnf3\syntax1.ebnf" />
-    <None Include="bnf3\syntax1.txt" />
-    <None Include="bnf3\syntax2.ebnf" />
-    <None Include="bnf3\syntax2.txt" />
-    <None Include="bnf3\syntax3.ebnf" />
-    <None Include="bnf3\syntax3.txt" />
-    <None Include="bnf3\syntax4.ebnf" />
-    <None Include="bnf3\syntax4.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Eto.Parse.git\Eto.Parse\Eto.Parse.csproj">
-      <Project>{C068996C-0949-4550-B21C-EF724D1894DA}</Project>
-      <Name>Eto.Parse</Name>
-    </ProjectReference>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\syntax4.ebnf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

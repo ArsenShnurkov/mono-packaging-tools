@@ -1,9 +1,0 @@
-file_content := { file_unit } ;
-
-file_unit := eol | myws  | nbody;
-
-eol := ? Terminals.Eol ? ;
-
-nbody := { 'A' } ;
-
-myws := '-' ;
