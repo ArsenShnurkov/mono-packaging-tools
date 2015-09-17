@@ -1,7 +1,0 @@
-file_content := subsection , { {eol} , subsection } ;
-subsection := section_start, { {eol}, section_line } ;
-section_start :=  '[',  { ? Terminals.AnyChar ? - ']' },  ']' ;
-section_line := line_symbol , { line_symbol };
-line_symbol := ? Terminals.AnyChar ? - ( "[" | eol ) ;
-eol := ? Terminals.Eol ? ;
-ws := { ? Terminals.WhiteSpace ? } ;

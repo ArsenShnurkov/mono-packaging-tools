@@ -9,7 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpt-csproj", "mpt-csproj\mp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpt-machine", "mpt-machine\mpt-machine.csproj", "{FCEA0CC0-8C29-4EAA-AB9C-362FC7BF5F7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Parse", "..\Eto.Parse.git\Eto.Parse\Eto.Parse.csproj", "{C068996C-0949-4550-B21C-EF724D1894DA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8266A819-2E58-4D02-A938-035F8FEF6A20}"
+	ProjectSection(SolutionItems) = preProject
+		AssemblyInfo.cs = AssemblyInfo.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpt-nuget", "mpt-nuget\mpt-nuget.csproj", "{4E519C69-F4AD-4439-B61D-5FC18D6CF835}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +22,10 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E519C69-F4AD-4439-B61D-5FC18D6CF835}.Debug|x86.ActiveCfg = Debug|x86
+		{4E519C69-F4AD-4439-B61D-5FC18D6CF835}.Debug|x86.Build.0 = Debug|x86
+		{4E519C69-F4AD-4439-B61D-5FC18D6CF835}.Release|x86.ActiveCfg = Release|x86
+		{4E519C69-F4AD-4439-B61D-5FC18D6CF835}.Release|x86.Build.0 = Release|x86
 		{620A5E2F-F8D3-487C-B52D-C7B69051A0B8}.Debug|x86.ActiveCfg = Debug|x86
 		{620A5E2F-F8D3-487C-B52D-C7B69051A0B8}.Debug|x86.Build.0 = Debug|x86
 		{620A5E2F-F8D3-487C-B52D-C7B69051A0B8}.Release|x86.ActiveCfg = Release|x86
@@ -25,10 +34,6 @@ Global
 		{76939073-0E35-41AC-8DBE-48B999A46A44}.Debug|x86.Build.0 = Debug|x86
 		{76939073-0E35-41AC-8DBE-48B999A46A44}.Release|x86.ActiveCfg = Release|x86
 		{76939073-0E35-41AC-8DBE-48B999A46A44}.Release|x86.Build.0 = Release|x86
-		{C068996C-0949-4550-B21C-EF724D1894DA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C068996C-0949-4550-B21C-EF724D1894DA}.Debug|x86.Build.0 = Debug|Any CPU
-		{C068996C-0949-4550-B21C-EF724D1894DA}.Release|x86.ActiveCfg = Release|Any CPU
-		{C068996C-0949-4550-B21C-EF724D1894DA}.Release|x86.Build.0 = Release|Any CPU
 		{CF65E2F8-720F-455B-B3D2-89AA5FF8004F}.Debug|x86.ActiveCfg = Debug|x86
 		{CF65E2F8-720F-455B-B3D2-89AA5FF8004F}.Debug|x86.Build.0 = Debug|x86
 		{CF65E2F8-720F-455B-B3D2-89AA5FF8004F}.Release|x86.ActiveCfg = Release|x86
@@ -37,5 +42,7 @@ Global
 		{FCEA0CC0-8C29-4EAA-AB9C-362FC7BF5F7B}.Debug|x86.Build.0 = Debug|x86
 		{FCEA0CC0-8C29-4EAA-AB9C-362FC7BF5F7B}.Release|x86.ActiveCfg = Release|x86
 		{FCEA0CC0-8C29-4EAA-AB9C-362FC7BF5F7B}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal
