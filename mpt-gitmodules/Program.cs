@@ -25,10 +25,7 @@ namespace mptgitmodules
 		public static void Parse_ManualSpaces(string[] args)
 		{
 			var textGrammar = Resources("syntax4.ebnf");
-			var textContent = String.Empty;
-			using (var s = Console.OpenStandardOutput ()) {
-				textContent = LoadStream (s);
-			}
+			var textContent = LoadReader (Console.In);
 			var root_rule = "file_content";
 			EbnfStyle style = (EbnfStyle)(
 				(uint)EbnfStyle.Iso14977 
@@ -38,11 +35,16 @@ namespace mptgitmodules
 			Parser.DoProcessing (textContent, args);
 		}
 
+		public static string LoadReader(TextReader sr)
+		{
+			var fileContent = sr.ReadToEnd ();
+			return fileContent;
+		}
+
 		public static string LoadStream(Stream s)
 		{
 			using (var sr = new StreamReader (s)) {
-				var fileContent = sr.ReadToEnd ();
-				return fileContent;
+				return LoadReader(sr);
 			}
 		}
 
