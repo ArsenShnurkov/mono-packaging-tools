@@ -29,22 +29,49 @@ namespace mptgitmodules
 			}
 			var subsections = ast.FindUniq("subsection", true);
 
-			StringBuilder result = new StringBuilder (textToParse.Length);
+			StringBuilder result = new StringBuilder (textToParse);
+			int excluded_total = 0;
 			foreach (var sec in subsections)
  			{
 				var start = sec.Index;
 				var end = start + sec.Length;
-				var name = sec.Matches["subsection_header"].StringValue;
+				var name = sec.Matches["subsection_title", true].StringValue;
 				var startLoc = ast.GetTextLocation (start);
 				var endLoc = ast.GetTextLocation (end);
 				string msg = string.Format("{0} - from [{1},{2}] to [{3},{4}]", name,
 				startLoc.line + 1, startLoc.position + 1, endLoc.line + 1, endLoc.position + 1);
 				Trace.WriteLine (msg);
-				foreach (var exclude in args) {
-					if (string.Compare (name, exclude, true, CultureInfo.InvariantCulture) == 0) {
-					} else {
-						result.Append (textToParse.Substring (sec.Index, sec.Length));
+				bool cut = false;
+				Trace.WriteLine ("testing name : " + name);
+				foreach (var exclude in args)
+				{
+					Trace.WriteLine (exclude);
+					// string strA
+					// string strB
+					// bool ignoreCase
+					// CultureInfo culture
+					if (string.Compare (name, exclude, true, CultureInfo.InvariantCulture) == 0)
+					{
+						cut = true;
+						break;
 					}
+				}
+				if (cut) {
+					Trace.WriteLine ("match found");
+					int pos = sec.Index - excluded_total;
+					result.Remove (pos, sec.Length);
+					// microhack for removing spaces after section
+					// it is hack because it don't use parsing markup
+					int spaces_count = 0;
+					while (char.IsWhiteSpace(result[pos + spaces_count]))
+					{
+						spaces_count++;
+					}
+					result.Remove (pos, spaces_count);
+					excluded_total += spaces_count;
+					excluded_total += sec.Length;
+				} else {
+					Trace.WriteLine ("match not found");
 				}
 			}
 			Console.WriteLine (result.ToString ());
