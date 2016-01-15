@@ -1,0 +1,41 @@
+#!/bin/bash
+
+SRC=mono-packaging-tools.sln
+
+nuget restore mono-packaging-tools.sln
+
+xbuild $SRC
+
+xbuild mpt-gitmodules/mpt-gitmodules.csproj
+
+
+
+
+Вопрос - как передать параметр компилятора через xbuild в компилятор?
+http://stackoverflow.com/questions/18503033/can-i-pass-an-argument-to-msc-through-xbuild-on-the-command-line
+
+
+сделать переменную окружения MCS_OPTIONS, в /usr/bin/mcs её добавить к параметрам MCS (патчем),
+в xbuild добавить к списку переменных окружения
+
+in csproj file, under appropriate PropertyGroup (related to the configuration xbuild is using to build the solution).
+
+вроде бы, если посмотреть описания самих тасков (в каком файле?) то там конкретные параматры
+извлекаются из свойств msbuild, если они заданы
+
+
+как вариант - пропатчить .csproj перед сборкой.
+
+
+
+
+
+<Target Name="AfterBuild">
+<Copy 
+DestinationFiles="@(PrecompiledOutput->'$(DeploymentFolder)\%(RecursiveDir)%(Filename)%(Extension)')"
+SourceFiles="@(PrecompiledOutput)"
+/>
+</Target>
+
+
+$(MSBuildBinPath)\Microsoft.CSharp.targets

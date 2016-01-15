@@ -9,9 +9,15 @@ using System.Reflection;
 
 namespace mptgitmodules
 {
+	/// <summary>
+	/// Global definitions
+	/// </summary>
 	class Globals
 	{
-
+		/// <summary>
+		/// Program entry point
+		/// </summary>
+		/// <param name="args">The command-line arguments.</param>
 		public static void Main (string[] args)
 		{
 			if (args.Length == 0) {

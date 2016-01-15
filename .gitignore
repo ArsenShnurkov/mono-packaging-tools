@@ -234,3 +234,7 @@ Thumbs.db
 
 #dotCover
 *.dotCover
+
+**/comments*.xml
+mpt-gitmodules/manifest.xml
+mpt-gitmodules/mrefout.xml
