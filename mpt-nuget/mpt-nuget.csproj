@@ -42,4 +42,10 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\mpt-core\mpt-core.csproj">
+      <Project>{36FB2731-AAFA-4D77-B406-EC3AAEA2995F}</Project>
+      <Name>mpt-core</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
