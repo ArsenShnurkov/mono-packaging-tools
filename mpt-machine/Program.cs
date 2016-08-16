@@ -87,7 +87,7 @@ namespace mptmachine
 				var dll = Assembly.LoadFrom(dll_name);
 				foreach (Type type in dll.GetTypes())
 				{
-					if (string.Compare (type.BaseType.Name, "DbProviderFactory") == 0) {
+					if (type.BaseType != null && string.Compare (type.BaseType.Name, "DbProviderFactory") == 0) {
 						name_of_type_to_load = type.FullName + ", " + type.Assembly.FullName;
 						name_of_invariant = type.Namespace;
 					}
