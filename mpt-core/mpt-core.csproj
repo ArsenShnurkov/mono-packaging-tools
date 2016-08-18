@@ -30,9 +30,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="MGR.CommandLineParser">
-      <HintPath>..\packages\commandlineparser.0.6.0.201601150\lib\net45\MGR.CommandLineParser.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
