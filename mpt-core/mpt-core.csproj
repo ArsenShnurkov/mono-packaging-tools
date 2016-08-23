@@ -30,15 +30,19 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="CWDev.SLNTools.Core, Version=1.1.1.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="PackageProcessing\LambdaEqualityHelper.cs" />
     <Compile Include="PackageProcessing\Package.cs" />
     <Compile Include="PackageProcessing\Reference.cs" />
     <Compile Include="PackageProcessing\SemanticVersion.cs" />
     <Compile Include="PackageProcessing\SemanticVersionBuildMetaData.cs" />
     <Compile Include="PackageProcessing\SemanticVersionPreReleaseTag.cs" />
+    <Compile Include="sln/SolutionTools.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

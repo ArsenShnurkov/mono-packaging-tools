@@ -1,5 +1,5 @@
-﻿using System;
-﻿using Mono.Options;
+using System;
+using Mono.Options;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Xml;
