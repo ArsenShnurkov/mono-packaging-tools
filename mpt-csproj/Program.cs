@@ -40,8 +40,8 @@ namespace mptcsproj
 			{
 				base_dir = (new DirectoryInfo(base_dir)).FullName;
 			}
-			Console.WriteLine($"in={csproj_file}");
-			Console.WriteLine($"basedir={base_dir}");
+			//Console.WriteLine($"in={csproj_file}");
+			//Console.WriteLine($"basedir={base_dir}");
 			ProjectTools.DumpFiles(csproj_file, base_dir);
 			return (int)ExitCode.Success;
 		}

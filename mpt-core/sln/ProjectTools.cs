@@ -11,6 +11,7 @@ public class ProjectTools
 	public static void DumpFiles(string projectFilename, string baseDirectory)
 	{
 		List<string> files = new List<string>();
+		files.Add(projectFilename);
 		var stream = new MemoryStream(File.ReadAllBytes(projectFilename)); // cache file in memoty
 		var document = XDocument.Load(stream);
 		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
@@ -22,6 +23,11 @@ public class ProjectTools
 		}
 		IEnumerable<XElement> listOfContentFiles = document.XPathSelectElements("/ns:Project/ns:ItemGroup/ns:Content[@Include]", xmlNamespaceManager);
 		foreach (var el in listOfContentFiles)
+		{
+			files.Add(el.Attribute("Include").Value);
+		}
+		IEnumerable<XElement> listOfResourceFiles = document.XPathSelectElements("/ns:Project/ns:ItemGroup/ns:EmbeddedResource[@Include]", xmlNamespaceManager);
+		foreach (var el in listOfResourceFiles)
 		{
 			files.Add(el.Attribute("Include").Value);
 		}
