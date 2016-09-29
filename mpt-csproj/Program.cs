@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using System.Collections.Generic;
 using System.IO;
 using Mono.Options;
 
@@ -12,43 +14,104 @@ namespace mptcsproj
 			NoInputFileSpecified = 1,
 			NoDataProviderNameSpecified = 2,
 			NothingToDo = 3,
-		}		
+		}
+		static List<string> listOfCsproj = new List<string>();
+		static void AddProjectFile(string filename)
+		{
+			if (String.IsNullOrWhiteSpace(filename))
+			{
+				throw new ArgumentException("Filename is null or empty", nameof(filename));
+			}
+			var csproj_file = (new FileInfo(filename)).FullName;
+			if (File.Exists(csproj_file) == false)
+			{
+				throw new FileNotFoundException(csproj_file);
+			}
+			listOfCsproj.Add(csproj_file);
+		}
 		public static int Main (string[] args)
 		{
-			string csproj_file = null;
+			var verbose = (string)null;
+			var remove_warnings_as_errors = (string)null;
+			var dump_project_files = (string)null;
+			var recursive = (string)null;
+			var as_unified_patch = (string)null;
 			string base_dir = null;
-			var p = new OptionSet()
+			string dir = null;
+			var optionSet = new OptionSet()
 			{
 				{ "h|?|help", v => ShowHelp() },
-				{ "in=", str => csproj_file = str },
+				{ "verbose", b => verbose = b },
+				{ "dump-project-files", b => dump_project_files = b },
+				{ "in:", str => AddProjectFile(str) },
 				{ "basedir=", str => base_dir = str },
+				{ "remove-warnings-as-errors", b => remove_warnings_as_errors = b },
+				{ "recursive", b => recursive = b },
+				{ "as-unified-patch=", b => as_unified_patch = b },
+				{ "dir=", str => dir = str },
 			};
-			p.Parse(args);
-			if (String.IsNullOrWhiteSpace(csproj_file))
+			optionSet.Parse(args);
+			if (dump_project_files != null)
 			{
-				return (int)ExitCode.NoInputFileSpecified;
+				if (String.IsNullOrWhiteSpace(base_dir) == false)
+				{
+					base_dir = (new DirectoryInfo(base_dir)).FullName;
+				}
+				else
+				{
+					if (listOfCsproj.Count == 0)
+					{
+						return (int)ExitCode.NoInputFileSpecified;
+					}
+					var csproj_file = listOfCsproj[0]; // list is not emty because this is checked above
+					base_dir = (new FileInfo(csproj_file)).Directory.FullName;
+				}
+				foreach (var csproj_file in listOfCsproj)
+				{
+					ProjectTools.DumpFiles(csproj_file, base_dir);
+				}
 			}
-			else
+			if (remove_warnings_as_errors != null)
 			{
-				csproj_file = (new FileInfo(csproj_file)).FullName;
+				if (String.IsNullOrWhiteSpace(dir) == false)
+				{
+					dir = (new DirectoryInfo(dir)).FullName;
+					// find all *.csproj in directory and add to listOfCsproj
+					SearchOption searchOption = (recursive != null) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+					var fileInfos = new DirectoryInfo(dir).GetFiles("*.csproj", searchOption);
+					foreach (var file in fileInfos)
+					{
+						AddProjectFile(file.FullName);
+					}
+				}
+				if (listOfCsproj.Count == 0)
+				{
+					return (int)ExitCode.NoInputFileSpecified;
+				}
+				foreach (var csproj_file in listOfCsproj)
+				{
+					if (verbose != null)
+					{
+						string output_or_inplace = (as_unified_patch == null) ? ", inplace conversion" : String.Format(" >> {0}", as_unified_patch);
+						Console.WriteLine($"{csproj_file}{output_or_inplace}");
+					}
+					ProjectTools.RemoveWarningsAsErrors(csproj_file, as_unified_patch);
+				}
 			}
-			if (String.IsNullOrWhiteSpace(base_dir))
-			{
-				base_dir = (new FileInfo(csproj_file)).Directory.FullName;
-			}
-			else
-			{
-				base_dir = (new DirectoryInfo(base_dir)).FullName;
-			}
-			//Console.WriteLine($"in={csproj_file}");
-			//Console.WriteLine($"basedir={base_dir}");
-			ProjectTools.DumpFiles(csproj_file, base_dir);
 			return (int)ExitCode.Success;
 		}
 		public static void ShowHelp()
 		{
+			var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+			Console.WriteLine($"mpt-cspoj.exe, version {version}");
 			Console.WriteLine("Usage: ");
-			Console.WriteLine("\tmpt-csproj --in=work/src/my.csproj --basedir=work");
+			Console.WriteLine("\tmpt-csproj --dump-project-files --in=work/src/my.csproj");
+			Console.WriteLine("\tmpt-csproj --dump-project-files --in=work/src/my.csproj --basedir=work");
+			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --in=work/src/my.csproj");
+			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --in=work/src/my.csproj --as-unified-patch my.patch");
+			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work");
+			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive");
+			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive --as-unified-patch my.patch");
 		}
 	}
 }
