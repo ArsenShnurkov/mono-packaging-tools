@@ -44,9 +44,23 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="../VersionInfo.cs">
+      <Link>Properties/VersionInfo.cs</Link>
+    </Compile>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="/usr/lib64/mono/4.5/MSBuild.Community.Tasks.Targets" Condition="Exists('/usr/lib64/mono/4.5/MSBuild.Community.Tasks.Targets')" />
+  <Target Name="BeforeBuild">
+    <PropertyGroup Condition=" '$(VersionNumber)' == '' ">
+      <VersionNumber>1.0.0.0</VersionNumber>
+    </PropertyGroup>
+    <AssemblyInfo CodeLanguage="C#"
+      OutputFile="../VersionInfo.cs"
+      AssemblyVersion="$(VersionNumber)"
+      AssemblyFileVersion="$(VersionNumber)"
+    />
+  </Target>
 </Project>

@@ -238,3 +238,4 @@ Thumbs.db
 **/comments*.xml
 mpt-gitmodules/manifest.xml
 mpt-gitmodules/mrefout.xml
+VersionInfo.cs
