@@ -46,9 +46,12 @@
     <Compile Include="PackageProcessing\SemanticVersionPreReleaseTag.cs" />
     <Compile Include="sln/SolutionTools.cs" />
     <Compile Include="sln\ProjectTools.cs" />
+    <Compile Include="CSProj\CSharpLibraryProject.cs" />
+    <Compile Include="CSProj\Configuration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="PackageProcessing\" />
+    <Folder Include="CSProj\" />
   </ItemGroup>
 </Project>

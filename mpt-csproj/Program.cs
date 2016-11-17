@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 using Mono.Options;
@@ -15,42 +14,57 @@ namespace mptcsproj
 			NoDataProviderNameSpecified = 2,
 			NothingToDo = 3,
 		}
-		static List<string> listOfCsproj = new List<string>();
-		static void AddProjectFile(string filename)
-		{
-			if (String.IsNullOrWhiteSpace(filename))
-			{
-				throw new ArgumentException("Filename is null or empty", nameof(filename));
-			}
-			var csproj_file = (new FileInfo(filename)).FullName;
-			if (File.Exists(csproj_file) == false)
-			{
-				throw new FileNotFoundException(csproj_file);
-			}
-			listOfCsproj.Add(csproj_file);
-		}
 		public static int Main (string[] args)
 		{
 			var verbose = (string)null;
 			var remove_warnings_as_errors = (string)null;
 			var dump_project_files = (string)null;
-			var recursive = (string)null;
+			var list = (string)null;
+			var no_recurse = (string)null;
 			var as_unified_patch = (string)null;
 			string base_dir = null;
 			string dir = null;
 			var optionSet = new OptionSet()
 			{
-				{ "h|?|help", v => ShowHelp() },
 				{ "verbose", b => verbose = b },
+				{ "h|?|help", v => ShowHelp() },
+				{ "list", b => list = b },
 				{ "dump-project-files", b => dump_project_files = b },
 				{ "in:", str => AddProjectFile(str) },
 				{ "basedir=", str => base_dir = str },
 				{ "remove-warnings-as-errors", b => remove_warnings_as_errors = b },
-				{ "recursive", b => recursive = b },
-				{ "as-unified-patch=", b => as_unified_patch = b },
+				{ "no-recurse", b => no_recurse = b },
 				{ "dir=", str => dir = str },
+				{ "as-unified-patch=", b => as_unified_patch = b },
 			};
 			optionSet.Parse(args);
+			if (list != null)
+			{
+				if (String.IsNullOrWhiteSpace(dir) == false)
+				{
+					dir = (new DirectoryInfo(dir)).FullName;
+				}
+				else
+				{
+					dir = Directory.GetCurrentDirectory();
+				}
+				// find all *.csproj in directory and add to listOfCsproj
+				SearchOption searchOption = (no_recurse != null) ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
+				var fileInfos = new DirectoryInfo(dir).GetFiles("*.csproj", searchOption);
+				foreach (var file in fileInfos)
+				{
+					AddProjectFile(file.FullName);
+				}
+				foreach (var csproj_file in listOfCsproj)
+				{
+					Console.WriteLine($"{csproj_file}");
+					Dictionary<string, string> outputs = ProjectTools.GetMainOutputs(csproj_file);
+					foreach (var output in outputs)
+					{
+						Console.WriteLine($"{output.Key} -> ${output.Value}");
+					}
+				}
+			}
 			if (dump_project_files != null)
 			{
 				if (String.IsNullOrWhiteSpace(base_dir) == false)
@@ -77,7 +91,7 @@ namespace mptcsproj
 				{
 					dir = (new DirectoryInfo(dir)).FullName;
 					// find all *.csproj in directory and add to listOfCsproj
-					SearchOption searchOption = (recursive != null) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+					SearchOption searchOption = (no_recurse != null) ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
 					var fileInfos = new DirectoryInfo(dir).GetFiles("*.csproj", searchOption);
 					foreach (var file in fileInfos)
 					{
@@ -112,6 +126,20 @@ namespace mptcsproj
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work");
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive");
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive --as-unified-patch my.patch");
+		}
+		static List<string> listOfCsproj = new List<string>();
+		static void AddProjectFile(string filename)
+		{
+			if (String.IsNullOrWhiteSpace(filename))
+			{
+				throw new ArgumentException("Filename is null or empty", nameof(filename));
+			}
+			var csproj_file = (new FileInfo(filename)).FullName;
+			if (File.Exists(csproj_file) == false)
+			{
+				throw new FileNotFoundException(csproj_file);
+			}
+			listOfCsproj.Add(csproj_file);
 		}
 	}
 }

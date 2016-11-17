@@ -16,26 +16,30 @@ namespace mptsln
 		{
 			string sln_file = null;
 			string remove_proj = null;
-			var p = new OptionSet ()
+			var references = (string)null; //boolean
+			var p = new OptionSet()
 			{
 				{ "h|?|help", v => ShowHelp() },
 				{ "sln-file=", str => sln_file = str },
 				{ "remove-proj=", str => remove_proj = str },
+				{ "references", b => references = b },
 			};
 			p.Parse(args);
-			if (String.IsNullOrWhiteSpace (sln_file))
+			if (String.IsNullOrWhiteSpace (sln_file) == false)
 			{
-				Console.WriteLine("--sln-file is not set");
+				Console.WriteLine("--sln-file=some.sln is not given");
 				return (int)ExitCode.NoSolutionFileSpecified;
-			}
-			if (String.IsNullOrWhiteSpace (remove_proj))
-			{
-				Console.WriteLine("--remove-proj name is not given");
-				return (int)ExitCode.NoProjNameSpecified;
 			}
 			try
 			{
-				SolutionTools.RemoveProject(sln_file, remove_proj);
+				if (String.IsNullOrWhiteSpace(references) == false)
+				{
+					SolutionTools.ProcessReferences(sln_file);
+				}
+				if (String.IsNullOrWhiteSpace(remove_proj) == false)
+				{
+					SolutionTools.RemoveProject(sln_file, remove_proj);
+				}
 				return (int)ExitCode.Success;
 			}
 			catch (Exception ex)

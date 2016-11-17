@@ -133,4 +133,11 @@ public class ProjectTools
 			}
 		}
 	}
+
+	public static Dictionary<string, string> GetMainOutputs(string csproj_file)
+	{
+		Dictionary<string, string> res = new Dictionary<string, string>();
+		// TODO: open XML file, read attributes, construct relative path
+		return res;
+	}
 }
