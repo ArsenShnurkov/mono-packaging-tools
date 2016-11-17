@@ -23,4 +23,22 @@ public class SolutionTools
 		}
 		sln.Save(); // or .SaveAs("NewName.sln");
 	}
+
+	public static void ProcessReferences(string solutionFullPath)
+	{
+		var sln = SolutionFile.FromFile(solutionFullPath);
+		var projList = sln.Projects;
+		foreach (var p in projList)
+		{
+			if (p is CSharpLibraryProject)
+			{
+				var cslib = (CSharpLibraryProject)p;
+				Console.WriteLine(cslib.FullPath);
+				foreach (var configuration in cslib.Configurations)
+				{
+					Console.WriteLine($"{configuration.Name} -> { configuration.GetAssemblyName()}");
+				}
+			}
+		}
+	}
 }

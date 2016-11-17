@@ -36,6 +36,7 @@
   <ItemGroup>
     <ProjectReference Include="../mpt-core/mpt-core.csproj">
         <Name>mpt-core</Name>
+        <Project>{36FB2731-AAFA-4D77-B406-EC3AAEA2995F}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
