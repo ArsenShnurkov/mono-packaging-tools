@@ -55,10 +55,6 @@
      <PropertyGroup Condition=" '$(VersionNumber)' == '' ">
        <VersionNumber>1.0.0.0</VersionNumber>
      </PropertyGroup>
-     <AssemblyInfo CodeLanguage="C#"
-       OutputFile="../VersionInfo.cs"
-       AssemblyVersion="$(VersionNumber)"
-       AssemblyFileVersion="$(VersionNumber)"
-     />
+     <AssemblyInfo CodeLanguage="C#" OutputFile="../VersionInfo.cs" AssemblyVersion="$(VersionNumber)" AssemblyFileVersion="$(VersionNumber)" />
    </Target>
 </Project>
