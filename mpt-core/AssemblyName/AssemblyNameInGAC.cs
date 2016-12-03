@@ -15,12 +15,20 @@ class AssemblyNameInGAC
 	{
 		var sb = new StringBuilder();
 		sb.Append($"{Name}");
-		sb.Append($", Version={Version}");
-		sb.Append($", Culture={Culture}");
-		sb.Append($", PublicKeyToken={PublicKeyToken}");
+		if (!string.IsNullOrEmpty(Version))
+			sb.Append($", Version={Version}");
+		if (!string.IsNullOrEmpty(Culture))
+			sb.Append($", Culture={Culture}");
+		if (!string.IsNullOrEmpty(PublicKeyToken))
+			sb.Append($", PublicKeyToken={PublicKeyToken}");
 		return sb.ToString();
 	}
-	static readonly Regex regex = new Regex("(?<Name>[^,]*) *, *Version *= *(?<Version>[^,]*) *, *Culture *= *(?<Culture>[^,]*) *, *PublicKeyToken *= *(?<PublicKeyToken>[^,]*)", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+	static readonly string v = " *, *Version *= *(?<Version>[^,]*)";
+	static readonly string c = " *, *Culture *= *(?<Culture>[^,]*)";
+	static readonly string k = " *, *PublicKeyToken *= *(?<PublicKeyToken>[^,]*)";
+	static readonly Regex regex = new Regex("(?<Name>[^,]*)" + 
+	                                        "(("+v+")|("+c+")|("+k+"))*",
+		RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 	public void Parse(string AssemblyName)
 	{
 		var m = regex.Match(AssemblyName);
