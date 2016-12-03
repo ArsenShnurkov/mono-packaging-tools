@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpt-nuget", "mpt-nuget\mpt-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpt-core", "mpt-core\mpt-core.csproj", "{36FB2731-AAFA-4D77-B406-EC3AAEA2995F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpt-core.tests", "mpt-core.tests\mpt-core.tests.csproj", "{B5CBA982-1BA0-4754-A042-958506478467}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -48,6 +50,10 @@ Global
 		{FCEA0CC0-8C29-4EAA-AB9C-362FC7BF5F7B}.Debug|x86.Build.0 = Debug|x86
 		{FCEA0CC0-8C29-4EAA-AB9C-362FC7BF5F7B}.Release|x86.ActiveCfg = Release|x86
 		{FCEA0CC0-8C29-4EAA-AB9C-362FC7BF5F7B}.Release|x86.Build.0 = Release|x86
+		{B5CBA982-1BA0-4754-A042-958506478467}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B5CBA982-1BA0-4754-A042-958506478467}.Debug|x86.Build.0 = Debug|Any CPU
+		{B5CBA982-1BA0-4754-A042-958506478467}.Release|x86.ActiveCfg = Release|Any CPU
+		{B5CBA982-1BA0-4754-A042-958506478467}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

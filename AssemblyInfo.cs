@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCulture ("")]
 [assembly: AssemblyLicenseName ("GPL-3")]
 [assembly: AssemblyLicenseURL ("https://github.com/ArsenShnurkov/mono-packaging-tools/blob/master/LICENSE")]
+[assembly: InternalsVisibleTo("tests")]
 
 [ComVisible(true)]
 [AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple= true)]

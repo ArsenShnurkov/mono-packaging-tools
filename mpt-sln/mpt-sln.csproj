@@ -31,7 +31,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Mono.Options, Version=4.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Mono.Options, Version=4.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Package>mono-options-4.4.0.0</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../mpt-core/mpt-core.csproj">
@@ -57,10 +59,6 @@
     <PropertyGroup Condition=" '$(VersionNumber)' == '' ">
       <VersionNumber>1.0.0.0</VersionNumber>
     </PropertyGroup>
-    <AssemblyInfo CodeLanguage="C#"
-      OutputFile="../VersionInfo.cs"
-      AssemblyVersion="$(VersionNumber)"
-      AssemblyFileVersion="$(VersionNumber)"
-    />
+    <AssemblyInfo CodeLanguage="C#" OutputFile="../VersionInfo.cs" AssemblyVersion="$(VersionNumber)" AssemblyFileVersion="$(VersionNumber)" />
   </Target>
 </Project>
