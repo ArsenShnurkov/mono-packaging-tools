@@ -23,11 +23,11 @@ class AssemblyNameInGAC
 			sb.Append($", PublicKeyToken={PublicKeyToken}");
 		return sb.ToString();
 	}
-	static readonly string v = " *, *Version *= *(?<Version>[^,]*)";
-	static readonly string c = " *, *Culture *= *(?<Culture>[^,]*)";
-	static readonly string k = " *, *PublicKeyToken *= *(?<PublicKeyToken>[^,]*)";
+	static readonly string v = "Version *= *(?<Version>[^, ]*)";
+	static readonly string c = "Culture *= *(?<Culture>[^, ]*)";
+	static readonly string k = "PublicKeyToken *= *(?<PublicKeyToken>[^, ]*)";
 	static readonly Regex regex = new Regex("(?<Name>[^,]*)" + 
-	                                        "(("+v+")|("+c+")|("+k+"))*",
+	                                        "( *, *(("+v+")|("+c+")|("+k+")))*",
 		RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 	public void Parse(string AssemblyName)
 	{

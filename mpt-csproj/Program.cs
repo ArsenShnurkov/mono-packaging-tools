@@ -18,43 +18,63 @@ namespace mptcsproj
 		{
 			var verbose = (string)null;
 			var remove_warnings_as_errors = (string)null;
-			var dump_project_files = (string)null;
-			var list = (string)null;
+			var list_inputs = (string)null;
+			var list_outputs = (string)null;
 			var no_recurse = (string)null;
 			var as_unified_patch = (string)null;
 			string base_dir = null;
 			string dir = null;
+			string reference_name = null;
 			var optionSet = new OptionSet()
 			{
-				{ "verbose", b => verbose = b },
+				/* General options */
+				// output usage summary and exit
 				{ "h|?|help", v => ShowHelp() },
-				{ "list", b => list = b },
-				{ "dump-project-files", b => dump_project_files = b },
+				// give more explainations during work
+				{ "verbose", b => verbose = b },
+
+				/* searching options */
+				// options to create list of projects for processing
 				{ "in:", str => AddProjectFile(str) },
-				{ "basedir=", str => base_dir = str },
-				{ "remove-warnings-as-errors", b => remove_warnings_as_errors = b },
-				{ "no-recurse", b => no_recurse = b },
 				{ "dir=", str => dir = str },
+				{ "no-recurse", b => no_recurse = b },
+
+				/* readonly options */
+				{ "basedir=", str => base_dir = str },
+				// lists inputs of .csproj files 
+				{ "list-inputs", b => list_inputs = b },
+				// lists outputs of .csproj files
+				{ "list-outputs", b => list_outputs = b },
+
+				/* transformation options */
 				{ "as-unified-patch=", b => as_unified_patch = b },
+				// remove elements from .csproj files
+				{ "remove-warnings-as-errors", b => remove_warnings_as_errors = b },
+				// replace reference(s) in .csproj files
+				{ "replace-reference=", str => reference_name = str },
 			};
 			optionSet.Parse(args);
-			if (list != null)
+			if (String.IsNullOrWhiteSpace(dir) == false)
 			{
-				if (String.IsNullOrWhiteSpace(dir) == false)
-				{
-					dir = (new DirectoryInfo(dir)).FullName;
-				}
-				else
-				{
-					dir = Directory.GetCurrentDirectory();
-				}
-				// find all *.csproj in directory and add to listOfCsproj
-				SearchOption searchOption = (no_recurse != null) ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
-				var fileInfos = new DirectoryInfo(dir).GetFiles("*.csproj", searchOption);
-				foreach (var file in fileInfos)
-				{
-					AddProjectFile(file.FullName);
-				}
+				dir = (new DirectoryInfo(dir)).FullName;
+			}
+			else
+			{
+				dir = Directory.GetCurrentDirectory();
+			}
+			// find all *.csproj in directory and add to listOfCsproj
+			SearchOption searchOption = (no_recurse != null) ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
+			var fileInfos = new DirectoryInfo(dir).GetFiles("*.csproj", searchOption);
+			foreach (var file in fileInfos)
+			{
+				AddProjectFile(file.FullName);
+			}
+			if (listOfCsproj.Count == 0)
+			{
+				return (int)ExitCode.NoInputFileSpecified;
+			}
+			if (list_outputs != null)
+			{
 				foreach (var csproj_file in listOfCsproj)
 				{
 					Console.WriteLine($"{csproj_file}");
@@ -65,43 +85,24 @@ namespace mptcsproj
 					}
 				}
 			}
-			if (dump_project_files != null)
+			if (list_inputs != null)
 			{
-				if (String.IsNullOrWhiteSpace(base_dir) == false)
-				{
-					base_dir = (new DirectoryInfo(base_dir)).FullName;
-				}
-				else
-				{
-					if (listOfCsproj.Count == 0)
-					{
-						return (int)ExitCode.NoInputFileSpecified;
-					}
-					var csproj_file = listOfCsproj[0]; // list is not emty because this is checked above
-					base_dir = (new FileInfo(csproj_file)).Directory.FullName;
-				}
 				foreach (var csproj_file in listOfCsproj)
 				{
-					ProjectTools.DumpFiles(csproj_file, base_dir);
+					string csproj_base_dir;
+					if (String.IsNullOrWhiteSpace(base_dir) == false)
+					{
+						csproj_base_dir = (new DirectoryInfo(base_dir)).FullName;
+					}
+					else
+					{
+						csproj_base_dir = (new FileInfo(csproj_file)).Directory.FullName;
+					}
+					ProjectTools.DumpFiles(csproj_file, csproj_base_dir);
 				}
 			}
 			if (remove_warnings_as_errors != null)
 			{
-				if (String.IsNullOrWhiteSpace(dir) == false)
-				{
-					dir = (new DirectoryInfo(dir)).FullName;
-					// find all *.csproj in directory and add to listOfCsproj
-					SearchOption searchOption = (no_recurse != null) ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
-					var fileInfos = new DirectoryInfo(dir).GetFiles("*.csproj", searchOption);
-					foreach (var file in fileInfos)
-					{
-						AddProjectFile(file.FullName);
-					}
-				}
-				if (listOfCsproj.Count == 0)
-				{
-					return (int)ExitCode.NoInputFileSpecified;
-				}
 				foreach (var csproj_file in listOfCsproj)
 				{
 					if (verbose != null)
@@ -110,6 +111,14 @@ namespace mptcsproj
 						Console.WriteLine($"{csproj_file}{output_or_inplace}");
 					}
 					ProjectTools.RemoveWarningsAsErrors(csproj_file, as_unified_patch);
+				}
+			}
+			if (reference_name != null)
+			{
+				Console.WriteLine($"Removing reference {reference_name}");
+				foreach (var csproj_file in listOfCsproj)
+				{
+					ProjectTools.ReplaceReference(csproj_file, reference_name);
 				}
 			}
 			return (int)ExitCode.Success;

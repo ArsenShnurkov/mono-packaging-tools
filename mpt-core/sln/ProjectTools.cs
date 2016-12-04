@@ -40,10 +40,10 @@ public class ProjectTools
 			string fullFileName = Path.Combine(projDir, correctedRelativeName);
 			fullFileName = new FileInfo(fullFileName).FullName;
 			string shortName;
-			if (fullFileName.StartsWith(baseDirectory))
+			if (fullFileName.StartsWith(baseDirectory, StringComparison.InvariantCulture))
 			{
 				shortName = fullFileName.Substring(baseDirectory.Length);
-				if (shortName.StartsWith(separator))
+				if (shortName.StartsWith(separator, StringComparison.InvariantCulture))
 				{
 					shortName = shortName.Substring(1);
 				}
@@ -139,5 +139,62 @@ public class ProjectTools
 		Dictionary<string, string> res = new Dictionary<string, string>();
 		// TODO: open XML file, read attributes, construct relative path
 		return res;
+	}
+
+	public static void ReplaceReference(string csproj_file, string reference_name)
+	{
+		var newname = new AssemblyNameInGAC(reference_name);
+		var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
+		var document = XDocument.Load(stream);
+		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
+		xmlNamespaceManager.AddNamespace("ns", namespaceName);
+
+		// remove ProjectReference
+		var itemsToRemove2 = new List<XElement>();
+		IEnumerable<XElement> listOfReferences2 = document.XPathSelectElements("/ns:Project/ns:ItemGroup/ns:ProjectReference[@Include]", xmlNamespaceManager);
+		foreach (var el in listOfReferences2)
+		{
+			string assRef = el.Attribute("Include").Value;
+			if (string.Compare(newname.Name, assRef) == 0)
+			{
+				itemsToRemove2.Add(el);
+			}
+		}
+		foreach (var item in itemsToRemove2)
+		{
+			Console.WriteLine($"ProjectReference removed {item.ToString()}");
+			item.Remove();
+		}
+
+
+		var itemsToRemove = new List<XElement>();
+		IEnumerable<XElement> listOfReferences = document.XPathSelectElements("/ns:Project/ns:ItemGroup/ns:Reference[@Include]", xmlNamespaceManager);
+		foreach (var el in listOfReferences)
+		{
+			string assRef = el.Attribute("Include").Value;
+			var name = new AssemblyNameInGAC(assRef);
+			if (string.Compare(newname.Name, name.Name) == 0)
+			{
+				itemsToRemove.Add(el);
+			}
+		}
+		foreach (var item in itemsToRemove)
+		{
+			Console.WriteLine($"Reference removed {item.ToString()}");
+			item.Remove();
+		}
+		XElement group = document.XPathSelectElement("/ns:Project/ns:ItemGroup", xmlNamespaceManager);
+		if (group == null)
+		{
+			// insert new item group
+			throw new NotImplementedException();
+		}
+
+		// insert new reference
+		XNamespace ns = document.Root.Name.Namespace;
+		var newEl = new XElement(ns + "Reference");
+		newEl.Add(new XAttribute("Include", newname.Generate()));
+		group.Add(newEl);
+		document.Save(csproj_file);
 	}
 }
