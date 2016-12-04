@@ -10,7 +10,6 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\mono.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>true</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
