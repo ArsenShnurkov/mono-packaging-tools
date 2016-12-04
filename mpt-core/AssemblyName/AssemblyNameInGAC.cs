@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 
-class AssemblyNameInGAC
+public class AssemblyNameInGAC
 {
 	public string Name { get; set; }
 	public string Version { get; set; }
