@@ -62,12 +62,15 @@ namespace mptcsproj
 			{
 				dir = Directory.GetCurrentDirectory();
 			}
-			// find all *.csproj in directory and add to listOfCsproj
-			SearchOption searchOption = (no_recurse != null) ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
-			var fileInfos = new DirectoryInfo(dir).GetFiles("*.csproj", searchOption);
-			foreach (var file in fileInfos)
+			if (listOfCsproj.Count == 0)
 			{
-				AddProjectFile(file.FullName);
+				// find all *.csproj in directory and add to listOfCsproj
+				SearchOption searchOption = (no_recurse != null) ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
+				var fileInfos = new DirectoryInfo(dir).GetFiles("*.csproj", searchOption);
+				foreach (var file in fileInfos)
+				{
+					AddProjectFile(file.FullName);
+				}
 			}
 			if (listOfCsproj.Count == 0)
 			{
