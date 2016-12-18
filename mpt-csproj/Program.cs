@@ -197,13 +197,20 @@ namespace mptcsproj
 			var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 			Console.WriteLine($"mpt-cspoj.exe, version {version}");
 			Console.WriteLine("Usage: ");
-			Console.WriteLine("\tmpt-csproj --dump-project-files --in=work/src/my.csproj");
-			Console.WriteLine("\tmpt-csproj --dump-project-files --in=work/src/my.csproj --basedir=work");
-			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --in=work/src/my.csproj");
-			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --in=work/src/my.csproj --as-unified-patch my.patch");
+			Console.WriteLine("\tmpt-csproj --list-refs");
+			Console.WriteLine("\t\tPrints references");
+			Console.WriteLine("\tmpt-csproj --list-projrefs");
+			Console.WriteLine("\t\tPrints project references");
+			Console.WriteLine("\tmpt-csproj --list-inputs");
+			Console.WriteLine("\t\tPrints all input files");
+			Console.WriteLine("\tmpt-csproj --list-outputs");
+			Console.WriteLine("\t\tPrints resulting files");
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work");
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive");
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive --as-unified-patch my.patch");
+			Console.WriteLine("\t\tremoves xml element <WarningsAsErrors>true</WarningsAsErrors>");
+			Console.WriteLine("\tmpt-csproj --replace-reference=\"MyDll,Version,Culture,PubKeyToken\"");
+			Console.WriteLine("\t\treplaces or adds the reference for MyDll of given version");
 		}
 		static List<string> listOfCsproj = new List<string>();
 		static void AddProjectFile(string filename)
