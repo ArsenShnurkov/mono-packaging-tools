@@ -31,7 +31,12 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\..\..\..\..\..\..\usr\share\mono-packaging-tools-0</OutputPath>
-    <Commandlineparameters>--in=/var/calculate/remote/distfiles/egit-src/mono-packaging-tools.git/mpt-csproj.tests/test.csproj --replace-reference="Mono.Options, Version=4.4.0.0, PublicKeyToken=0738eb9f132ed756"</Commandlineparameters>
+    <Commandlineparameters></Commandlineparameters>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Execute" command="${TargetFile}  ./src --list-refs  --list-projrefs --basedir=." workingdir="/var/calculate/remote/distfiles/egit-src/OrchardCMS-1.7.3-for-mono.git" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

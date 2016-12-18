@@ -56,6 +56,57 @@ public class ProjectTools
 		}
 	}
 
+	public static void DumpRefs(string projectFilename, string baseDirectory)
+	{
+		var stream = new MemoryStream(File.ReadAllBytes(projectFilename)); // cache file in memoty
+		var document = XDocument.Load(stream);
+		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
+		xmlNamespaceManager.AddNamespace("ns", namespaceName);
+		IEnumerable<XElement> listOfSourceFiles = document.XPathSelectElements("/ns:Project/ns:ItemGroup/ns:Reference[@Include]", xmlNamespaceManager);
+		foreach (var el in listOfSourceFiles)
+		{
+			string strAssemblyReference = el.Attribute("Include").Value;
+			Console.WriteLine(strAssemblyReference);
+			// TODO: process hint paths
+		}
+	}
+
+	public static void DumpProjRefs(string projectFilename, string baseDirectory)
+	{
+		List<string> files = new List<string>();
+		var stream = new MemoryStream(File.ReadAllBytes(projectFilename)); // cache file in memoty
+		var document = XDocument.Load(stream);
+		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
+		xmlNamespaceManager.AddNamespace("ns", namespaceName);
+		IEnumerable<XElement> listOfSourceFiles = document.XPathSelectElements("/ns:Project/ns:ItemGroup/ns:ProjectReference[@Include]", xmlNamespaceManager);
+		foreach (var el in listOfSourceFiles)
+		{
+			files.Add(el.Attribute("Include").Value);
+		}
+		string separator = new string(Path.DirectorySeparatorChar, 1);
+		string projDir = (new FileInfo(projectFilename)).Directory.FullName;
+		foreach (string relativeName in files)
+		{
+			var correctedRelativeName = relativeName.Replace("\\", separator);
+			string fullFileName = Path.Combine(projDir, correctedRelativeName);
+			fullFileName = new FileInfo(fullFileName).FullName;
+			string shortName;
+			if (fullFileName.StartsWith(baseDirectory, StringComparison.InvariantCulture))
+			{
+				shortName = fullFileName.Substring(baseDirectory.Length);
+				if (shortName.StartsWith(separator, StringComparison.InvariantCulture))
+				{
+					shortName = shortName.Substring(1);
+				}
+			}
+			else
+			{
+				shortName = fullFileName;
+			}
+			Console.WriteLine(shortName);
+		}
+	}
+
 	public static System.Text.Encoding GetEncoding(string filePath)
 	{
 		System.Text.Encoding enc = null;

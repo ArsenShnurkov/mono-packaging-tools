@@ -10,14 +10,17 @@ namespace mptcsproj
 		enum ExitCode : int
 		{
 			Success = 0,
-			NoInputFileSpecified = 1,
-			NoDataProviderNameSpecified = 2,
-			NothingToDo = 3,
+			WrongUsage = 1,
+			NoInputFileSpecified = 2,
+			NoDataProviderNameSpecified = 3,
+			NothingToDo = 4,
 		}
 		public static int Main (string[] args)
 		{
 			var verbose = (string)null;
 			var remove_warnings_as_errors = (string)null;
+			var list_refs = (string)null;
+			var list_projrefs = (string)null;
 			var list_inputs = (string)null;
 			var list_outputs = (string)null;
 			var no_recurse = (string)null;
@@ -41,6 +44,10 @@ namespace mptcsproj
 
 				/* readonly options */
 				{ "basedir=", str => base_dir = str },
+				// lists references of .csproj files 
+				{ "list-refs", b => list_refs = b },
+				// lists references of .csproj files 
+				{ "list-projrefs", b => list_projrefs = b },
 				// lists inputs of .csproj files 
 				{ "list-inputs", b => list_inputs = b },
 				// lists outputs of .csproj files
@@ -53,7 +60,34 @@ namespace mptcsproj
 				// replace reference(s) in .csproj files
 				{ "replace-reference=", str => reference_name = str },
 			};
-			optionSet.Parse(args);
+			var listOfUnparsedParameters = optionSet.Parse(args);
+			foreach (var strUnparsedParameter in listOfUnparsedParameters)
+			{
+				bool bFile = false;
+				if (File.Exists(strUnparsedParameter))
+				{
+					var name = new FileInfo(strUnparsedParameter).FullName;
+					listOfCsproj.Add(name);
+					bFile = true;
+				}
+				bool bDir = false;
+				if (Directory.Exists(strUnparsedParameter))
+				{
+					// find all *.csproj in directory and add to listOfCsproj
+					SearchOption searchOption = (no_recurse != null) ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
+					var fileInfos = new DirectoryInfo(strUnparsedParameter).GetFiles("*.csproj", searchOption);
+					foreach (var file in fileInfos)
+					{
+						AddProjectFile(file.FullName);
+					}
+					bDir = true;
+				}
+				if (!bFile && !bDir)
+				{
+					Console.WriteLine($"unknown parameter {strUnparsedParameter}");
+					Environment.Exit((int)ExitCode.WrongUsage);
+				}
+			}
 			if (String.IsNullOrWhiteSpace(dir) == false)
 			{
 				dir = (new DirectoryInfo(dir)).FullName;
@@ -104,6 +138,38 @@ namespace mptcsproj
 					ProjectTools.DumpFiles(csproj_file, csproj_base_dir);
 				}
 			}
+			if (list_refs != null)
+			{
+				foreach (var csproj_file in listOfCsproj)
+				{
+					string csproj_base_dir;
+					if (String.IsNullOrWhiteSpace(base_dir) == false)
+					{
+						csproj_base_dir = (new DirectoryInfo(base_dir)).FullName;
+					}
+					else
+					{
+						csproj_base_dir = (new FileInfo(csproj_file)).Directory.FullName;
+					}
+					ProjectTools.DumpRefs(csproj_file, csproj_base_dir);
+				}
+			}
+			if (list_projrefs != null)
+			{
+				foreach (var csproj_file in listOfCsproj)
+				{
+					string csproj_base_dir;
+					if (String.IsNullOrWhiteSpace(base_dir) == false)
+					{
+						csproj_base_dir = (new DirectoryInfo(base_dir)).FullName;
+					}
+					else
+					{
+						csproj_base_dir = (new FileInfo(csproj_file)).Directory.FullName;
+					}
+					ProjectTools.DumpProjRefs(csproj_file, csproj_base_dir);
+				}
+			}
 			if (remove_warnings_as_errors != null)
 			{
 				foreach (var csproj_file in listOfCsproj)
@@ -147,11 +213,14 @@ namespace mptcsproj
 				throw new ArgumentException("Filename is null or empty", nameof(filename));
 			}
 			var csproj_file = (new FileInfo(filename)).FullName;
-			if (File.Exists(csproj_file) == false)
+			if (listOfCsproj.Contains(csproj_file) == false)
 			{
-				throw new FileNotFoundException(csproj_file);
+				if (File.Exists(csproj_file) == false)
+				{
+					throw new FileNotFoundException(csproj_file);
+				}
+				listOfCsproj.Add(csproj_file);
 			}
-			listOfCsproj.Add(csproj_file);
 		}
 	}
 }
