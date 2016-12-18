@@ -28,6 +28,8 @@ namespace mptcsproj
 			string base_dir = null;
 			string dir = null;
 			string reference_name = null;
+			bool bForceReferenceAppending = false;
+
 			var optionSet = new OptionSet()
 			{
 				/* General options */
@@ -59,7 +61,10 @@ namespace mptcsproj
 				{ "remove-warnings-as-errors", b => remove_warnings_as_errors = b },
 				// replace reference(s) in .csproj files
 				{ "replace-reference=", str => reference_name = str },
+				// replace reference(s) in .csproj files
+				{ "inject-reference=", str => { reference_name = str; bForceReferenceAppending = true; } },
 			};
+
 			var listOfUnparsedParameters = optionSet.Parse(args);
 			foreach (var strUnparsedParameter in listOfUnparsedParameters)
 			{
@@ -184,10 +189,10 @@ namespace mptcsproj
 			}
 			if (reference_name != null)
 			{
-				Console.WriteLine($"Removing reference {reference_name}");
+				Console.WriteLine($"Replacing reference {reference_name}");
 				foreach (var csproj_file in listOfCsproj)
 				{
-					ProjectTools.ReplaceReference(csproj_file, reference_name);
+					ProjectTools.ReplaceReference(csproj_file, reference_name, bForceReferenceAppending);
 				}
 			}
 			return (int)ExitCode.Success;
@@ -210,7 +215,9 @@ namespace mptcsproj
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive --as-unified-patch my.patch");
 			Console.WriteLine("\t\tremoves xml element <WarningsAsErrors>true</WarningsAsErrors>");
 			Console.WriteLine("\tmpt-csproj --replace-reference=\"MyDll,Version,Culture,PubKeyToken\"");
-			Console.WriteLine("\t\treplaces or adds the reference for MyDll of given version");
+			Console.WriteLine("\t\treplaces the reference for MyDll of given version");
+			Console.WriteLine("\tmpt-csproj --inject-reference=\"MyDll,Version,Culture,PubKeyToken\"");
+			Console.WriteLine("\t\tinserts new reference for MyDll of given version, or replaces the old one");
 		}
 		static List<string> listOfCsproj = new List<string>();
 		static void AddProjectFile(string filename)

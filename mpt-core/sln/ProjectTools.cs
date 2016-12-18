@@ -192,8 +192,9 @@ public class ProjectTools
 		return res;
 	}
 
-	public static void ReplaceReference(string csproj_file, string reference_name)
+	public static void ReplaceReference(string csproj_file, string reference_name, bool force)
 	{
+		bool bWasRemoved = false;
 		var newname = new AssemblyNameInGAC(reference_name);
 		var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
 		var document = XDocument.Load(stream);
@@ -215,6 +216,7 @@ public class ProjectTools
 		{
 			Console.WriteLine($"ProjectReference removed {item.ToString()}");
 			item.Remove();
+			bWasRemoved = true;
 		}
 
 
@@ -233,6 +235,7 @@ public class ProjectTools
 		{
 			Console.WriteLine($"Reference removed {item.ToString()}");
 			item.Remove();
+			bWasRemoved = true;
 		}
 		XElement group = document.XPathSelectElement("/ns:Project/ns:ItemGroup", xmlNamespaceManager);
 		if (group == null)
@@ -242,10 +245,13 @@ public class ProjectTools
 		}
 
 		// insert new reference
-		XNamespace ns = document.Root.Name.Namespace;
-		var newEl = new XElement(ns + "Reference");
-		newEl.Add(new XAttribute("Include", newname.Generate()));
-		group.Add(newEl);
-		document.Save(csproj_file);
+		if (force || bWasRemoved)
+		{
+			XNamespace ns = document.Root.Name.Namespace;
+			var newEl = new XElement(ns + "Reference");
+			newEl.Add(new XAttribute("Include", newname.Generate()));
+			group.Add(newEl);
+			document.Save(csproj_file);
+		}
 	}
 }
