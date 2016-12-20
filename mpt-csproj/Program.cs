@@ -19,6 +19,7 @@ namespace mptcsproj
 		{
 			var verbose = (string)null;
 			var remove_warnings_as_errors = (string)null;
+			var remove_signing = (string)null;
 			var list_refs = (string)null;
 			var list_projrefs = (string)null;
 			var list_inputs = (string)null;
@@ -59,6 +60,7 @@ namespace mptcsproj
 				{ "as-unified-patch=", b => as_unified_patch = b },
 				// remove elements from .csproj files
 				{ "remove-warnings-as-errors", b => remove_warnings_as_errors = b },
+				{ "remove-signing", b => remove_signing = b },
 				// replace reference(s) in .csproj files
 				{ "replace-reference=", str => reference_name = str },
 				// replace reference(s) in .csproj files
@@ -187,6 +189,18 @@ namespace mptcsproj
 					ProjectTools.RemoveWarningsAsErrors(csproj_file, as_unified_patch);
 				}
 			}
+			if (remove_signing != null)
+			{
+				foreach (var csproj_file in listOfCsproj)
+				{
+					if (verbose != null)
+					{
+						string output_or_inplace = (as_unified_patch == null) ? ", inplace conversion" : String.Format(" >> {0}", as_unified_patch);
+						Console.WriteLine($"{csproj_file}{output_or_inplace}");
+					}
+					ProjectTools.RemoveSigning(csproj_file, as_unified_patch);
+				}
+			}
 			if (reference_name != null)
 			{
 				Console.WriteLine($"Replacing reference {reference_name}");
@@ -210,6 +224,8 @@ namespace mptcsproj
 			Console.WriteLine("\t\tPrints all input files");
 			Console.WriteLine("\tmpt-csproj --list-outputs");
 			Console.WriteLine("\t\tPrints resulting files");
+			Console.WriteLine("\tmpt-csproj --remove-signing");
+			Console.WriteLine("\t\tRemoves xml elements related to signing");
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work");
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive");
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive --as-unified-patch my.patch");

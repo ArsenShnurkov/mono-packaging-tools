@@ -185,6 +185,69 @@ public class ProjectTools
 		}
 	}
 
+	public static void RemoveSigning(string csproj_file, string as_unified_patch)
+	{
+		bool bRequiresSave = false;
+
+		var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
+		var document = XDocument.Load(stream);
+		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
+		xmlNamespaceManager.AddNamespace("ns", namespaceName);
+
+		// remove SignAssembly
+		var itemsToRemove1 = new List<XElement>();
+		IEnumerable<XElement> listOfElements1 = document.XPathSelectElements("/ns:Project/ns:PropertyGroup/ns:SignAssembly", xmlNamespaceManager);
+		foreach (var el in listOfElements1)
+		{
+			itemsToRemove1.Add(el);
+		}
+		foreach (var item in itemsToRemove1)
+		{
+			Console.WriteLine($"SignAssembly removed {item.ToString()}");
+			item.Remove();
+			bRequiresSave = true;
+		}
+
+		// remove AssemblyOriginatorKeyFile
+		var itemsToRemove2 = new List<XElement>();
+		IEnumerable<XElement> listOfElements2 = document.XPathSelectElements("/ns:Project/ns:PropertyGroup/ns:AssemblyOriginatorKeyFile", xmlNamespaceManager);
+		foreach (var el in listOfElements2)
+		{
+			itemsToRemove2.Add(el);
+		}
+		foreach (var item in itemsToRemove2)
+		{
+			Console.WriteLine($"AssemblyOriginatorKeyFile removed {item.ToString()}");
+			item.Remove();
+			bRequiresSave = true;
+		}
+
+		// remove .snk file link
+		var itemsToRemove3 = new List<XElement>();
+		IEnumerable<XElement> listOfReferences3 = document.XPathSelectElements("/ns:Project/ns:ItemGroup/ns:None[@Include]", xmlNamespaceManager);
+		foreach (var el in listOfReferences3)
+		{
+			string filepath = el.Attribute("Include").Value;
+			foreach (var item in itemsToRemove2)
+			{
+				if (string.Compare(item.Value, filepath) == 0)
+				{
+					itemsToRemove3.Add(el);
+				}
+			}
+		}
+		foreach (var item in itemsToRemove3)
+		{
+			Console.WriteLine($"Item removed {item.ToString()}");
+			item.Remove();
+			bRequiresSave = true;
+		}
+		if (bRequiresSave)
+		{
+			document.Save(csproj_file);
+		}
+	}
+
 	public static Dictionary<string, string> GetMainOutputs(string csproj_file)
 	{
 		Dictionary<string, string> res = new Dictionary<string, string>();
@@ -195,6 +258,7 @@ public class ProjectTools
 	public static void ReplaceReference(string csproj_file, string reference_name, bool force)
 	{
 		bool bWasRemoved = false;
+		bool bRequiresSave = false;
 		var newname = new AssemblyNameInGAC(reference_name);
 		var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
 		var document = XDocument.Load(stream);
@@ -244,6 +308,11 @@ public class ProjectTools
 			throw new NotImplementedException();
 		}
 
+		if (bWasRemoved)
+		{
+			bRequiresSave = true;
+		}
+
 		// insert new reference
 		if (force || bWasRemoved)
 		{
@@ -251,6 +320,11 @@ public class ProjectTools
 			var newEl = new XElement(ns + "Reference");
 			newEl.Add(new XAttribute("Include", newname.Generate()));
 			group.Add(newEl);
+			bRequiresSave = true;
+		}
+
+		if (bRequiresSave)
+		{
 			document.Save(csproj_file);
 		}
 	}
