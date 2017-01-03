@@ -328,4 +328,24 @@ public class ProjectTools
 			document.Save(csproj_file);
 		}
 	}
+	public static void InjectProjectImport(string csproj_file, string import_name)
+	{
+		bool bRequiresSave = false;
+
+		var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
+		var document = new XmlDocument();
+		document.Load(stream);
+
+		// if similar, but different line is present, then remove it, and set "bRequiresSave" to true
+		bRequiresSave = true;
+
+		// locate if there is import of Microsoft.CSharp.targets
+
+		// Insert project import
+
+		if (bRequiresSave)
+		{
+			document.Save(csproj_file);
+		}
+	}
 }

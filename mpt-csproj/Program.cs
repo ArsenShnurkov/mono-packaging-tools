@@ -30,6 +30,7 @@ namespace mptcsproj
 			string dir = null;
 			string reference_name = null;
 			bool bForceReferenceAppending = false;
+			string import_name = null;
 
 			var optionSet = new OptionSet()
 			{
@@ -63,8 +64,10 @@ namespace mptcsproj
 				{ "remove-signing", b => remove_signing = b },
 				// replace reference(s) in .csproj files
 				{ "replace-reference=", str => reference_name = str },
-				// replace reference(s) in .csproj files
+				// insert reference(s) in .csproj files
 				{ "inject-reference=", str => { reference_name = str; bForceReferenceAppending = true; } },
+				// insert project import into .csproj files
+				{ "inject-import=", str => { import_name = str; } },
 			};
 
 			var listOfUnparsedParameters = optionSet.Parse(args);
@@ -209,6 +212,14 @@ namespace mptcsproj
 					ProjectTools.ReplaceReference(csproj_file, reference_name, bForceReferenceAppending);
 				}
 			}
+			if (import_name != null)
+			{
+				Console.WriteLine($"Injecting import of project {import_name}");
+				foreach (var csproj_file in listOfCsproj)
+				{
+					ProjectTools.InjectProjectImport(csproj_file, import_name);
+				}
+			}
 			return (int)ExitCode.Success;
 		}
 		public static void ShowHelp()
@@ -233,6 +244,7 @@ namespace mptcsproj
 			Console.WriteLine("\tmpt-csproj --replace-reference=\"MyDll,Version,Culture,PubKeyToken\"");
 			Console.WriteLine("\t\treplaces the reference for MyDll of given version");
 			Console.WriteLine("\tmpt-csproj --inject-reference=\"MyDll,Version,Culture,PubKeyToken\"");
+			Console.WriteLine("\tmpt-csproj --inject-import='$(MSBuildToolsPath)\\MSBuild.Community.Tasks.Targets'");
 			Console.WriteLine("\t\tinserts new reference for MyDll of given version, or replaces the old one");
 		}
 		static List<string> listOfCsproj = new List<string>();
