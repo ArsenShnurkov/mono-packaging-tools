@@ -34,7 +34,8 @@
     <Commandlineparameters></Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Execute" command="${TargetFile}  ./src --remove-signing" workingdir="/var/tmp/portage/dev-dotnet/castle-core-1.2.0/work/Castle.Core-READONLY-44859cac767ff02dfc43911c4ce4a571625648b0" />
+        <Command type="Execute" command="${TargetFile} src/Castle.Core/Castle.Core-vs2008.csproj --inject-import='$(MSBuildToolsPath)/Microsoft.CSharp.targets'" workingdir="/var/calculate/remote/distfiles/egit-src/Castle.Core-READONLY.git" />
+        <Command type="Custom" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
