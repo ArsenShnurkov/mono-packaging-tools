@@ -25,7 +25,7 @@ namespace mptsln
 				{ "references", b => references = b },
 			};
 			p.Parse(args);
-			if (String.IsNullOrWhiteSpace (sln_file) == false)
+			if (String.IsNullOrWhiteSpace (sln_file) == true)
 			{
 				Console.WriteLine("--sln-file=some.sln is not given");
 				return (int)ExitCode.NoSolutionFileSpecified;
