@@ -34,13 +34,16 @@
     <Commandlineparameters></Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Execute" command="${TargetFile}  ./src --remove-signing" workingdir="/var/tmp/portage/dev-dotnet/castle-core-1.2.0/work/Castle.Core-READONLY-44859cac767ff02dfc43911c4ce4a571625648b0" />
+        <Command type="Execute" command="${TargetFile} src/Castle.Core/Castle.Core-vs2008.csproj --inject-import='$(MSBuildToolsPath)\\MSBuild.Community.Tasks.Targets'" workingdir="/var/calculate/remote/distfiles/egit-src/Castle.Core-READONLY.git" />
+        <Command type="Custom" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Mono.Options, Version=4.4.0.0, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Mono.Options, Version=4.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Package>mono-options-4.4.0.0</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
