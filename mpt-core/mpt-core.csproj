@@ -53,16 +53,30 @@
     <Compile Include="PackageProcessing/SemanticVersionBuildMetaData.cs" />
     <Compile Include="PackageProcessing/SemanticVersionPreReleaseTag.cs" />
     <Compile Include="sln/SolutionTools.cs" />
-    <Compile Include="sln/ProjectTools.cs" />
-    <Compile Include="CSProj/CSharpLibraryProject.cs" />
-    <Compile Include="CSProj/Configuration.cs" />
+    <Compile Include="04_CSProj\CSharpLibraryProject.cs" />
+    <Compile Include="04_CSProj\Configuration.cs" />
     <Compile Include="sln\GacTools.cs" />
     <Compile Include="AssemblyName\AssemblyNameInGAC.cs" />
+    <Compile Include="03_msbuild\MSBuildFile.cs" />
+    <Compile Include="03_msbuild\MSBuildTarget.cs" />
+    <Compile Include="03_msbuild\MSBuildTask.cs" />
+    <Compile Include="03_msbuild\MSBuildTaskParameter.cs" />
+    <Compile Include="04_CSProj\ProjectTools.cs" />
+    <Compile Include="03_msbuild\MSBuildImport.cs" />
+    <Compile Include="03_msbuild\MSBuildTaskResultProperty.cs" />
+    <Compile Include="03_msbuild\MSBuildTaskResultItem.cs" />
+    <Compile Include="03_msbuild\ICan.cs" />
+    <Compile Include="03_msbuild\MSBuildProperty.cs" />
+    <Compile Include="03_msbuild\MSBuildItem.cs" />
+    <Compile Include="03_msbuild\MSBuildPropertyGroup.cs" />
+    <Compile Include="03_msbuild\MSBuildItemGroup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PackageProcessing\" />
-    <Folder Include="CSProj\" />
+    <Folder Include="04_CSProj\" />
     <Folder Include="AssemblyName\" />
+    <Folder Include="03_msbuild\" />
+    <Folder Include="02_EditableXml\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildToolsPath)\MSBuild.Community.Tasks.Targets" />

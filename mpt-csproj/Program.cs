@@ -217,7 +217,13 @@ namespace mptcsproj
 				Console.WriteLine($"Injecting import of project {import_name}");
 				foreach (var csproj_file in listOfCsproj)
 				{
-					ProjectTools.InjectProjectImport(csproj_file, import_name);
+					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
+					{
+						file.InjectProjectImport(import_name);
+						file.InjectVersioning();
+						// null is ok - http://stackoverflow.com/questions/637308/why-is-adding-null-to-a-string-legal
+						file.InjectInternalsVisibleTo(import_name, null);
+					}
 				}
 			}
 			return (int)ExitCode.Success;
