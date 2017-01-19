@@ -70,6 +70,7 @@
     <Compile Include="03_msbuild\MSBuildItem.cs" />
     <Compile Include="03_msbuild\MSBuildPropertyGroup.cs" />
     <Compile Include="03_msbuild\MSBuildItemGroup.cs" />
+    <Compile Include="AssemblyName\PublicKeyUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PackageProcessing\" />

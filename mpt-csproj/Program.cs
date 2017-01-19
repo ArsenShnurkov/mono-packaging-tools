@@ -31,6 +31,10 @@ namespace mptcsproj
 			string reference_name = null;
 			bool bForceReferenceAppending = false;
 			string import_name = null;
+			string version_string = null;
+			string friend_assembly_name = null;
+			string AssemblyKeyContainerName = null;
+			string AssemblyOriginatorKeyFile = null;
 
 			var optionSet = new OptionSet()
 			{
@@ -68,6 +72,13 @@ namespace mptcsproj
 				{ "inject-reference=", str => { reference_name = str; bForceReferenceAppending = true; } },
 				// insert project import into .csproj files
 				{ "inject-import=", str => { import_name = str; } },
+				// insert task for versioning into .csproj files
+				{ "inject-versioning=", str => { version_string = str; } },
+				// insert project import into .csproj files
+				{ "inject-InternalsVisibleTo=", str => { friend_assembly_name = str; } },
+				// insert project import into .csproj files
+				{ "AssemblyKeyContainerName=", str => { AssemblyKeyContainerName = str; } },
+				{ "AssemblyOriginatorKeyFile=", str => { AssemblyOriginatorKeyFile = str; } },
 			};
 
 			var listOfUnparsedParameters = optionSet.Parse(args);
@@ -220,9 +231,38 @@ namespace mptcsproj
 					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
 					{
 						file.InjectProjectImport(import_name);
-						file.InjectVersioning();
+					}
+				}
+			}
+			if (version_string != null)
+			{
+				Console.WriteLine($"Injecting version property {version_string}");
+				foreach (var csproj_file in listOfCsproj)
+				{
+					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
+					{
+						file.InjectVersioning(version_string);
+					}
+				}
+			}
+			if (friend_assembly_name != null)
+			{
+				Console.WriteLine($"Injecting version property {version_string}");
+				foreach (var csproj_file in listOfCsproj)
+				{
+					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
+					{
 						// null is ok - http://stackoverflow.com/questions/637308/why-is-adding-null-to-a-string-legal
-						file.InjectInternalsVisibleTo(import_name, null);
+						string publicKey = null;
+						if (String.IsNullOrEmpty(AssemblyOriginatorKeyFile) == false)
+						{
+							publicKey = PublicKeyUtils.GetPublicKeyStringFromFilename(AssemblyOriginatorKeyFile);
+						}
+						if (String.IsNullOrEmpty(AssemblyKeyContainerName) == false )
+						{
+							publicKey = PublicKeyUtils.GetPublicKeyStringFromContainer(AssemblyKeyContainerName);
+						}
+						file.InjectInternalsVisibleTo(import_name, publicKey);
 					}
 				}
 			}
@@ -252,6 +292,11 @@ namespace mptcsproj
 			Console.WriteLine("\tmpt-csproj --inject-reference=\"MyDll,Version,Culture,PubKeyToken\"");
 			Console.WriteLine("\tmpt-csproj --inject-import='$(MSBuildToolsPath)\\MSBuild.Community.Tasks.Targets'");
 			Console.WriteLine("\t\tinserts new reference for MyDll of given version, or replaces the old one");
+			Console.WriteLine("\tmpt-csproj --inject - versioning=BuildVersion");
+			Console.WriteLine("\t\tinserts property with given name $(BuildVersion), and default value 1.0.0.0");
+			Console.WriteLine("\tmpt-csproj --inject-InternalsVisibleTo=mytest.dll --AssemblyKeyContainerName=mono");
+			Console.WriteLine("\tmpt-csproj --inject-InternalsVisibleTo=mytest.dll --AssemblyOriginatorKeyFile=mono.snk");
+			Console.WriteLine("\t\tinserts InternalsVisibleToAttribute");
 		}
 		static List<string> listOfCsproj = new List<string>();
 		static void AddProjectFile(string filename)

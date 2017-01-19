@@ -37,7 +37,7 @@ public class CSharpLibraryProject : IDisposable
 		}
 	}
 
-	public void InjectVersioning()
+	public void InjectVersioning(string versionPropertyName)
 	{
 		/*
 			<Target Name="MyAssemblyVersion" Outputs="@(GeneratedVersion)">
@@ -61,13 +61,19 @@ public class CSharpLibraryProject : IDisposable
 			targ.AppendTask(task);
 		}
 		{
+			MSBuildPropertyGroup group = targ.CreatePropertyGroup();
+			group.Condition = " '$(" + versionPropertyName + ")' == '' ";
+			group.AddProperty(versionPropertyName, "1.0.0.0");
+			targ.AppendPropertyGroup(group);
+		}
+		{
 			MSBuildTask task = targ.CreateTask();
 			task.Name = "AssemblyInfo";
 			task.AddParameter("CodeLanguage", "CS");
 
-			task.AddParameter("AssemblyVersion", "$(VersionNumber)"); // System.Reflection.AssemblyVersion
-			task.AddParameter("AssemblyFileVersion", "$(VersionNumber)"); // System.Reflection.AssemblyFileVersion
-			task.AddParameter("AssemblyInformationalVersion", "$(VersionNumber)"); // System.Reflection.AssemblyInformationalVersion
+			task.AddParameter("AssemblyVersion", "$(" + versionPropertyName + ")"); // System.Reflection.AssemblyVersion
+			task.AddParameter("AssemblyFileVersion", "$(" + versionPropertyName + ")"); // System.Reflection.AssemblyFileVersion
+			task.AddParameter("AssemblyInformationalVersion", "$(" + versionPropertyName + ")"); // System.Reflection.AssemblyInformationalVersion
 
 			task.AddParameter("OutputFile", "$(IntermediateOutputPath)AssemblyVersion.Generated.cs");
 			{
@@ -86,12 +92,6 @@ public class CSharpLibraryProject : IDisposable
 	{
 		MSBuildTarget targ = uo.CreateTarget();
 		targ.Name = "MyInsertInternalsTo";
-		{
-			MSBuildPropertyGroup group = targ.CreatePropertyGroup();
-			group.Condition = " '$(VersionNumber)' == '' ";
-			group.AddProperty("VersionNumber", "1.0.0.0");
-			targ.AppendPropertyGroup(group);
-		}
 		{
 			MSBuildTask task = targ.CreateTask(); // '$(SignAssembly)' == 'true'
 			task.Name = "AssemblyInfo";
