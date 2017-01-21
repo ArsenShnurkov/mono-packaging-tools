@@ -14,8 +14,32 @@ namespace mptcsproj
 			NoInputFileSpecified = 2,
 			NoDataProviderNameSpecified = 3,
 			NothingToDo = 4,
+			HelpOrVersion = 5,
+			Exception = 6,
 		}
-		public static int Main (string[] args)
+		public static int Main(string[] args)
+		{
+			try
+			{
+				return (int)MainProcessing(args);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.ToString());
+				ShowVersion();
+				for (int i = 0; i < args.Length; i++)
+				{
+					if (i > 0)
+					{
+						Console.Write(" ");
+					}
+					Console.Write(args[i]);
+				}
+				Console.WriteLine();
+			}
+			return (int)ExitCode.Exception;
+		}
+		static ExitCode MainProcessing(string[] args)
 		{
 			var verbose = (string)null;
 			var remove_warnings_as_errors = (string)null;
@@ -31,12 +55,17 @@ namespace mptcsproj
 			string reference_name = null;
 			bool bForceReferenceAppending = false;
 			string import_name = null;
+			string version_string = null;
+			string friend_assembly_name = null;
+			string AssemblyKeyContainerName = null;
+			string AssemblyOriginatorKeyFile = null;
 
 			var optionSet = new OptionSet()
 			{
 				/* General options */
 				// output usage summary and exit
-				{ "h|?|help", v => ShowHelp() },
+				{ "h|?|help", v => { ShowHelp(); System.Environment.Exit((int)ExitCode.HelpOrVersion); } },
+				{ "v|V|version", v => { ShowVersion(); System.Environment.Exit((int)ExitCode.HelpOrVersion); } },
 				// give more explainations during work
 				{ "verbose", b => verbose = b },
 
@@ -68,6 +97,13 @@ namespace mptcsproj
 				{ "inject-reference=", str => { reference_name = str; bForceReferenceAppending = true; } },
 				// insert project import into .csproj files
 				{ "inject-import=", str => { import_name = str; } },
+				// insert task for versioning into .csproj files
+				{ "inject-versioning=", str => { version_string = str; } },
+				// insert project import into .csproj files
+				{ "inject-InternalsVisibleTo=", str => { friend_assembly_name = str; } },
+				// insert project import into .csproj files
+				{ "AssemblyKeyContainerName=", str => { AssemblyKeyContainerName = str; } },
+				{ "AssemblyOriginatorKeyFile=", str => { AssemblyOriginatorKeyFile = str; } },
 			};
 
 			var listOfUnparsedParameters = optionSet.Parse(args);
@@ -95,7 +131,7 @@ namespace mptcsproj
 				if (!bFile && !bDir)
 				{
 					Console.WriteLine($"unknown parameter {strUnparsedParameter}");
-					Environment.Exit((int)ExitCode.WrongUsage);
+					return ExitCode.WrongUsage;
 				}
 			}
 			if (String.IsNullOrWhiteSpace(dir) == false)
@@ -118,7 +154,7 @@ namespace mptcsproj
 			}
 			if (listOfCsproj.Count == 0)
 			{
-				return (int)ExitCode.NoInputFileSpecified;
+				return ExitCode.NoInputFileSpecified;
 			}
 			if (list_outputs != null)
 			{
@@ -182,8 +218,10 @@ namespace mptcsproj
 			}
 			if (remove_warnings_as_errors != null)
 			{
+				Console.WriteLine($"Removing warnings as errors");
 				foreach (var csproj_file in listOfCsproj)
 				{
+					Console.WriteLine($"from file {csproj_file}");
 					if (verbose != null)
 					{
 						string output_or_inplace = (as_unified_patch == null) ? ", inplace conversion" : String.Format(" >> {0}", as_unified_patch);
@@ -194,8 +232,10 @@ namespace mptcsproj
 			}
 			if (remove_signing != null)
 			{
+				Console.WriteLine($"Removing signing");
 				foreach (var csproj_file in listOfCsproj)
 				{
+					Console.WriteLine($"from file {csproj_file}");
 					if (verbose != null)
 					{
 						string output_or_inplace = (as_unified_patch == null) ? ", inplace conversion" : String.Format(" >> {0}", as_unified_patch);
@@ -209,6 +249,7 @@ namespace mptcsproj
 				Console.WriteLine($"Replacing reference {reference_name}");
 				foreach (var csproj_file in listOfCsproj)
 				{
+					Console.WriteLine($"in file {csproj_file}");
 					ProjectTools.ReplaceReference(csproj_file, reference_name, bForceReferenceAppending);
 				}
 			}
@@ -217,15 +258,61 @@ namespace mptcsproj
 				Console.WriteLine($"Injecting import of project {import_name}");
 				foreach (var csproj_file in listOfCsproj)
 				{
-					ProjectTools.InjectProjectImport(csproj_file, import_name);
+					Console.WriteLine($"into file {csproj_file}");
+					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
+					{
+						file.InjectProjectImport(import_name);
+					}
 				}
 			}
-			return (int)ExitCode.Success;
+			if (version_string != null)
+			{
+				Console.WriteLine($"Injecting version property {version_string}");
+				foreach (var csproj_file in listOfCsproj)
+				{
+					Console.WriteLine($"into file {csproj_file}");
+					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
+					{
+						file.InjectVersioning(version_string);
+					}
+				}
+			}
+			if (friend_assembly_name != null)
+			{
+				if (String.IsNullOrWhiteSpace(AssemblyOriginatorKeyFile) && String.IsNullOrWhiteSpace(AssemblyKeyContainerName))
+				{
+					return ExitCode.WrongUsage;
+				}
+				Console.WriteLine($"Injecting version property {version_string}");
+				foreach (var csproj_file in listOfCsproj)
+				{
+					Console.WriteLine($"into file {csproj_file}");
+					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
+					{
+						// null is ok - http://stackoverflow.com/questions/637308/why-is-adding-null-to-a-string-legal
+						string publicKey = null;
+						if (String.IsNullOrEmpty(AssemblyOriginatorKeyFile) == false)
+						{
+							publicKey = PublicKeyUtils.GetPublicKeyStringFromFilename(AssemblyOriginatorKeyFile);
+						}
+						if (String.IsNullOrEmpty(AssemblyKeyContainerName) == false )
+						{
+							publicKey = PublicKeyUtils.GetPublicKeyStringFromContainer(AssemblyKeyContainerName);
+						}
+						file.InjectInternalsVisibleTo(friend_assembly_name, publicKey);
+					}
+				}
+			}
+			return ExitCode.Success;
 		}
-		public static void ShowHelp()
+		public static void ShowVersion()
 		{
 			var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 			Console.WriteLine($"mpt-cspoj.exe, version {version}");
+		}
+		public static void ShowHelp()
+		{
+			ShowVersion();
 			Console.WriteLine("Usage: ");
 			Console.WriteLine("\tmpt-csproj --list-refs");
 			Console.WriteLine("\t\tPrints references");
@@ -246,6 +333,11 @@ namespace mptcsproj
 			Console.WriteLine("\tmpt-csproj --inject-reference=\"MyDll,Version,Culture,PubKeyToken\"");
 			Console.WriteLine("\tmpt-csproj --inject-import='$(MSBuildToolsPath)\\MSBuild.Community.Tasks.Targets'");
 			Console.WriteLine("\t\tinserts new reference for MyDll of given version, or replaces the old one");
+			Console.WriteLine("\tmpt-csproj --inject - versioning=BuildVersion");
+			Console.WriteLine("\t\tinserts property with given name $(BuildVersion), and default value 1.0.0.0");
+			Console.WriteLine("\tmpt-csproj --inject-InternalsVisibleTo=mytest.dll --AssemblyKeyContainerName=mono");
+			Console.WriteLine("\tmpt-csproj --inject-InternalsVisibleTo=mytest.dll --AssemblyOriginatorKeyFile=mono.snk");
+			Console.WriteLine("\t\tinserts InternalsVisibleToAttribute");
 		}
 		static List<string> listOfCsproj = new List<string>();
 		static void AddProjectFile(string filename)

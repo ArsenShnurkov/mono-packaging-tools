@@ -30,14 +30,12 @@ public class SolutionTools
 		var projList = sln.Projects;
 		foreach (var p in projList)
 		{
-			if (p is CSharpLibraryProject)
+			string fileNath = p.FullPath;
+			Console.WriteLine(fileNath);
+			var cslib = new CSharpLibraryProject(fileNath);
+			foreach (var configuration in cslib.Configurations)
 			{
-				var cslib = (CSharpLibraryProject)p;
-				Console.WriteLine(cslib.FullPath);
-				foreach (var configuration in cslib.Configurations)
-				{
-					Console.WriteLine($"{configuration.Name} -> { configuration.GetAssemblyName()}");
-				}
+				Console.WriteLine($"{configuration.Name} -> { configuration.GetAssemblyName()}");
 			}
 		}
 	}

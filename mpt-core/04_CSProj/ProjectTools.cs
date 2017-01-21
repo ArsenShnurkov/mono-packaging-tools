@@ -8,7 +8,6 @@ using System.Xml;
 
 public class ProjectTools
 {
-	private const string namespaceName = "http://schemas.microsoft.com/developer/msbuild/2003";
 	public static void DumpFiles(string projectFilename, string baseDirectory)
 	{
 		List<string> files = new List<string>();
@@ -16,7 +15,7 @@ public class ProjectTools
 		var stream = new MemoryStream(File.ReadAllBytes(projectFilename)); // cache file in memoty
 		var document = XDocument.Load(stream);
 		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
-		xmlNamespaceManager.AddNamespace("ns", namespaceName);
+		xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
 		IEnumerable<XElement> listOfSourceFiles = document.XPathSelectElements("/ns:Project/ns:ItemGroup/ns:Compile[@Include]", xmlNamespaceManager);
 		foreach (var el in listOfSourceFiles)
 		{
@@ -61,7 +60,7 @@ public class ProjectTools
 		var stream = new MemoryStream(File.ReadAllBytes(projectFilename)); // cache file in memoty
 		var document = XDocument.Load(stream);
 		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
-		xmlNamespaceManager.AddNamespace("ns", namespaceName);
+		xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
 		IEnumerable<XElement> listOfSourceFiles = document.XPathSelectElements("/ns:Project/ns:ItemGroup/ns:Reference[@Include]", xmlNamespaceManager);
 		foreach (var el in listOfSourceFiles)
 		{
@@ -77,7 +76,7 @@ public class ProjectTools
 		var stream = new MemoryStream(File.ReadAllBytes(projectFilename)); // cache file in memoty
 		var document = XDocument.Load(stream);
 		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
-		xmlNamespaceManager.AddNamespace("ns", namespaceName);
+		xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
 		IEnumerable<XElement> listOfSourceFiles = document.XPathSelectElements("/ns:Project/ns:ItemGroup/ns:ProjectReference[@Include]", xmlNamespaceManager);
 		foreach (var el in listOfSourceFiles)
 		{
@@ -192,7 +191,7 @@ public class ProjectTools
 		var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
 		var document = XDocument.Load(stream);
 		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
-		xmlNamespaceManager.AddNamespace("ns", namespaceName);
+		xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
 
 		// remove SignAssembly
 		var itemsToRemove1 = new List<XElement>();
@@ -263,7 +262,7 @@ public class ProjectTools
 		var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
 		var document = XDocument.Load(stream);
 		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
-		xmlNamespaceManager.AddNamespace("ns", namespaceName);
+		xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
 
 		// remove ProjectReference
 		var itemsToRemove2 = new List<XElement>();
@@ -325,67 +324,6 @@ public class ProjectTools
 
 		if (bRequiresSave)
 		{
-			document.Save(csproj_file);
-		}
-	}
-
-	static bool IsAlreadyExists(string import_name, XmlNamespaceManager xmlNamespaceManager, XPathNavigator navigator)
-	{
-		var xpath1 = "/ns:Project/ns:Import[@Project='" + import_name + "']";
-		XPathExpression expr1 = navigator.Compile(xpath1);
-		expr1.SetContext(xmlNamespaceManager);
-		var nodeIterator1 = navigator.Select(expr1);
-		if (nodeIterator1.Count > 0)
-		{
-			return true;
-		}
-		return false;
-	}
-
-	public static void InjectProjectImport(string csproj_file, string import_name)
-	{
-		string element = "<Import Project=\"" + import_name + "\" />";
-
-		var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
-		var document = new XmlDocument();
-		document.Load(stream);
-
-		var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
-		xmlNamespaceManager.AddNamespace("ns", namespaceName);
-
-		// locate if there is import of Microsoft.CSharp.targets
-		var navigator = document.CreateNavigator();
-		navigator.MoveToRoot();
-		if (IsAlreadyExists(import_name, xmlNamespaceManager, navigator) == false)
-		{
-
-			//var xpath1 = "/Project/Import[@Project='$(MSBuildToolsPath)\\Microsoft.CSharp.targets']";
-			//var xpath2 = "/Project/Import[@Project='$(MSBuildBinPath)\\Microsoft.CSharp.targets']";
-			var xpath = "/ns:Project/ns:Import[@Project='$(MSBuildBinPath)\\Microsoft.CSharp.targets']";
-			XPathExpression expr = navigator.Compile(xpath);
-			expr.SetContext(xmlNamespaceManager);
-			var nodeIterator = navigator.Select(expr);
-			if (nodeIterator.Count == 0)
-			{
-				// Insert project import to end of file
-				var ce = navigator.CanEdit;
-				navigator.MoveToRoot();
-				navigator.MoveToFirstChild();
-				navigator.AppendChild(element);
-			}
-			else
-			{
-				nodeIterator.MoveNext();
-				// remove comment, if it is present
-				XPathNavigator pn = nodeIterator.Current.CreateNavigator();
-				pn.MoveToNext();
-				var s = "To modify your build process, add your task inside one of the targets below and uncomment it.";
-				if (pn.Value.Contains(s))
-				{
-					pn.DeleteSelf();
-				}
-				nodeIterator.Current.InsertAfter(element);
-			}
 			document.Save(csproj_file);
 		}
 	}
