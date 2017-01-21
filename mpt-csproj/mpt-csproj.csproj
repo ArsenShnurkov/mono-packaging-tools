@@ -35,7 +35,7 @@
     <Commandlineparameters></Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Execute" command="${TargetFile} ./src --inject-import=$(MSBuildToolsPath)\MSBuild.Community.Tasks.Targets" workingdir="/var/calculate/remote/distfiles/egit-src/Castle.Core-READONLY.git" externalConsole="True" pauseExternalConsole="True" />
+        <Command type="Execute" command="${TargetFile} /var/calculate/remote/distfiles/egit-src/Castle.Core-READONLY.git/src/Castle.Core/Castle.Core-vs2008.csproj --inject-InternalsVisibleTo=XXX --AssemblyKeyContainerName=mono" workingdir="/var/calculate/remote/distfiles/egit-src/Castle.Core-READONLY.git" externalConsole="True" pauseExternalConsole="True" />
         <Command type="Custom" />
       </CustomCommands>
     </CustomCommands>

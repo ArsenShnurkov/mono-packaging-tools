@@ -22,7 +22,7 @@ public class MSBuildTaskResultProperty
 	{
 		this.parent = p;
 		XmlDocument doc = parent.UnderlyingObject.OwnerDocument;
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "Output", doc.NamespaceURI);
+		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "Output", MSBuildFile.NamespaceName);
 	}
 
 	void SetName(string name)
@@ -31,7 +31,7 @@ public class MSBuildTaskResultProperty
 		XmlElement oldItem = uo;
 		XmlDocument doc = oldItem.OwnerDocument;
 		// replace name
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, name, doc.NamespaceURI);
+		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, name, MSBuildFile.NamespaceName);
 		uo.Value = oldItem.Value;
 		// copy attributes
 		foreach (XmlAttribute a in oldItem.Attributes)

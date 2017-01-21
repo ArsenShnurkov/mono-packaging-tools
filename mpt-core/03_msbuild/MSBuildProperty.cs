@@ -8,12 +8,12 @@ public class MSBuildProperty
 	public XmlElement UnderlyingObject { get { return uo; } }
 
 	public string Name { get { return uo.LocalName; } set { SetName(value); } }
-	public string Value { get { return uo.Value; } set { uo.Value = value; } }
+	public string Value { get { return uo.InnerText; } set { uo.InnerText = value; } }
 
 	public MSBuildProperty(MSBuildPropertyGroup parent)
 	{
 		XmlDocument doc = parent.UnderlyingObject.OwnerDocument;
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "UndefilnedPropertyName", doc.NamespaceURI);
+		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "UndefilnedPropertyName", MSBuildFile.NamespaceName);
 	}
 
 	void SetName(string name)
@@ -22,8 +22,9 @@ public class MSBuildProperty
 		XmlElement oldItem = uo;
 		XmlDocument doc = oldItem.OwnerDocument;
 		// replace name
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, name, doc.NamespaceURI);
-		uo.Value = oldItem.Value;
+		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, name, MSBuildFile.NamespaceName);
+		//  what about node's text content ?
+		uo.InnerText = oldItem.InnerText;
 		// copy attributes
 		foreach (XmlAttribute a in oldItem.Attributes)
 		{
@@ -34,8 +35,9 @@ public class MSBuildProperty
 		{
 			uo.AppendChild(child.CloneNode(true));
 		}
-		//  what about node's text content ?
-		//uo.Value = oldItem.Value;
-		oldItem.ParentNode.ReplaceChild(uo, oldItem);
+		if (oldItem.ParentNode != null)
+		{
+			oldItem.ParentNode.ReplaceChild(uo, oldItem);
+		}
 	}
 }

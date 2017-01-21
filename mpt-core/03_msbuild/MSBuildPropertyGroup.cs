@@ -16,7 +16,7 @@ public class MSBuildPropertyGroup : ICanBeConditional
 	{
 		//this.parent = parent;
 		XmlDocument doc = parent.UnderlyingNode.OwnerDocument;
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "PropertyGroup", doc.NamespaceURI);
+		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "PropertyGroup", MSBuildFile.NamespaceName);
 	}
 
 	string GetCondition()

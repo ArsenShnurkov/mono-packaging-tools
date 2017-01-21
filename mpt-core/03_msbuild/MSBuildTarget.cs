@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Xml;
 
 public class MSBuildTarget : ICanHaveProperties, ICanHaveItems
@@ -10,7 +11,7 @@ public class MSBuildTarget : ICanHaveProperties, ICanHaveItems
 	List<MSBuildTask> tasks = new List<MSBuildTask>();
 	List<MSBuildItem> items = new List<MSBuildItem>();
 
-	public string Name { get { return uo.Attributes["Name"].Value; } set { uo.Attributes["Name"].Value = value; } }
+	public string Name { get { return uo.Attributes["Name"].Value; } set { uo.SetAttribute("Name", value); } }
 	public IEnumerable<MSBuildTask> Tasks { get { return tasks; } }
 	public XmlElement UnderlyingObject { get { return uo; } }
 	public XmlNode UnderlyingNode { get { return UnderlyingObject; } }
@@ -66,5 +67,45 @@ public class MSBuildTarget : ICanHaveProperties, ICanHaveItems
 		// insert on underlaying level
 		XmlNode tn = item.UnderlyingObject;
 		uo.AppendChild(tn);
+	}
+
+	public readonly char[] TargetSeparators = new char[] { ';' };
+
+	void AppendListOfTargets(string attributeName, string nameToAdd)
+	{
+		string attr = uo.GetAttribute(attributeName);
+		string[] targets = attr.Split(TargetSeparators);
+		for (int i = 0; i < targets.Length; i++)
+		{
+			if (string.Compare(targets[i], nameToAdd) == 0)
+			{
+				return;
+			}
+		}
+		StringBuilder res = new StringBuilder();
+		for (int i = 0; i < targets.Length; i++)
+		{
+			if (i > 0)
+			{
+				res.Append(TargetSeparators);
+			}
+			res.Append(targets[i]);
+		}
+		if (res.Length > 0)
+		{
+			res.Append(TargetSeparators);
+		}
+		res.Append(nameToAdd);
+		uo.SetAttribute(attributeName, res.ToString());
+	}
+
+	public void AddAfterTarget(string name)
+	{
+		AppendListOfTargets("AfterTargets", name);
+	}
+
+	public void AddDependOnTarget(string name)
+	{
+		AppendListOfTargets("DependsOnTargets", name);
 	}
 }

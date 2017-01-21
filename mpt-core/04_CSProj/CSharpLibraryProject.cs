@@ -84,7 +84,9 @@ public class CSharpLibraryProject : IDisposable
 			}
 			targ.AppendTask(task);
 		}
+		uo.EnsureTargetExists("BeforeBuild");
 		uo.InsertTarget(targ);
+		uo.AddDependOnTarget("BeforeBuild", targ.Name);
 	}
 
 	// http://stackoverflow.com/questions/30943342/how-to-use-internalsvisibleto-attribute-with-strongly-named-assembly
@@ -95,19 +97,38 @@ public class CSharpLibraryProject : IDisposable
 		{
 			MSBuildTask task = targ.CreateTask(); // '$(SignAssembly)' == 'true'
 			task.Name = "AssemblyInfo";
+			task.AddParameter("CodeLanguage", "CS");
+
 			task.Condition = "'$(SignAssembly)' == 'true'";
 			task.AddParameter("InternalsVisibleTo", assemblyName + ", PublicKey=" + assemblyPublicKey);
 			task.AddParameter("OutputFile", "$(IntermediateOutputPath)" + assemblyName + ".IVT.Generated.cs");
+			{
+				MSBuildTaskResultItem resultItem = task.CreateResultItem();
+				resultItem.TaskParameter = "OutputFile";
+				resultItem.ItemName = "Compile";
+				task.AppendResultItem(resultItem);
+			}
 			targ.AppendTask(task);
 		}
 		{
 			MSBuildTask task = targ.CreateTask(); // '$(SignAssembly)' == 'false'
 			task.Name = "AssemblyInfo";
+			task.AddParameter("CodeLanguage", "CS");
+
 			task.Condition = "'$(SignAssembly)' != 'true'";
 			task.AddParameter("InternalsVisibleTo", assemblyName);
 			task.AddParameter("OutputFile", "$(IntermediateOutputPath)" + assemblyName + ".IVT.Generated.cs");
+			{
+				MSBuildTaskResultItem resultItem = task.CreateResultItem();
+				resultItem.TaskParameter = "OutputFile";
+				resultItem.ItemName = "Compile";
+				task.AppendResultItem(resultItem);
+			}
 			targ.AppendTask(task);
 		}
+		uo.EnsureTargetExists("BeforeBuild");
 		uo.InsertTarget(targ);
+		uo.AddDependOnTarget("BeforeBuild", targ.Name);
 	}
+
 }

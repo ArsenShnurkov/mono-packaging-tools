@@ -29,7 +29,7 @@ public class PublicKeyUtils
 	{
 		byte[] publicKey2 = GetPublicKey(AssemblyKeyContainerName);
 		string output2 = ByteArrayToString(publicKey2);
-		return ", PublicKey=" + output2;
+		return output2;
 	}
 
 	public static string GetPublicKeyStringFromFilename(string AssemblyOriginatorKeyFile)
@@ -37,6 +37,6 @@ public class PublicKeyUtils
 		byte[] snk = File.ReadAllBytes(AssemblyOriginatorKeyFile);
 		byte[] publicKey1 = GetPublicKey(snk);
 		string output1 = ByteArrayToString(publicKey1);
-		return ", PublicKey=" + output1;
+		return output1;
 	}
 }

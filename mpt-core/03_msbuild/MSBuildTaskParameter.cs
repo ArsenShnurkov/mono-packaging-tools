@@ -23,7 +23,7 @@ public class MSBuildTaskParameter
 		string name = "NoAttributeNameGiven";
 		this.parent = p;
 		XmlDocument doc = parent.UnderlyingObject.OwnerDocument;
-		uo = (XmlAttribute)doc.CreateNode(XmlNodeType.Attribute, name, doc.NamespaceURI);
+		uo = (XmlAttribute)doc.CreateNode(XmlNodeType.Attribute, name, null/*MSBuildFile.NamespaceName*/);
 	}
 
 	void SetName(string name)
@@ -31,8 +31,11 @@ public class MSBuildTaskParameter
 		// replace underlaying object to change it's name
 		XmlAttribute oldAttr = uo;
 		XmlDocument doc = oldAttr.OwnerDocument;
-		uo = (XmlAttribute)doc.CreateNode(XmlNodeType.Attribute, name, doc.NamespaceURI);
+		uo = (XmlAttribute)doc.CreateNode(XmlNodeType.Attribute, name, null/*MSBuildFile.NamespaceName*/);
 		uo.Value = oldAttr.Value;
-		oldAttr.ParentNode.ReplaceChild(uo, oldAttr);
+		if (oldAttr.ParentNode != null)
+		{
+			oldAttr.ParentNode.ReplaceChild(uo, oldAttr);
+		}
 	}
 }

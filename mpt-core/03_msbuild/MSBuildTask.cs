@@ -26,7 +26,7 @@ public class MSBuildTask : ICanBeConditional
 		string name = "NoXmlElementName";
 		this.parent = p;
 		XmlDocument doc = parent.UnderlyingObject.OwnerDocument;
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, name, doc.NamespaceURI);
+		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, name, MSBuildFile.NamespaceName);
 	}
 
 	void SetName(string name)
@@ -35,8 +35,9 @@ public class MSBuildTask : ICanBeConditional
 		XmlElement oldItem = uo;
 		XmlDocument doc = oldItem.OwnerDocument;
 		// replace name
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, name, doc.NamespaceURI);
-		uo.Value = oldItem.Value;
+		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, name, MSBuildFile.NamespaceName);
+		//  what about node's text content ?
+		uo.InnerText = oldItem.InnerText;
 		// copy attributes
 		foreach (XmlAttribute a in oldItem.Attributes)
 		{
@@ -47,9 +48,10 @@ public class MSBuildTask : ICanBeConditional
 		{
 			uo.AppendChild(child.CloneNode(true));
 		}
-		//  what about node's text content ?
-		//uo.Value = oldItem.Value;
-		oldItem.ParentNode.ReplaceChild(uo, oldItem);
+		if (oldItem.ParentNode != null)
+		{
+			oldItem.ParentNode.ReplaceChild(uo, oldItem);
+		}
 	}
 
 	public MSBuildTaskParameter CreateParameter()

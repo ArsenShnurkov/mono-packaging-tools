@@ -21,7 +21,7 @@ namespace mptcsproj
 		{
 			try
 			{
-				return MainProcessing(args);
+				return (int)MainProcessing(args);
 			}
 			catch (Exception ex)
 			{
@@ -39,7 +39,7 @@ namespace mptcsproj
 			}
 			return (int)ExitCode.Exception;
 		}
-		public static int MainProcessing(string[] args)
+		static ExitCode MainProcessing(string[] args)
 		{
 			var verbose = (string)null;
 			var remove_warnings_as_errors = (string)null;
@@ -131,7 +131,7 @@ namespace mptcsproj
 				if (!bFile && !bDir)
 				{
 					Console.WriteLine($"unknown parameter {strUnparsedParameter}");
-					Environment.Exit((int)ExitCode.WrongUsage);
+					return ExitCode.WrongUsage;
 				}
 			}
 			if (String.IsNullOrWhiteSpace(dir) == false)
@@ -154,7 +154,7 @@ namespace mptcsproj
 			}
 			if (listOfCsproj.Count == 0)
 			{
-				return (int)ExitCode.NoInputFileSpecified;
+				return ExitCode.NoInputFileSpecified;
 			}
 			if (list_outputs != null)
 			{
@@ -279,6 +279,10 @@ namespace mptcsproj
 			}
 			if (friend_assembly_name != null)
 			{
+				if (String.IsNullOrWhiteSpace(AssemblyOriginatorKeyFile) && String.IsNullOrWhiteSpace(AssemblyKeyContainerName))
+				{
+					return ExitCode.WrongUsage;
+				}
 				Console.WriteLine($"Injecting version property {version_string}");
 				foreach (var csproj_file in listOfCsproj)
 				{
@@ -295,11 +299,11 @@ namespace mptcsproj
 						{
 							publicKey = PublicKeyUtils.GetPublicKeyStringFromContainer(AssemblyKeyContainerName);
 						}
-						file.InjectInternalsVisibleTo(import_name, publicKey);
+						file.InjectInternalsVisibleTo(friend_assembly_name, publicKey);
 					}
 				}
 			}
-			return (int)ExitCode.Success;
+			return ExitCode.Success;
 		}
 		public static void ShowVersion()
 		{

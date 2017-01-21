@@ -10,7 +10,7 @@ public class MSBuildItem
 	public MSBuildItem(MSBuildItemGroup parent)
 	{
 		XmlDocument doc = parent.UnderlyingObject.OwnerDocument;
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "UndefilnedItemName", doc.NamespaceURI);
+		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "UndefilnedItemName", MSBuildFile.NamespaceName);
 	}
 }
 

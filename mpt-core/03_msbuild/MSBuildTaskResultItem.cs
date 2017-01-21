@@ -15,14 +15,14 @@ public class MSBuildTaskResultItem
 		}
 	}
 
-	public string TaskParameter { get { return uo.Attributes["TaskParameter"].Value; } set { uo.Attributes["TaskParameter"].Value = value; } }
-	public string ItemName { get { return uo.Attributes["ItemName"].Value; } set { uo.Attributes["ItemName"].Value = value; } }
+	public string TaskParameter { get { return uo.Attributes["TaskParameter"].Value; } set { uo.SetAttribute("TaskParameter", value); } }
+	public string ItemName { get { return uo.Attributes["ItemName"].Value; } set { uo.SetAttribute("ItemName", value); } }
 
 	public MSBuildTaskResultItem(MSBuildTask p)
 	{
 		this.parent = p;
 		XmlDocument doc = parent.UnderlyingObject.OwnerDocument;
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "Output", doc.NamespaceURI);
+		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "Output", MSBuildFile.NamespaceName);
 	}
 
 	void SetName(string name)
@@ -31,7 +31,7 @@ public class MSBuildTaskResultItem
 		XmlElement oldItem = uo;
 		XmlDocument doc = oldItem.OwnerDocument;
 		// replace name
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, name, doc.NamespaceURI);
+		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, name, MSBuildFile.NamespaceName);
 		uo.Value = oldItem.Value;
 		// copy attributes
 		foreach (XmlAttribute a in oldItem.Attributes)

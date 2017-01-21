@@ -234,8 +234,56 @@ public class MSBuildFile : IDisposable
 		XPathNavigator navigator = doc.CreateNavigator();
 		navigator.MoveToRoot();
 
-		XmlElement root = (XmlElement)navigator.UnderlyingObject;
-		root.AppendChild(newXmlElement);
+		XmlNode root = (XmlNode)navigator.UnderlyingObject;
+		XmlNode project = root.LastChild;
+		project.AppendChild(newXmlElement);
+
+		bSaveRequired = true;
+	}
+
+	public void EnsureTargetExists(string targetName)
+	{
+		if (FindTarget(targetName) != null)
+		{
+			return;
+		}
+		MSBuildTarget targ = this.CreateTarget();
+		targ.Name = targetName;
+		InsertTarget(targ);
+
+		bSaveRequired = true;
+	}
+
+	public void AddAfterTarget(string precedingTarget, string followingTarget)
+	{
+		MSBuildTarget preceding = FindTarget(precedingTarget);
+		if (preceding == null)
+		{
+			throw new ApplicationException($"Target {precedingTarget} not found");
+		}
+		MSBuildTarget following = FindTarget(followingTarget);
+		if (following == null)
+		{
+			throw new ApplicationException($"Target {followingTarget} not found");
+		}
+		preceding.AddAfterTarget(following.Name);
+
+		bSaveRequired = true;
+	}
+
+	public void AddDependOnTarget(string precedingTarget, string followingTarget)
+	{
+		MSBuildTarget preceding = FindTarget(precedingTarget);
+		if (preceding == null)
+		{
+			throw new ApplicationException($"Target {precedingTarget} not found");
+		}
+		MSBuildTarget following = FindTarget(followingTarget);
+		if (following == null)
+		{
+			throw new ApplicationException($"Target {followingTarget} not found");
+		}
+		preceding.AddDependOnTarget(following.Name);
 
 		bSaveRequired = true;
 	}
