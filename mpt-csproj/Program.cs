@@ -14,8 +14,32 @@ namespace mptcsproj
 			NoInputFileSpecified = 2,
 			NoDataProviderNameSpecified = 3,
 			NothingToDo = 4,
+			HelpOrVersion = 5,
+			Exception = 6,
 		}
-		public static int Main (string[] args)
+		public static int Main(string[] args)
+		{
+			try
+			{
+				return MainProcessing(args);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.ToString());
+				ShowVersion();
+				for (int i = 0; i < args.Length; i++)
+				{
+					if (i > 0)
+					{
+						Console.Write(" ");
+					}
+					Console.Write(args[i]);
+				}
+				Console.WriteLine();
+			}
+			return (int)ExitCode.Exception;
+		}
+		public static int MainProcessing(string[] args)
 		{
 			var verbose = (string)null;
 			var remove_warnings_as_errors = (string)null;
@@ -40,7 +64,8 @@ namespace mptcsproj
 			{
 				/* General options */
 				// output usage summary and exit
-				{ "h|?|help", v => ShowHelp() },
+				{ "h|?|help", v => { ShowHelp(); System.Environment.Exit((int)ExitCode.HelpOrVersion); } },
+				{ "v|V|version", v => { ShowVersion(); System.Environment.Exit((int)ExitCode.HelpOrVersion); } },
 				// give more explainations during work
 				{ "verbose", b => verbose = b },
 
@@ -193,8 +218,10 @@ namespace mptcsproj
 			}
 			if (remove_warnings_as_errors != null)
 			{
+				Console.WriteLine($"Removing warnings as errors");
 				foreach (var csproj_file in listOfCsproj)
 				{
+					Console.WriteLine($"from file {csproj_file}");
 					if (verbose != null)
 					{
 						string output_or_inplace = (as_unified_patch == null) ? ", inplace conversion" : String.Format(" >> {0}", as_unified_patch);
@@ -205,8 +232,10 @@ namespace mptcsproj
 			}
 			if (remove_signing != null)
 			{
+				Console.WriteLine($"Removing signing");
 				foreach (var csproj_file in listOfCsproj)
 				{
+					Console.WriteLine($"from file {csproj_file}");
 					if (verbose != null)
 					{
 						string output_or_inplace = (as_unified_patch == null) ? ", inplace conversion" : String.Format(" >> {0}", as_unified_patch);
@@ -220,6 +249,7 @@ namespace mptcsproj
 				Console.WriteLine($"Replacing reference {reference_name}");
 				foreach (var csproj_file in listOfCsproj)
 				{
+					Console.WriteLine($"in file {csproj_file}");
 					ProjectTools.ReplaceReference(csproj_file, reference_name, bForceReferenceAppending);
 				}
 			}
@@ -228,6 +258,7 @@ namespace mptcsproj
 				Console.WriteLine($"Injecting import of project {import_name}");
 				foreach (var csproj_file in listOfCsproj)
 				{
+					Console.WriteLine($"into file {csproj_file}");
 					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
 					{
 						file.InjectProjectImport(import_name);
@@ -239,6 +270,7 @@ namespace mptcsproj
 				Console.WriteLine($"Injecting version property {version_string}");
 				foreach (var csproj_file in listOfCsproj)
 				{
+					Console.WriteLine($"into file {csproj_file}");
 					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
 					{
 						file.InjectVersioning(version_string);
@@ -250,6 +282,7 @@ namespace mptcsproj
 				Console.WriteLine($"Injecting version property {version_string}");
 				foreach (var csproj_file in listOfCsproj)
 				{
+					Console.WriteLine($"into file {csproj_file}");
 					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
 					{
 						// null is ok - http://stackoverflow.com/questions/637308/why-is-adding-null-to-a-string-legal
@@ -268,10 +301,14 @@ namespace mptcsproj
 			}
 			return (int)ExitCode.Success;
 		}
-		public static void ShowHelp()
+		public static void ShowVersion()
 		{
 			var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 			Console.WriteLine($"mpt-cspoj.exe, version {version}");
+		}
+		public static void ShowHelp()
+		{
+			ShowVersion();
 			Console.WriteLine("Usage: ");
 			Console.WriteLine("\tmpt-csproj --list-refs");
 			Console.WriteLine("\t\tPrints references");

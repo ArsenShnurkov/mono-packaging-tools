@@ -39,6 +39,7 @@ public class MSBuildFile : IDisposable
 		XmlDocument d = new XmlDocument();
 		d.Load(filename);
 		this.doc = d;
+		this.filename = filename;
 		FindAllImports();
 		FindAllTargets();
 	}
@@ -108,16 +109,17 @@ public class MSBuildFile : IDisposable
 		{
 			return;
 		}
-		do
+		while (nodeIterator.MoveNext())
 		{
 			if (nodeIterator.Current is IHasXmlNode)
 			{
-				XmlElement node = (XmlElement)((IHasXmlNode)nodeIterator.Current).GetNode();
-				MSBuildImport wrapperObject = new MSBuildImport(this, node);
+				XmlNode node = ((IHasXmlNode)nodeIterator.Current).GetNode();
+				XmlElement element = (XmlElement)node;
+				MSBuildImport wrapperObject = new MSBuildImport(this, element);
 				importNodes.Add(wrapperObject);
 			}
 		}
-		while (nodeIterator.MoveNext()); // see also https://weblogs.asp.net/cazzu/86609
+		// see also https://weblogs.asp.net/cazzu/86609
 	}
 
 	// locate if there is import of Microsoft.CSharp.targets
@@ -149,8 +151,11 @@ public class MSBuildFile : IDisposable
 		XPathNavigator navigator = doc.CreateNavigator();
 		navigator.MoveToRoot();
 
-		XmlElement root = (XmlElement)navigator.UnderlyingObject;
-		root.AppendChild(newXmlElement);
+		XmlNode root = (XmlNode)navigator.UnderlyingObject;
+		XmlNode lc = root.LastChild;
+		lc.AppendChild(newXmlElement);
+
+		bSaveRequired = true;
 	}
 
 	public void InsertImportAfter(MSBuildImport existingImport, MSBuildImport newImport)
@@ -160,7 +165,9 @@ public class MSBuildFile : IDisposable
 		// вставить в нижележащий слой
 		XmlElement existingElement = existingImport.UnderlyingObject;
 		XmlElement newElement = newImport.UnderlyingObject;
-		existingElement.ParentNode.InsertAfter(existingElement, newElement);
+		existingElement.ParentNode.InsertAfter(newElement, existingElement);
+
+		bSaveRequired = true;
 	}
 
 	public MSBuildTarget CreateTarget()
@@ -186,16 +193,17 @@ public class MSBuildFile : IDisposable
 		{
 			return;
 		}
-		do
+		while (nodeIterator.MoveNext())
 		{
 			if (nodeIterator.Current is IHasXmlNode)
 			{
-				XmlElement node = (XmlElement)((IHasXmlNode)nodeIterator.Current).GetNode();
-				MSBuildTarget wrapperObject = new MSBuildTarget(this, node);
+				XmlNode node = ((IHasXmlNode)nodeIterator.Current).GetNode();
+				XmlElement element = (XmlElement)node;
+				MSBuildTarget wrapperObject = new MSBuildTarget(this, element);
 				targetNodes.Add(wrapperObject);
 			}
 		}
-		while (nodeIterator.MoveNext()); // see also https://weblogs.asp.net/cazzu/86609
+		// see also https://weblogs.asp.net/cazzu/86609
 	}
 
 	public MSBuildTarget FindTarget(string v)
@@ -228,5 +236,7 @@ public class MSBuildFile : IDisposable
 
 		XmlElement root = (XmlElement)navigator.UnderlyingObject;
 		root.AppendChild(newXmlElement);
+
+		bSaveRequired = true;
 	}
 }

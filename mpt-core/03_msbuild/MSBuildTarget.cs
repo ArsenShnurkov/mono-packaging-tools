@@ -20,7 +20,7 @@ public class MSBuildTarget : ICanHaveProperties, ICanHaveItems
 	public MSBuildTarget(MSBuildFile f)
 	{
 		this.file = f;
-		uo = (XmlElement)file.UnderlyingObject.CreateNode(XmlNodeType.Element, "Target", this.uo.NamespaceURI);
+		uo = (XmlElement)file.UnderlyingObject.CreateNode(XmlNodeType.Element, "Target", MSBuildFile.NamespaceName);
 	}
 
 	public MSBuildTarget(MSBuildFile f, XmlElement el)

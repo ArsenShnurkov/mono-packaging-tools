@@ -31,11 +31,11 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\..\..\..\..\..\usr\share\mono-packaging-tools-0</OutputPath>
+    <OutputPath>..\..\..\..\..\..\..\usr\share\mono-packaging-tools\slot-0\</OutputPath>
     <Commandlineparameters></Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Execute" command="${TargetFile} src/Castle.Core/Castle.Core-vs2008.csproj --inject-import='\usr\lib64\mono\xbuild\12.0\bin\\MSBuild.Community.Tasks.Targets'" workingdir="/var/calculate/remote/distfiles/egit-src/Castle.Core-READONLY.git" />
+        <Command type="Execute" command="${TargetFile} ./src --inject-import=$(MSBuildToolsPath)\MSBuild.Community.Tasks.Targets" workingdir="/var/calculate/remote/distfiles/egit-src/Castle.Core-READONLY.git" externalConsole="True" pauseExternalConsole="True" />
         <Command type="Custom" />
       </CustomCommands>
     </CustomCommands>
