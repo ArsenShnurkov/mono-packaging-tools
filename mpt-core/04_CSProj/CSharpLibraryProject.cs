@@ -1,39 +1,34 @@
 ﻿using System;
+using System.IO;
+using System.Xml;
+using System.Xml.XPath;
+using MetaSpecTools;
 
-public class CSharpLibraryProject : IDisposable
+public class CSharpLibraryProject : Project
 {
-	MSBuildFile uo;
-
 	ConfigurationHashList configurations = null;
 	public ConfigurationHashList Configurations { get { return configurations;	} }
 
-	public string FileName { get { return uo.FileName; } set { uo.FileName = value; } }
-
-	public CSharpLibraryProject(string csproj_file)
+	public CSharpLibraryProject(IProjectContext context, string filename)
+		: base (context, filename)
 	{
 		configurations = new ConfigurationHashList(this);
-		uo = new MSBuildFile(csproj_file);
-	}
-
-	public void Dispose()
-	{
-		uo.Dispose();
 	}
 
 	public void InjectProjectImport(string import_name)
 	{
 		// construct new import
-		MSBuildImport newImport = uo.CreateImport();
+		MSBuildImport newImport = base.CreateImport();
 		newImport.Project = import_name;
 		// insert import
-		MSBuildImport existingImport = uo.FindImport("$(MSBuildBinPath)\\Microsoft.CSharp.targets");
+		MSBuildImport existingImport = base.FindImport("$(MSBuildBinPath)\\Microsoft.CSharp.targets");
 		if (existingImport == null)
 		{
-			uo.InsertImport(newImport);
+			base.InsertImport(newImport);
 		}
 		else
 		{
-			uo.InsertImportAfter(existingImport, newImport);
+			base.InsertImportAfter(existingImport, newImport);
 		}
 	}
 
@@ -52,7 +47,7 @@ public class CSharpLibraryProject : IDisposable
 				</AssemblyInfo>
 			</Target>
 		*/
-		MSBuildTarget targ = uo.CreateTarget();
+		MSBuildTarget targ = base.CreateTarget();
 		targ.Name = "MyAssemblyVersion";
 		{
 			MSBuildTask task = targ.CreateTask();
@@ -84,15 +79,15 @@ public class CSharpLibraryProject : IDisposable
 			}
 			targ.AppendTask(task);
 		}
-		uo.EnsureTargetExists("BeforeBuild");
-		uo.InsertTarget(targ);
-		uo.AddDependOnTarget("BeforeBuild", targ.Name);
+		base.EnsureTargetExists("BeforeBuild");
+		base.InsertTarget(targ);
+		base.AddDependOnTarget("BeforeBuild", targ.Name);
 	}
 
 	// http://stackoverflow.com/questions/30943342/how-to-use-internalsvisibleto-attribute-with-strongly-named-assembly
 	public void InjectInternalsVisibleTo(string assemblyName, string assemblyPublicKey)
 	{
-		MSBuildTarget targ = uo.CreateTarget();
+		MSBuildTarget targ = base.CreateTarget();
 		targ.Name = "MyInsertInternalsTo";
 		{
 			MSBuildTask task = targ.CreateTask(); // '$(SignAssembly)' == 'true'
@@ -126,9 +121,8 @@ public class CSharpLibraryProject : IDisposable
 			}
 			targ.AppendTask(task);
 		}
-		uo.EnsureTargetExists("BeforeBuild");
-		uo.InsertTarget(targ);
-		uo.AddDependOnTarget("BeforeBuild", targ.Name);
+		base.EnsureTargetExists("BeforeBuild");
+		base.InsertTarget(targ);
+		base.AddDependOnTarget("BeforeBuild", targ.Name);
 	}
-
 }

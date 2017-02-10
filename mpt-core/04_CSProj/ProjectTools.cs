@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Xml;
+using MetaSpecTools;
 
 public class ProjectTools
 {
@@ -36,7 +37,7 @@ public class ProjectTools
 		foreach (string relativeName in files)
 		{
 			var correctedRelativeName = relativeName.Replace("\\", separator);
-			string fullFileName = Path.Combine(projDir, correctedRelativeName);
+			string fullFileName = FsPath.Combine(projDir, correctedRelativeName);
 			fullFileName = new FileInfo(fullFileName).FullName;
 			string shortName;
 			if (fullFileName.StartsWith(baseDirectory, StringComparison.InvariantCulture))
@@ -87,7 +88,7 @@ public class ProjectTools
 		foreach (string relativeName in files)
 		{
 			var correctedRelativeName = relativeName.Replace("\\", separator);
-			string fullFileName = Path.Combine(projDir, correctedRelativeName);
+			string fullFileName = FsPath.Combine(projDir, correctedRelativeName);
 			fullFileName = new FileInfo(fullFileName).FullName;
 			string shortName;
 			if (fullFileName.StartsWith(baseDirectory, StringComparison.InvariantCulture))
