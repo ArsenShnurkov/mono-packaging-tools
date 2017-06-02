@@ -1,134 +1,201 @@
-﻿using System;
-
-public class CSharpLibraryProject : IDisposable
+﻿namespace BuildAutomation
 {
-	MSBuildFile uo;
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Xml;
+	using CWDev.SLNTools.Core;
 
-	ConfigurationHashList configurations = null;
-	public ConfigurationHashList Configurations { get { return configurations;	} }
-
-	public string FileName { get { return uo.FileName; } set { uo.FileName = value; } }
-
-	public CSharpLibraryProject(string csproj_file)
+	public class CSharpLibraryProject : IDisposable
 	{
-		configurations = new ConfigurationHashList(this);
-		uo = new MSBuildFile(csproj_file);
-	}
+		MSBuildFile uo;
 
-	public void Dispose()
-	{
-		uo.Dispose();
-	}
+		ConfigurationHashList configurations = null;
+		public ConfigurationHashList Configurations { get { return configurations; } }
 
-	public void InjectProjectImport(string import_name)
-	{
-		// construct new import
-		MSBuildImport newImport = uo.CreateImport();
-		newImport.Project = import_name;
-		// insert import
-		MSBuildImport existingImport = uo.FindImport("$(MSBuildBinPath)\\Microsoft.CSharp.targets");
-		if (existingImport == null)
+		public string FileName { get { return uo.FileName; } set { uo.FileName = value; } }
+
+		public CSharpLibraryProject(string csproj_file)
 		{
-			uo.InsertImport(newImport);
+			configurations = new ConfigurationHashList(this);
+			uo = new MSBuildFile(csproj_file);
 		}
-		else
-		{
-			uo.InsertImportAfter(existingImport, newImport);
-		}
-	}
 
-	public void InjectVersioning(string versionPropertyName)
-	{
-		/*
-			<Target Name="MyAssemblyVersion" Outputs="@(GeneratedVersion)">
-				<MakeDir Directories="$(IntermediateOutputPath)" />
-				<AssemblyInfo CodeLanguage="CS"
-					AssemblyCompany="MyCompanyName"
-					AssemblyCopyright="Copyright $(CompanyName), All rights reserved."
-					AssemblyVersion="12.34.56.78"
-					AssemblyFileVersion="3.3.3.3"
-					OutputFile="$(IntermediateOutputPath)file1.cs">
-					<Output TaskParameter="OutputFile" ItemName="Compile" />
-				</AssemblyInfo>
-			</Target>
-		*/
-		MSBuildTarget targ = uo.CreateTarget();
-		targ.Name = "MyAssemblyVersion";
+		public void Dispose()
 		{
-			MSBuildTask task = targ.CreateTask();
-			task.Name = "MakeDir";
-			task.AddParameter("Directories", "$(IntermediateOutputPath)");
-			targ.AppendTask(task);
+			uo.Dispose();
 		}
-		{
-			MSBuildPropertyGroup group = targ.CreatePropertyGroup();
-			group.Condition = " '$(" + versionPropertyName + ")' == '' ";
-			group.AddProperty(versionPropertyName, "1.0.0.0");
-			targ.AppendPropertyGroup(group);
-		}
-		{
-			MSBuildTask task = targ.CreateTask();
-			task.Name = "AssemblyInfo";
-			task.AddParameter("CodeLanguage", "CS");
 
-			task.AddParameter("AssemblyVersion", "$(" + versionPropertyName + ")"); // System.Reflection.AssemblyVersion
-			task.AddParameter("AssemblyFileVersion", "$(" + versionPropertyName + ")"); // System.Reflection.AssemblyFileVersion
-			task.AddParameter("AssemblyInformationalVersion", "$(" + versionPropertyName + ")"); // System.Reflection.AssemblyInformationalVersion
-
-			task.AddParameter("OutputFile", "$(IntermediateOutputPath)AssemblyVersion.Generated.cs");
+		public void InjectProjectImport(string import_name)
+		{
+			// construct new import
+			MSBuildImport newImport = uo.CreateImport();
+			newImport.Project = import_name;
+			// insert import
+			MSBuildImport existingImport = uo.FindImport("$(MSBuildBinPath)\\Microsoft.CSharp.targets");
+			if (existingImport == null)
 			{
-				MSBuildTaskResultItem resultItem = task.CreateResultItem();
-				resultItem.TaskParameter = "OutputFile";
-				resultItem.ItemName = "Compile";
-				task.AppendResultItem(resultItem);
+				uo.InsertImport(newImport);
 			}
-			targ.AppendTask(task);
-		}
-		uo.EnsureTargetExists("BeforeBuild");
-		uo.InsertTarget(targ);
-		uo.AddDependOnTarget("BeforeBuild", targ.Name);
-	}
-
-	// http://stackoverflow.com/questions/30943342/how-to-use-internalsvisibleto-attribute-with-strongly-named-assembly
-	public void InjectInternalsVisibleTo(string assemblyName, string assemblyPublicKey)
-	{
-		MSBuildTarget targ = uo.CreateTarget();
-		targ.Name = "MyInsertInternalsTo";
-		{
-			MSBuildTask task = targ.CreateTask(); // '$(SignAssembly)' == 'true'
-			task.Name = "AssemblyInfo";
-			task.AddParameter("CodeLanguage", "CS");
-
-			task.Condition = "'$(SignAssembly)' == 'true'";
-			task.AddParameter("InternalsVisibleTo", assemblyName + ", PublicKey=" + assemblyPublicKey);
-			task.AddParameter("OutputFile", "$(IntermediateOutputPath)" + assemblyName + ".IVT.Generated.cs");
+			else
 			{
-				MSBuildTaskResultItem resultItem = task.CreateResultItem();
-				resultItem.TaskParameter = "OutputFile";
-				resultItem.ItemName = "Compile";
-				task.AppendResultItem(resultItem);
+				uo.InsertImportAfter(existingImport, newImport);
 			}
-			targ.AppendTask(task);
 		}
+
+		public void InjectVersioning(string versionPropertyName)
 		{
-			MSBuildTask task = targ.CreateTask(); // '$(SignAssembly)' == 'false'
-			task.Name = "AssemblyInfo";
-			task.AddParameter("CodeLanguage", "CS");
-
-			task.Condition = "'$(SignAssembly)' != 'true'";
-			task.AddParameter("InternalsVisibleTo", assemblyName);
-			task.AddParameter("OutputFile", "$(IntermediateOutputPath)" + assemblyName + ".IVT.Generated.cs");
+			/*
+				<Target Name="MyAssemblyVersion" Outputs="@(GeneratedVersion)">
+					<MakeDir Directories="$(IntermediateOutputPath)" />
+					<AssemblyInfo CodeLanguage="CS"
+						AssemblyCompany="MyCompanyName"
+						AssemblyCopyright="Copyright $(CompanyName), All rights reserved."
+						AssemblyVersion="12.34.56.78"
+						AssemblyFileVersion="3.3.3.3"
+						OutputFile="$(IntermediateOutputPath)file1.cs">
+						<Output TaskParameter="OutputFile" ItemName="Compile" />
+					</AssemblyInfo>
+				</Target>
+			*/
+			MSBuildTarget targ = uo.CreateTarget();
+			targ.Name = "MyAssemblyVersion";
 			{
-				MSBuildTaskResultItem resultItem = task.CreateResultItem();
-				resultItem.TaskParameter = "OutputFile";
-				resultItem.ItemName = "Compile";
-				task.AppendResultItem(resultItem);
+				MSBuildTask task = targ.CreateTask();
+				task.Name = "MakeDir";
+				task.AddParameter("Directories", "$(IntermediateOutputPath)");
+				targ.AppendTask(task);
 			}
-			targ.AppendTask(task);
-		}
-		uo.EnsureTargetExists("BeforeBuild");
-		uo.InsertTarget(targ);
-		uo.AddDependOnTarget("BeforeBuild", targ.Name);
-	}
+			{
+				MSBuildPropertyGroup group = targ.CreatePropertyGroup();
+				group.Condition = " '$(" + versionPropertyName + ")' == '' ";
+				group.AddProperty(versionPropertyName, "1.0.0.0");
+				targ.AppendPropertyGroup(group);
+			}
+			{
+				MSBuildTask task = targ.CreateTask();
+				task.Name = "AssemblyInfo";
+				task.AddParameter("CodeLanguage", "CS");
 
+				task.AddParameter("AssemblyVersion", "$(" + versionPropertyName + ")"); // System.Reflection.AssemblyVersion
+				task.AddParameter("AssemblyFileVersion", "$(" + versionPropertyName + ")"); // System.Reflection.AssemblyFileVersion
+				task.AddParameter("AssemblyInformationalVersion", "$(" + versionPropertyName + ")"); // System.Reflection.AssemblyInformationalVersion
+
+				task.AddParameter("OutputFile", "$(IntermediateOutputPath)AssemblyVersion.Generated.cs");
+				{
+					MSBuildTaskResultItem resultItem = task.CreateResultItem();
+					resultItem.TaskParameter = "OutputFile";
+					resultItem.ItemName = "Compile";
+					task.AppendResultItem(resultItem);
+				}
+				targ.AppendTask(task);
+			}
+			uo.EnsureTargetExists("BeforeBuild");
+			uo.InsertTarget(targ);
+			uo.AddDependOnTarget("BeforeBuild", targ.Name);
+		}
+
+		// http://stackoverflow.com/questions/30943342/how-to-use-internalsvisibleto-attribute-with-strongly-named-assembly
+		public void InjectInternalsVisibleTo(string assemblyName, string assemblyPublicKey)
+		{
+			MSBuildTarget targ = uo.CreateTarget();
+			targ.Name = "MyInsertInternalsTo";
+			{
+				MSBuildTask task = targ.CreateTask(); // '$(SignAssembly)' == 'true'
+				task.Name = "AssemblyInfo";
+				task.AddParameter("CodeLanguage", "CS");
+
+				task.Condition = "'$(SignAssembly)' == 'true'";
+				task.AddParameter("InternalsVisibleTo", assemblyName + ", PublicKey=" + assemblyPublicKey);
+				task.AddParameter("OutputFile", "$(IntermediateOutputPath)" + assemblyName + ".IVT.Generated.cs");
+				{
+					MSBuildTaskResultItem resultItem = task.CreateResultItem();
+					resultItem.TaskParameter = "OutputFile";
+					resultItem.ItemName = "Compile";
+					task.AppendResultItem(resultItem);
+				}
+				targ.AppendTask(task);
+			}
+			{
+				MSBuildTask task = targ.CreateTask(); // '$(SignAssembly)' == 'false'
+				task.Name = "AssemblyInfo";
+				task.AddParameter("CodeLanguage", "CS");
+
+				task.Condition = "'$(SignAssembly)' != 'true'";
+				task.AddParameter("InternalsVisibleTo", assemblyName);
+				task.AddParameter("OutputFile", "$(IntermediateOutputPath)" + assemblyName + ".IVT.Generated.cs");
+				{
+					MSBuildTaskResultItem resultItem = task.CreateResultItem();
+					resultItem.TaskParameter = "OutputFile";
+					resultItem.ItemName = "Compile";
+					task.AppendResultItem(resultItem);
+				}
+				targ.AppendTask(task);
+			}
+			uo.EnsureTargetExists("BeforeBuild");
+			uo.InsertTarget(targ);
+			uo.AddDependOnTarget("BeforeBuild", targ.Name);
+		}
+
+		public IEnumerable<ReferencedAssembly> References
+		{
+			get
+			{
+				string filename = uo.FileName;
+				if (!File.Exists(filename))
+				{
+					throw new FileNotFoundException($"Cannot detect references of project '{filename}' because the project file cannot be found.");
+				}
+				var docManaged = new XmlDocument();
+				docManaged.Load(filename);
+
+				var xmlManager = new XmlNamespaceManager(docManaged.NameTable);
+				xmlManager.AddNamespace("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
+
+				foreach (XmlNode xmlNode in docManaged.SelectNodes(@"//prefix:Reference", xmlManager))
+				{
+					string referenceInclude = xmlNode.Attributes.GetNamedItem("Include").InnerText;
+					string referencePackage = xmlNode.SelectSingleNode(@"prefix:Package", xmlManager)?.InnerText.Trim(); // TODO handle null
+					yield return new ReferencedAssembly(
+							referenceInclude,
+							referencePackage);
+				}
+			}
+		}
+		public IEnumerable<CSharpLibraryProject> Dependencies
+		{
+			get
+			{
+				throw new NotImplementedException();
+				/*
+				var docManaged = this.uo.UnderlyingObject;
+
+				var xmlManager = new XmlNamespaceManager(docManaged.NameTable);
+				xmlManager.AddNamespace("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
+
+				foreach (XmlNode xmlNode in docManaged.SelectNodes(@"//prefix:ProjectReference", xmlManager))
+				{
+					// SelectSingleNode - Selects the first XmlNode that matches the XPath expression.
+					var nodeProject = xmlNode.SelectSingleNode(@"prefix:Project", xmlManager);
+					if (nodeProject == null)
+					{
+						Console.WriteLine($"Unexpected syntax of reference {xmlNode.OuterXml}");
+						continue;
+					}
+					string dependencyGuid = nodeProject.InnerText == null ? string.Empty : nodeProject.InnerText.Trim(); // TODO handle null
+					var nodeName = xmlNode.SelectSingleNode(@"prefix:Name", xmlManager);
+					string dependencyName = nodeName.InnerText == null ? string.Empty : nodeName.InnerText.Trim(); // TODO handle null
+					yield return FindProjectInContainer(
+								dependencyGuid,
+								"Cannot find one of the dependency of project '{0}'.\nProject guid: {1}\nDependency guid: {2}\nDependency name: {3}\nReference found in: ProjectReference node of file '{4}'",
+								m_projectName,
+								r_projectGuid,
+								dependencyGuid,
+								dependencyName,
+								this.FullPath);
+				}
+				*/
+			}
+		}
+	}
 }

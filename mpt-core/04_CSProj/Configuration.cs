@@ -1,123 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-
-public class Configuration
+﻿namespace BuildAutomation
 {
-	CSharpLibraryProject r_container;
+	using System;
+	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
+	using System.Diagnostics;
 
-	public Configuration(CSharpLibraryProject r_container, Configuration item)
+	public class Configuration
 	{
-		this.r_container = r_container;
-		this.Name = item.Name;
-	}
+		CSharpLibraryProject r_container;
 
-	public string Name
-	{
-		get
+		public Configuration(CSharpLibraryProject r_container, Configuration item)
 		{
-			Debug.Assert(r_container != null);
-			throw new NotImplementedException();
+			this.r_container = r_container;
+			this.Name = item.Name;
 		}
-		set
+
+		public string Name
 		{
-			throw new NotImplementedException();
-		}
-	}
-
-	public string GetAssemblyName()
-	{
-		throw new NotImplementedException();
-	}
-}
-
-public class ConfigurationHashList : KeyedCollection<string, Configuration>
-{
-	private CSharpLibraryProject r_container = null;
-	//
-	// Properties
-	//
-	public CSharpLibraryProject Container
-	{
-		get
-		{
-			return this.r_container;
-		}
-	}
-
-	//
-	// Constructors
-	//
-	public ConfigurationHashList(CSharpLibraryProject container) : base(StringComparer.InvariantCultureIgnoreCase)
-	{
-		if (container == null)
-		{
-			throw new ArgumentNullException("container");
-		}
-		this.r_container = container;
-	}
-
-	public ConfigurationHashList(CSharpLibraryProject container, IEnumerable<Configuration> items) : this(container)
-	{
-		this.AddRange(items);
-	}
-
-	//
-	// Methods
-	//
-	public void AddRange(IEnumerable<Configuration> items)
-	{
-		if (items != null)
-		{
-			foreach (var current in items)
+			get
 			{
-				base.Add(current);
+				Debug.Assert(r_container != null);
+				throw new NotImplementedException();
+			}
+			set
+			{
+				throw new NotImplementedException();
 			}
 		}
+
+		public string GetAssemblyName()
+		{
+			throw new NotImplementedException();
+		}
 	}
 
-	public Configuration FindByName(string name)
+	public class ConfigurationHashList : KeyedCollection<string, Configuration>
 	{
-		Configuration result;
-		foreach (var current in this)
+		private CSharpLibraryProject r_container = null;
+		//
+		// Properties
+		//
+		public CSharpLibraryProject Container
 		{
-			if (string.Compare(current.Name, name, StringComparison.InvariantCultureIgnoreCase) == 0)
+			get
 			{
-				result = current;
-				return result;
+				return this.r_container;
 			}
 		}
-		result = null;
-		return result;
-	}
 
-	protected override string GetKeyForItem(Configuration item)
-	{
-		return item.Name;
-	}
+		//
+		// Constructors
+		//
+		public ConfigurationHashList(CSharpLibraryProject container) : base(StringComparer.InvariantCultureIgnoreCase)
+		{
+			if (container == null)
+			{
+				throw new ArgumentNullException("container");
+			}
+			this.r_container = container;
+		}
 
-	protected override void InsertItem(int index, Configuration item)
-	{
-		base.InsertItem(index, new Configuration(this.r_container, item));
-	}
+		public ConfigurationHashList(CSharpLibraryProject container, IEnumerable<Configuration> items) : this(container)
+		{
+			this.AddRange(items);
+		}
 
-	protected override void SetItem(int index, Configuration item)
-	{
-		base.SetItem(index, new Configuration(this.r_container, item));
-	}
+		//
+		// Methods
+		//
+		public void AddRange(IEnumerable<Configuration> items)
+		{
+			if (items != null)
+			{
+				foreach (var current in items)
+				{
+					base.Add(current);
+				}
+			}
+		}
 
-	public void Sort()
-	{
-		this.Sort((Configuration p1, Configuration p2) => StringComparer.InvariantCultureIgnoreCase.Compare(p1.Name, p2.Name));
-	}
+		public Configuration FindByName(string name)
+		{
+			Configuration result;
+			foreach (var current in this)
+			{
+				if (string.Compare(current.Name, name, StringComparison.InvariantCultureIgnoreCase) == 0)
+				{
+					result = current;
+					return result;
+				}
+			}
+			result = null;
+			return result;
+		}
 
-	public void Sort(Comparison<Configuration> comparer)
-	{
-		var list = new List<Configuration>(this);
-		list.Sort(comparer);
-		base.Clear();
-		this.AddRange(list);
+		protected override string GetKeyForItem(Configuration item)
+		{
+			return item.Name;
+		}
+
+		protected override void InsertItem(int index, Configuration item)
+		{
+			base.InsertItem(index, new Configuration(this.r_container, item));
+		}
+
+		protected override void SetItem(int index, Configuration item)
+		{
+			base.SetItem(index, new Configuration(this.r_container, item));
+		}
+
+		public void Sort()
+		{
+			this.Sort((Configuration p1, Configuration p2) => StringComparer.InvariantCultureIgnoreCase.Compare(p1.Name, p2.Name));
+		}
+
+		public void Sort(Comparison<Configuration> comparer)
+		{
+			var list = new List<Configuration>(this);
+			list.Sort(comparer);
+			base.Clear();
+			this.AddRange(list);
+		}
 	}
 }
-

@@ -1,16 +1,18 @@
-﻿using System;
-using System.Xml;
-
-public class MSBuildItem
+﻿namespace BuildAutomation
 {
-	XmlElement uo;
+	using System;
+	using System.Xml;
 
-	public XmlElement UnderlyingObject { get { return uo; } }
-
-	public MSBuildItem(MSBuildItemGroup parent)
+	public class MSBuildItem
 	{
-		XmlDocument doc = parent.UnderlyingObject.OwnerDocument;
-		uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "UndefilnedItemName", MSBuildFile.NamespaceName);
+		XmlElement uo;
+
+		public XmlElement UnderlyingObject { get { return uo; } }
+
+		public MSBuildItem(MSBuildItemGroup parent)
+		{
+			XmlDocument doc = parent.UnderlyingObject.OwnerDocument;
+			uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "UndefilnedItemName", MSBuildFile.NamespaceName);
+		}
 	}
 }
-
