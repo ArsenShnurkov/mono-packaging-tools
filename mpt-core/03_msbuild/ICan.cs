@@ -1,21 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Xml;
-
-public interface IHaveUnderlyingNode
+﻿namespace BuildAutomation
 {
-	XmlNode UnderlyingNode { get; }
-}
+	using System.Collections.Generic;
+	using System.Xml;
 
-public interface ICanHaveProperties : IHaveUnderlyingNode
-{
-}
+	public interface IHaveUnderlyingNode
+	{
+		XmlNode UnderlyingNode { get; }
+	}
 
-public interface ICanHaveItems : IHaveUnderlyingNode
-{
-}
+	public interface ICanHaveProperties : IHaveUnderlyingNode
+	{
+	}
 
-public interface ICanBeConditional
-{
-	string Condition { get; set; }
-}
+	public interface ICanHaveItems : IHaveUnderlyingNode
+	{
+	}
 
+	public interface ICanBeConditional
+	{
+		string Condition { get; set; }
+	}
+}

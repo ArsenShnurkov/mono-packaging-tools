@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Mono.Options;
+using BuildAutomation;
 
 namespace mptcsproj
 {
@@ -16,6 +17,12 @@ namespace mptcsproj
 			NothingToDo = 4,
 			HelpOrVersion = 5,
 			Exception = 6,
+		}
+		enum Action : int
+		{
+			Change = 0,
+			Create = 1,
+			Delete = 2,
 		}
 		public static int Main(string[] args)
 		{
@@ -53,7 +60,7 @@ namespace mptcsproj
 			string base_dir = null;
 			string dir = null;
 			string reference_name = null;
-			bool bForceReferenceAppending = false;
+			Action referenceAction = Action.Change;
 			string import_name = null;
 			string version_string = null;
 			string friend_assembly_name = null;
@@ -92,9 +99,11 @@ namespace mptcsproj
 				{ "remove-warnings-as-errors", b => remove_warnings_as_errors = b },
 				{ "remove-signing", b => remove_signing = b },
 				// replace reference(s) in .csproj files
-				{ "replace-reference=", str => reference_name = str },
+				{ "remove-reference=", str => { reference_name = str; referenceAction = Action.Delete; } },
+				// replace reference(s) in .csproj files
+				{ "replace-reference=", str => { reference_name = str; referenceAction = Action.Change; } },
 				// insert reference(s) in .csproj files
-				{ "inject-reference=", str => { reference_name = str; bForceReferenceAppending = true; } },
+				{ "inject-reference=", str => { reference_name = str; referenceAction = Action.Create; } },
 				// insert project import into .csproj files
 				{ "inject-import=", str => { import_name = str; } },
 				// insert task for versioning into .csproj files
@@ -246,11 +255,19 @@ namespace mptcsproj
 			}
 			if (reference_name != null)
 			{
-				Console.WriteLine($"Replacing reference {reference_name}");
+				Console.WriteLine($"Processing reference {reference_name}");
 				foreach (var csproj_file in listOfCsproj)
 				{
 					Console.WriteLine($"in file {csproj_file}");
-					ProjectTools.ReplaceReference(csproj_file, reference_name, bForceReferenceAppending);
+					if (referenceAction == Action.Delete)
+					{
+						ProjectTools.RemoveReference(csproj_file, reference_name);
+					}
+					else
+					{
+						bool bForceReferenceAppending = referenceAction == Action.Create;
+						ProjectTools.ReplaceReference(csproj_file, reference_name, bForceReferenceAppending);
+					}
 				}
 			}
 			if (import_name != null)
@@ -328,6 +345,7 @@ namespace mptcsproj
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive");
 			Console.WriteLine("\tmpt-csproj --remove-warnings-as-errors --dir=work --recursive --as-unified-patch my.patch");
 			Console.WriteLine("\t\tremoves xml element <WarningsAsErrors>true</WarningsAsErrors>");
+			Console.WriteLine("\tmpt-csproj --remove-reference=\"MyDll\"");
 			Console.WriteLine("\tmpt-csproj --replace-reference=\"MyDll,Version,Culture,PubKeyToken\"");
 			Console.WriteLine("\t\treplaces the reference for MyDll of given version");
 			Console.WriteLine("\tmpt-csproj --inject-reference=\"MyDll,Version,Culture,PubKeyToken\"");
