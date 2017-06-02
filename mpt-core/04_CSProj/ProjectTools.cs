@@ -307,7 +307,12 @@ namespace BuildAutomation
 		{
 			var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
 			var document = XDocument.Load(stream);
-			return RemoveReference(document, reference_name);
+			bool bWasRemoved = RemoveReference(document, reference_name);
+			if (bWasRemoved)
+			{
+				document.Save(csproj_file);
+			}
+			return bWasRemoved;
 		}
 
 		public static void ReplaceReference(string csproj_file, string reference_name, bool force)
@@ -315,7 +320,7 @@ namespace BuildAutomation
 			var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
 			var document = XDocument.Load(stream);
 
-			bool bWasRemoved = RemoveReference(csproj_file, reference_name);
+			bool bWasRemoved = RemoveReference(document, reference_name);
 			bool bRequiresSave = bWasRemoved;
 
 			var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
