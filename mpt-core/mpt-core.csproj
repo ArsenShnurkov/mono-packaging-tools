@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
+    <CscToolPath>/usr/lib/mono/4.5</CscToolPath>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{36FB2731-AAFA-4D77-B406-EC3AAEA2995F}</ProjectGuid>
@@ -10,6 +11,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\mono.snk</AssemblyOriginatorKeyFile>
+    <PublicSign>true</PublicSign>
     <UseMSBuildEngine>false</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -81,6 +83,7 @@
     <Folder Include="02_EditableXml\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!--
   <Import Project="$(MSBuildToolsPath)\MSBuild.Community.Tasks.Targets" />
    <Target Name="BeforeBuild">
      <PropertyGroup Condition=" '$(VersionNumber)' == '' ">
@@ -88,4 +91,5 @@
      </PropertyGroup>
      <AssemblyInfo CodeLanguage="C#" OutputFile="../VersionInfo.cs" AssemblyVersion="$(VersionNumber)" AssemblyFileVersion="$(VersionNumber)" />
    </Target>
+   -->
 </Project>
