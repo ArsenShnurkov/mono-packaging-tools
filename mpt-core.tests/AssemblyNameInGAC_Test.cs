@@ -5,7 +5,7 @@ namespace tests
 	[TestFixture()]
 	public class AssemblyNameInGAC_Test
 	{
-		[Test()]
+/*		[Test()]
 		public void Constructing()
 		{
 			var an = new AssemblyNameInGAC("Accessibility, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
@@ -23,6 +23,7 @@ namespace tests
 			Assert.IsEmpty(an.PublicKeyToken);
 			Assert.AreEqual("Accessibility", an.Generate());
 		}
+*/
 	}
 }
 

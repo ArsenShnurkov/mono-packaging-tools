@@ -348,5 +348,9 @@ namespace BuildAutomation
 				document.Save(csproj_file);
 			}
 		}
+		public static void CreateReferenceHintPath(string csproj_file, string reference_name, bool force)
+		{
+			Console.WriteLine("Creating hint path for " + reference_name + " in " + csproj_file);
+		}
 	}
 }

@@ -51,6 +51,7 @@ namespace mptcsproj
 			var verbose = (string)null;
 			var remove_warnings_as_errors = (string)null;
 			var remove_signing = (string)null;
+			var package_hintpath = (string)null;
 			var list_refs = (string)null;
 			var list_projrefs = (string)null;
 			var list_inputs = (string)null;
@@ -98,7 +99,9 @@ namespace mptcsproj
 				// remove elements from .csproj files
 				{ "remove-warnings-as-errors", b => remove_warnings_as_errors = b },
 				{ "remove-signing", b => remove_signing = b },
-				// replace reference(s) in .csproj files
+				// Prepend <Package> xml element with <HintPath> xml element
+				{ "package-hintpath", b => package_hintpath = b },
+				// remove reference(s) from .csproj files
 				{ "remove-reference=", str => { reference_name = str; referenceAction = Action.Delete; } },
 				// replace reference(s) in .csproj files
 				{ "replace-reference=", str => { reference_name = str; referenceAction = Action.Change; } },
@@ -266,8 +269,23 @@ namespace mptcsproj
 					else
 					{
 						bool bForceReferenceAppending = referenceAction == Action.Create;
-						ProjectTools.ReplaceReference(csproj_file, reference_name, bForceReferenceAppending);
+						if (package_hintpath != null)
+						{
+							ProjectTools.CreateReferenceHintPath(csproj_file, reference_name, bForceReferenceAppending);
+						}
+						else
+						{
+							ProjectTools.ReplaceReference(csproj_file, reference_name, bForceReferenceAppending);
+						}
+
 					}
+				}
+			}
+			else
+			{
+				if (package_hintpath != null)
+				{
+					Console.WriteLine($"Reference is not specified");
 				}
 			}
 			if (import_name != null)
