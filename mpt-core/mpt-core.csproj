@@ -7,6 +7,7 @@
     <OutputType>Library</OutputType>
     <AssemblyName>mpt-core</AssemblyName>
     <RootNamespace>mptcore</RootNamespace>
+    <ReleaseVersion>0.765</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

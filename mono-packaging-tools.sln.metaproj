@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="ValidateSolutionConfiguration;ValidateToolsVersions;ValidateProjects" DefaultTargets="Build">
+  <PropertyGroup>
+    <OS>Unix</OS>
+    <MSBuildFrameworkToolsRoot>/usr/lib64/mono</MSBuildFrameworkToolsRoot>
+    <MSBuildSDKsPath>/usr/share/msbuild/Sdks</MSBuildSDKsPath>
+    <RoslynTargetsPath>/usr/share/msbuild/Roslyn</RoslynTargetsPath>
+    <FrameworkSDKRoot>/usr/lib64/mono/</FrameworkSDKRoot>
+    <MSBuildToolsRoot>/usr/lib64/mono/</MSBuildToolsRoot>
+    <MSBuildFrameworkToolsPath>/</MSBuildFrameworkToolsPath>
+    <MSBuildFrameworkToolsPath32>/</MSBuildFrameworkToolsPath32>
+    <MSBuildRuntimeVersion>15.0</MSBuildRuntimeVersion>
+    <SDK35ToolsPath>/</SDK35ToolsPath>
+    <SDK40ToolsPath>/</SDK40ToolsPath>
+    <VisualStudioVersion>15.0</VisualStudioVersion>
+    <Configuration>Debug</Configuration>
+    <Platform>AnyCPU</Platform>
+    <AspNetConfiguration>Debug</AspNetConfiguration>
+    <SolutionDir>/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/</SolutionDir>
+    <SolutionExt>.sln</SolutionExt>
+    <SolutionFileName>mono-packaging-tools.sln</SolutionFileName>
+    <SolutionName>mono-packaging-tools</SolutionName>
+    <SolutionPath>/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mono-packaging-tools.sln</SolutionPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <CurrentSolutionConfigurationContents>
+      <SolutionConfiguration xmlns="">
+  <ProjectConfiguration Project="{620A5E2F-F8D3-487C-B52D-C7B69051A0B8}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-gitmodules/mpt-gitmodules.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{76939073-0E35-41AC-8DBE-48B999A46A44}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-sln/mpt-sln.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{CF65E2F8-720F-455B-B3D2-89AA5FF8004F}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-csproj/mpt-csproj.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{FCEA0CC0-8C29-4EAA-AB9C-362FC7BF5F7B}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-machine/mpt-machine.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{4E519C69-F4AD-4439-B61D-5FC18D6CF835}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-nuget/mpt-nuget.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{36FB2731-AAFA-4D77-B406-EC3AAEA2995F}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core/mpt-core.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{B5CBA982-1BA0-4754-A042-958506478467}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core.tests/mpt-core.tests.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+</SolutionConfiguration>
+    </CurrentSolutionConfigurationContents>
+  </PropertyGroup>
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <SolutionConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+      <Content>
+        <SolutionConfiguration xmlns="">
+  <ProjectConfiguration Project="{620A5E2F-F8D3-487C-B52D-C7B69051A0B8}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-gitmodules/mpt-gitmodules.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{76939073-0E35-41AC-8DBE-48B999A46A44}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-sln/mpt-sln.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{CF65E2F8-720F-455B-B3D2-89AA5FF8004F}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-csproj/mpt-csproj.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{FCEA0CC0-8C29-4EAA-AB9C-362FC7BF5F7B}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-machine/mpt-machine.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{4E519C69-F4AD-4439-B61D-5FC18D6CF835}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-nuget/mpt-nuget.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{36FB2731-AAFA-4D77-B406-EC3AAEA2995F}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core/mpt-core.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{B5CBA982-1BA0-4754-A042-958506478467}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core.tests/mpt-core.tests.csproj" BuildProjectInSolution="True">Debug|AnyCPU</ProjectConfiguration>
+</SolutionConfiguration>
+      </Content>
+    </SolutionConfiguration>
+    <SolutionConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+      <Content>
+        <SolutionConfiguration xmlns="">
+  <ProjectConfiguration Project="{620A5E2F-F8D3-487C-B52D-C7B69051A0B8}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-gitmodules/mpt-gitmodules.csproj" BuildProjectInSolution="True">Release|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{76939073-0E35-41AC-8DBE-48B999A46A44}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-sln/mpt-sln.csproj" BuildProjectInSolution="True">Release|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{CF65E2F8-720F-455B-B3D2-89AA5FF8004F}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-csproj/mpt-csproj.csproj" BuildProjectInSolution="True">Release|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{FCEA0CC0-8C29-4EAA-AB9C-362FC7BF5F7B}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-machine/mpt-machine.csproj" BuildProjectInSolution="True">Release|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{4E519C69-F4AD-4439-B61D-5FC18D6CF835}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-nuget/mpt-nuget.csproj" BuildProjectInSolution="True">Release|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{36FB2731-AAFA-4D77-B406-EC3AAEA2995F}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core/mpt-core.csproj" BuildProjectInSolution="True">Release|AnyCPU</ProjectConfiguration>
+  <ProjectConfiguration Project="{B5CBA982-1BA0-4754-A042-958506478467}" AbsolutePath="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core.tests/mpt-core.tests.csproj" BuildProjectInSolution="True">Release|AnyCPU</ProjectConfiguration>
+</SolutionConfiguration>
+      </Content>
+    </SolutionConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-gitmodules/mpt-gitmodules.csproj">
+      <ToolsVersion>
+      </ToolsVersion>
+      <SkipNonexistentProjects>False</SkipNonexistentProjects>
+      <AdditionalProperties>Configuration=Debug; Platform=AnyCPU</AdditionalProperties>
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectReference>
+    <ProjectReference Include="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-sln/mpt-sln.csproj">
+      <ToolsVersion>
+      </ToolsVersion>
+      <SkipNonexistentProjects>False</SkipNonexistentProjects>
+      <AdditionalProperties>Configuration=Debug; Platform=AnyCPU</AdditionalProperties>
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectReference>
+    <ProjectReference Include="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-csproj/mpt-csproj.csproj">
+      <ToolsVersion>
+      </ToolsVersion>
+      <SkipNonexistentProjects>False</SkipNonexistentProjects>
+      <AdditionalProperties>Configuration=Debug; Platform=AnyCPU</AdditionalProperties>
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectReference>
+    <ProjectReference Include="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-machine/mpt-machine.csproj">
+      <ToolsVersion>
+      </ToolsVersion>
+      <SkipNonexistentProjects>False</SkipNonexistentProjects>
+      <AdditionalProperties>Configuration=Debug; Platform=AnyCPU</AdditionalProperties>
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectReference>
+    <ProjectReference Include="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-nuget/mpt-nuget.csproj">
+      <ToolsVersion>
+      </ToolsVersion>
+      <SkipNonexistentProjects>False</SkipNonexistentProjects>
+      <AdditionalProperties>Configuration=Debug; Platform=AnyCPU</AdditionalProperties>
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectReference>
+    <ProjectReference Include="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core/mpt-core.csproj">
+      <ToolsVersion>
+      </ToolsVersion>
+      <SkipNonexistentProjects>False</SkipNonexistentProjects>
+      <AdditionalProperties>Configuration=Debug; Platform=AnyCPU</AdditionalProperties>
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectReference>
+    <ProjectReference Include="/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core.tests/mpt-core.tests.csproj">
+      <ToolsVersion>
+      </ToolsVersion>
+      <SkipNonexistentProjects>False</SkipNonexistentProjects>
+      <AdditionalProperties>Configuration=Debug; Platform=AnyCPU</AdditionalProperties>
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectReference>
+  </ItemGroup>
+  <Target Name="ValidateSolutionConfiguration">
+    <Error Condition="('$(CurrentSolutionConfigurationContents)' == '') and ('$(SkipInvalidConfigurations)' != 'true')" Text="The specified solution configuration &quot;$(Configuration)|$(Platform)&quot; is invalid. Please specify a valid solution configuration using the Configuration and Platform properties (e.g. MSBuild.exe Solution.sln /p:Configuration=Debug /p:Platform=&quot;Any CPU&quot;) or leave those properties blank to use the default solution configuration." Code="MSB4126" HelpKeyword="MSBuild.SolutionInvalidSolutionConfiguration" />
+    <Warning Condition="('$(CurrentSolutionConfigurationContents)' == '') and ('$(SkipInvalidConfigurations)' == 'true')" Text="The specified solution configuration &quot;$(Configuration)|$(Platform)&quot; is invalid. Please specify a valid solution configuration using the Configuration and Platform properties (e.g. MSBuild.exe Solution.sln /p:Configuration=Debug /p:Platform=&quot;Any CPU&quot;) or leave those properties blank to use the default solution configuration." Code="MSB4126" HelpKeyword="MSBuild.SolutionInvalidSolutionConfiguration" />
+    <Message Condition="'$(CurrentSolutionConfigurationContents)' != ''" Text="Building solution configuration &quot;$(Configuration)|$(Platform)&quot;." />
+  </Target>
+  <Target Name="ValidateToolsVersions">
+    <Error Condition="'$(MSBuildToolsVersion)' == '2.0' and ('$(ProjectToolsVersion)' != '2.0' and '$(ProjectToolsVersion)' != '')" Text="The tools version &quot;$(MSBuildToolsVersion)&quot; of the solution does not support building projects with a different tools version." Code="MSB4149" HelpKeyword="MSBuild.SolutionToolsVersionDoesNotSupportProjectToolsVersion" />
+  </Target>
+  <Target Name="ValidateProjects" />
+  <Target Name="GetSolutionConfigurationContents" Outputs="$(SolutionConfigurationContents)" />
+  <Target Name="Build" Outputs="@(CollectedBuildOutput)">
+    <MSBuild Projects="@(ProjectReference)" BuildInParallel="True" Properties="BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" SkipNonexistentProjects="%(ProjectReference.SkipNonexistentProjects)">
+      <Output TaskParameter="TargetOutputs" ItemName="CollectedBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="Clean">
+    <MSBuild Projects="@(ProjectReference-&gt;Reverse())" Targets="Clean" BuildInParallel="True" Properties="BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" SkipNonexistentProjects="%(ProjectReference.SkipNonexistentProjects)" />
+  </Target>
+  <Target Name="Rebuild" Outputs="@(CollectedBuildOutput)">
+    <MSBuild Projects="@(ProjectReference)" Targets="Rebuild" BuildInParallel="True" Properties="BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" SkipNonexistentProjects="%(ProjectReference.SkipNonexistentProjects)">
+      <Output TaskParameter="TargetOutputs" ItemName="CollectedBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="Publish">
+    <MSBuild Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" Properties="BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" SkipNonexistentProjects="%(ProjectReference.SkipNonexistentProjects)" />
+  </Target>
+  <Target Name="mpt-gitmodules" Outputs="@(mpt-gitmodulesBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-gitmodules/mpt-gitmodules.csproj'" Projects="@(ProjectReference)" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-gitmodulesBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-gitmodules:Clean">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-gitmodules/mpt-gitmodules.csproj'" Projects="@(ProjectReference)" Targets="Clean" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-gitmodules:Rebuild" Outputs="@(mpt-gitmodulesBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-gitmodules/mpt-gitmodules.csproj'" Projects="@(ProjectReference)" Targets="Rebuild" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-gitmodulesBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-gitmodules:Publish">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-gitmodules/mpt-gitmodules.csproj'" Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-sln" Outputs="@(mpt-slnBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-sln/mpt-sln.csproj'" Projects="@(ProjectReference)" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-slnBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-sln:Clean">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-sln/mpt-sln.csproj'" Projects="@(ProjectReference)" Targets="Clean" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-sln:Rebuild" Outputs="@(mpt-slnBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-sln/mpt-sln.csproj'" Projects="@(ProjectReference)" Targets="Rebuild" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-slnBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-sln:Publish">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-sln/mpt-sln.csproj'" Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-csproj" Outputs="@(mpt-csprojBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-csproj/mpt-csproj.csproj'" Projects="@(ProjectReference)" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-csprojBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-csproj:Clean">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-csproj/mpt-csproj.csproj'" Projects="@(ProjectReference)" Targets="Clean" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-csproj:Rebuild" Outputs="@(mpt-csprojBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-csproj/mpt-csproj.csproj'" Projects="@(ProjectReference)" Targets="Rebuild" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-csprojBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-csproj:Publish">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-csproj/mpt-csproj.csproj'" Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-machine" Outputs="@(mpt-machineBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-machine/mpt-machine.csproj'" Projects="@(ProjectReference)" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-machineBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-machine:Clean">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-machine/mpt-machine.csproj'" Projects="@(ProjectReference)" Targets="Clean" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-machine:Rebuild" Outputs="@(mpt-machineBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-machine/mpt-machine.csproj'" Projects="@(ProjectReference)" Targets="Rebuild" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-machineBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-machine:Publish">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-machine/mpt-machine.csproj'" Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-nuget" Outputs="@(mpt-nugetBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-nuget/mpt-nuget.csproj'" Projects="@(ProjectReference)" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-nugetBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-nuget:Clean">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-nuget/mpt-nuget.csproj'" Projects="@(ProjectReference)" Targets="Clean" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-nuget:Rebuild" Outputs="@(mpt-nugetBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-nuget/mpt-nuget.csproj'" Projects="@(ProjectReference)" Targets="Rebuild" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-nugetBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-nuget:Publish">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-nuget/mpt-nuget.csproj'" Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-core" Outputs="@(mpt-coreBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core/mpt-core.csproj'" Projects="@(ProjectReference)" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-coreBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-core:Clean">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core/mpt-core.csproj'" Projects="@(ProjectReference)" Targets="Clean" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-core:Rebuild" Outputs="@(mpt-coreBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core/mpt-core.csproj'" Projects="@(ProjectReference)" Targets="Rebuild" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-coreBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-core:Publish">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core/mpt-core.csproj'" Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-core_tests" Outputs="@(mpt-core_testsBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core.tests/mpt-core.tests.csproj'" Projects="@(ProjectReference)" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-core_testsBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-core_tests:Clean">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core.tests/mpt-core.tests.csproj'" Projects="@(ProjectReference)" Targets="Clean" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+  <Target Name="mpt-core_tests:Rebuild" Outputs="@(mpt-core_testsBuildOutput)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core.tests/mpt-core.tests.csproj'" Projects="@(ProjectReference)" Targets="Rebuild" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+      <Output TaskParameter="TargetOutputs" ItemName="mpt-core_testsBuildOutput" />
+    </MSBuild>
+  </Target>
+  <Target Name="mpt-core_tests:Publish">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == '/usr/src/git/github.com/mono-packaging-tools/ArsenShnurkov/mpt-core.tests/mpt-core.tests.csproj'" Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=AnyCPU;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+  </Target>
+</Project>

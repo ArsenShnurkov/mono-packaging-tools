@@ -9,6 +9,7 @@
     <AssemblyName>mpt-nuget</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseMSBuildEngine>false</UseMSBuildEngine>
+    <ReleaseVersion>0.765</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

@@ -8,6 +8,7 @@
     <AssemblyName>mpt-csproj</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseMSBuildEngine>false</UseMSBuildEngine>
+    <ReleaseVersion>0.765</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -30,8 +31,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Mono.Options, Version=4.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>mono-options-4.4.0.0</Package>
+    <Reference Include="Mono.Options">
+      <HintPath>/usr/lib/mono/4.7.1-api/Mono.Options.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>

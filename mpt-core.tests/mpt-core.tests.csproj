@@ -7,6 +7,7 @@
     <OutputType>Library</OutputType>
     <AssemblyName>mpt-core.tests</AssemblyName>
     <RootNamespace>tests</RootNamespace>
+    <ReleaseVersion>0.765</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,9 +28,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework, Version=3.7.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>nunit-framework-3.7.0</Package>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyNameInGAC_Test.cs" />
