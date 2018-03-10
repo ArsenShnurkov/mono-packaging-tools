@@ -34,7 +34,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Eto.Parse, Version=1.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+    <Reference Include="Eto.Parse">
+      <HintPath>/usr/lib64/dev-dotnet/eto-parse-1/Eto.Parse.dll</HintPath>
       <Package>eto-parse-1.4.0_p20150907</Package>
     </Reference>
   </ItemGroup>
