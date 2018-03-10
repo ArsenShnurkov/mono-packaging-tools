@@ -33,7 +33,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="CWDev.SLNTools.Core">
-      <HintPath>/usr/share/dev-dotnet/slntools-0/CWDev.SLNTools.Core.dll</HintPath>
+      <HintPath>/usr/share/dev-dotnet/slntools-1/CWDev.SLNTools.Core.dll</HintPath>
       <Package>slntools-1.1.3.0</Package>
     </Reference>
   </ItemGroup>
