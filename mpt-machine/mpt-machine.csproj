@@ -38,7 +38,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Mono.Options">
-      <HintPath>/usr/lib/mono/4.7.1-api/Mono.Options.dll</HintPath>
+      <HintPath>/usr/lib/mono/4.5-api/Mono.Options.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
