@@ -8,6 +8,7 @@
     <AssemblyName>mpt-core.tests</AssemblyName>
     <RootNamespace>tests</RootNamespace>
     <ReleaseVersion>0.765</ReleaseVersion>
+    <UseMSBuildEngine>false</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

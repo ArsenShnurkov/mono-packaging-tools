@@ -36,7 +36,6 @@
     <Reference Include="System" />
     <Reference Include="Eto.Parse">
       <HintPath>/usr/lib64/dev-dotnet/eto-parse-1/Eto.Parse.dll</HintPath>
-      <Package>eto-parse-1.4.0_p20150907</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>

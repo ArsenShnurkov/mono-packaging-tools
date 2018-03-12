@@ -317,7 +317,7 @@ namespace BuildAutomation
 
 		public static void ReplaceReference(string csproj_file, string reference_name, bool force)
 		{
-			var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memoty
+			var stream = new MemoryStream(File.ReadAllBytes(csproj_file)); // cache file in memory
 			var document = XDocument.Load(stream);
 
 			bool bWasRemoved = RemoveReference(document, reference_name);
@@ -351,6 +351,51 @@ namespace BuildAutomation
 		public static void CreateReferenceHintPath(string csproj_file, string reference_name, bool force)
 		{
 			Console.WriteLine("Creating hint path for " + reference_name + " in " + csproj_file);
+			var doc = new XmlDocument();
+			doc.Load(csproj_file);
+			var xmlNodes = doc.SelectNodes("//Project/ItemGroup/Reference");
+			if (xmlNodes.Count == 0)
+			{
+				Console.WriteLine($"No 'Reference' elements found in {csproj_file}");
+				return;
+			}
+			bool bInserted = false;
+			foreach (XmlNode xmlNode in xmlNodes)
+			{
+				string referenceInclude = xmlNode.Attributes["Include"].Value;
+				if (referenceInclude.StartsWith(reference_name, StringComparison.InvariantCulture)
+				    && string.Compare(referenceInclude.Substring(reference_name.Length, 1), ".", StringComparison.InvariantCulture) != 0)
+				{
+					Console.WriteLine("Found reference " + referenceInclude);
+					var newNode = doc.CreateNode(XmlNodeType.Element, "HintPath", String.Empty);
+					newNode.InnerText = reference_name;
+					xmlNode.InsertBefore(newNode, xmlNode.FirstChild);
+					bInserted = true;
+				}
+			}
+			if (bInserted == false)
+			{
+				Console.WriteLine("No Reference node found");
+				if (force)
+				{
+					XmlElement newReferenceNode = (XmlElement)doc.CreateNode(XmlNodeType.Element, "Reference", String.Empty);
+					XmlAttribute newReferenceInclude = (XmlAttribute)doc.CreateNode(XmlNodeType.Attribute, "Include", String.Empty);
+					newReferenceInclude.Value = reference_name;
+					newReferenceNode.Attributes.Append(newReferenceInclude);
+					var newNode = doc.CreateNode(XmlNodeType.Element, "HintPath", String.Empty);
+					newReferenceNode.AppendChild(newNode);
+					doc.InsertAfter(newReferenceNode, xmlNodes[xmlNodes.Count-1]);
+					bInserted = true;
+				}
+			}
+			if (bInserted)
+			{
+				doc.Save(csproj_file);
+			}
+			else
+			{
+				Console.WriteLine("No changes was made");
+			}
 		}
 	}
 }
