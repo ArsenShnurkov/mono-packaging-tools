@@ -33,9 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Mono.Options">
-      <HintPath>/usr/lib/mono/4.5-api/Mono.Options.dll</HintPath>
-    </Reference>
+    <Reference Include="Mono.Options, Version=4.4.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../mpt-core/mpt-core.csproj">
