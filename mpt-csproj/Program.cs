@@ -271,7 +271,7 @@ namespace mptcsproj
 						bool bForceReferenceAppending = referenceAction == Action.Create;
 						if (package_hintpath != null)
 						{
-							ProjectTools.CreateReferenceHintPath(csproj_file, reference_name, bForceReferenceAppending);
+							ProjectTools.CreateReferenceHintPath(csproj_file, reference_name, package_hintpath, bForceReferenceAppending);
 						}
 						else
 						{

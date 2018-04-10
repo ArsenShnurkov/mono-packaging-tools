@@ -348,9 +348,9 @@ namespace BuildAutomation
 				document.Save(csproj_file);
 			}
 		}
-		public static void CreateReferenceHintPath(string csproj_file, string reference_name, bool force)
+		public static void CreateReferenceHintPath(string csproj_file, string reference_name, string hint_path, bool force)
 		{
-			Console.WriteLine("Creating hint path for " + reference_name + " in " + csproj_file);
+			Console.WriteLine($"Creating hint path for ${reference_name} in ${csproj_file} + as ${hint_path}");
 			var doc = new XmlDocument();
 			doc.Load(csproj_file);
 			var xmlNodes = doc.SelectNodes("//Project/ItemGroup/Reference");
@@ -368,7 +368,7 @@ namespace BuildAutomation
 				{
 					Console.WriteLine("Found reference " + referenceInclude);
 					var newNode = doc.CreateNode(XmlNodeType.Element, "HintPath", String.Empty);
-					newNode.InnerText = reference_name;
+					newNode.InnerText = hint_path;
 					xmlNode.InsertBefore(newNode, xmlNode.FirstChild);
 					bInserted = true;
 				}
@@ -383,6 +383,7 @@ namespace BuildAutomation
 					newReferenceInclude.Value = reference_name;
 					newReferenceNode.Attributes.Append(newReferenceInclude);
 					var newNode = doc.CreateNode(XmlNodeType.Element, "HintPath", String.Empty);
+					newNode.InnerText = hint_path;
 					newReferenceNode.AppendChild(newNode);
 					doc.InsertAfter(newReferenceNode, xmlNodes[xmlNodes.Count-1]);
 					bInserted = true;
