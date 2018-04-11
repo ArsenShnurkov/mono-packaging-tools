@@ -22,7 +22,8 @@ namespace mptcsproj
 		{
 			Change = 0,
 			Create = 1,
-			Delete = 2,
+			DeleteReference = 2,
+			DeleteProjectReference = 3,
 		}
 		public static int Main(string[] args)
 		{
@@ -100,9 +101,11 @@ namespace mptcsproj
 				{ "remove-warnings-as-errors", b => remove_warnings_as_errors = b },
 				{ "remove-signing", b => remove_signing = b },
 				// Prepend <Package> xml element with <HintPath> xml element
-				{ "package-hintpath", b => package_hintpath = b },
+				{ "package-hintpath=", str => package_hintpath = str },
 				// remove reference(s) from .csproj files
-				{ "remove-reference=", str => { reference_name = str; referenceAction = Action.Delete; } },
+				{ "remove-projectreference=", str => { reference_name = str; referenceAction = Action.DeleteProjectReference; } },
+				// replace reference(s) in .csproj files
+				{ "remove-reference=", str => { reference_name = str; referenceAction = Action.DeleteReference; } },
 				// replace reference(s) in .csproj files
 				{ "replace-reference=", str => { reference_name = str; referenceAction = Action.Change; } },
 				// insert reference(s) in .csproj files
@@ -124,8 +127,7 @@ namespace mptcsproj
 				bool bFile = false;
 				if (File.Exists(strUnparsedParameter))
 				{
-					var name = new FileInfo(strUnparsedParameter).FullName;
-					listOfCsproj.Add(name);
+					AddProjectFile(strUnparsedParameter);
 					bFile = true;
 				}
 				bool bDir = false;
@@ -262,15 +264,20 @@ namespace mptcsproj
 				foreach (var csproj_file in listOfCsproj)
 				{
 					Console.WriteLine($"in file {csproj_file}");
-					if (referenceAction == Action.Delete)
+					if (referenceAction == Action.DeleteReference)
 					{
 						ProjectTools.RemoveReference(csproj_file, reference_name);
+					}
+					else if (referenceAction == Action.DeleteProjectReference)
+					{
+						ProjectTools.RemoveProjectReference(csproj_file, reference_name);
 					}
 					else
 					{
 						bool bForceReferenceAppending = referenceAction == Action.Create;
 						if (package_hintpath != null)
 						{
+							Console.WriteLine ($"package_hintpath is {package_hintpath}");
 							ProjectTools.CreateReferenceHintPath(csproj_file, reference_name, package_hintpath, bForceReferenceAppending);
 						}
 						else

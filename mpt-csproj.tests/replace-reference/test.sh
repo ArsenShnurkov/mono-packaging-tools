@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "../settings.sh"
+
 die() {
 	echo "error"
 	exit 1

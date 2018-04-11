@@ -8,6 +8,7 @@
     <AssemblyName>mpt-core</AssemblyName>
     <RootNamespace>mptcore</RootNamespace>
     <UseMSBuildEngine>false</UseMSBuildEngine>
+    <ReleaseVersion>0.765</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +36,9 @@
     <Reference Include="CWDev.SLNTools.Core">
       <HintPath>/usr/share/dev-dotnet/slntools-1/CWDev.SLNTools.Core.dll</HintPath>
       <Package>slntools-1.1.3.0</Package>
+    </Reference>
+    <Reference Include="Mono.TextTemplating">
+      <HintPath>..\..\..\..\..\..\share\dev-dotnet\t4\Mono.TextTemplating.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +115,8 @@
     <Compile Include="05_bash\20_Commands\MultipleInvocationsWithPipelines.cs" />
     <Compile Include="05_bash\20_Commands\NonZeroExitCodeStartCondition.cs" />
     <Compile Include="05_bash\20_Commands\ZeroExitCodeStartCondition.cs" />
+    <Compile Include="04_CSProj\ProjectTools _ProjectReference.cs" />
+    <Compile Include="04_CSProj\ProjectTools_Reference.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PackageProcessing\" />
