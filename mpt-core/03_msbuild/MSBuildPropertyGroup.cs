@@ -54,5 +54,10 @@
 			prop.Value = val;
 			this.AppendProperty(prop);
 		}
+
+		public static XmlElement GetKeyForItem(MSBuildPropertyGroup item)
+		{
+			return item.UnderlyingObject;
+		}
 	}
 }

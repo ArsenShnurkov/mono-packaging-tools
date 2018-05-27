@@ -8,38 +8,71 @@
 
 	public class ProjectAssemblyCSharp : IDisposable
 	{
-		MSBuildFile uo;
+		MSBuildFile underlaying_object;
 
-		ConfigurationHashList configurations = null;
-		public ConfigurationHashList Configurations { get { return configurations; } }
+		FuncKeyedCollection<string, ProjectAssemblyConfiguration> configurations
+		= new FuncKeyedCollection<string, ProjectAssemblyConfiguration>(ProjectAssemblyConfiguration.GetKeyForItem);
 
-		public string FileName { get { return uo.FileName; } set { uo.FileName = value; } }
+		FuncKeyedCollection<string, ProjectAssemblyReference> references
+		= new FuncKeyedCollection<string, ProjectAssemblyReference>(ProjectAssemblyReference.GetKeyForItem);
+
+		FuncKeyedCollection<string, ProjectAssemblyProjectReference> project_references
+		= new FuncKeyedCollection<string, ProjectAssemblyProjectReference>(ProjectAssemblyProjectReference.GetKeyForItem);
+
+		FuncKeyedCollection<string, ProjectAssemblyPackageReference> package_references
+		= new FuncKeyedCollection<string, ProjectAssemblyPackageReference>(ProjectAssemblyPackageReference.GetKeyForItem);
+
+		public MSBuildFile UnderlyingObject
+		{
+			get
+			{
+				return underlaying_object;
+			}
+		}
+
+		public string FileName
+		{
+			get { return this.UnderlyingObject.FileName; }
+			set { this.UnderlyingObject.FileName = value; }
+		}
+
+		public ICollection<ProjectAssemblyConfiguration> Configurations { get { return configurations; } }
+		public ICollection<ProjectAssemblyReference> References { get { return references; } }
+		public ICollection<ProjectAssemblyProjectReference> ProjectReferences { get { return project_references; } }
+		public ICollection<ProjectAssemblyPackageReference> PackageReferences { get { return package_references; } }
 
 		public ProjectAssemblyCSharp ()
 		{
-			uo = new MSBuildFile ();
+			this.underlaying_object = new MSBuildFile ();
 		}
 
 		public virtual void Load (string filename)
 		{
-			uo.Load(filename);
-			configurations = new ConfigurationHashList (this);
-			PrepareReferences ();
-		}
-
-		void PrepareReferences ()
-		{
-			string filename = uo.FileName;
 			if (!File.Exists (filename)) {
 				throw new FileNotFoundException ($"Cannot detect references of project '{filename}' because the project file cannot be found.");
 			}
+			this.UnderlyingObject.Load(filename);
+			ParseConfigurations ();
+			ParseCSharpProperties();
+			ParseReferences ();
+			ParseProjectReferences ();
+			ParsePackageReferences ();
+		}
 
-			var docManaged = uo.UnderlyingObject;
+		void ParseConfigurations ()
+		{
+		}
 
-			var xmlManager = new XmlNamespaceManager (docManaged.NameTable);
+		void ParseCSharpProperties ()
+		{
+		}
+
+		void ParseReferences ()
+		{
+			var xmlManager = new XmlNamespaceManager (this.UnderlyingObject.UnderlyingObject.NameTable);
 			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
 
-			foreach (XmlNode xmlNode in docManaged.SelectNodes (@"//prefix:Reference", xmlManager)) {
+			foreach (XmlNode xmlNode in this.UnderlyingObject.UnderlyingObject.SelectNodes (@"//prefix:Reference", xmlManager)) {
 				string referenceInclude = xmlNode.Attributes.GetNamedItem ("Include").InnerText;
 				string referencePackage = xmlNode.SelectSingleNode (@"prefix:Package", xmlManager)?.InnerText.Trim (); // TODO handle null
 				references.Add (new ProjectAssemblyReference (
@@ -49,25 +82,48 @@
 			}
 		}
 
+		void ParseProjectReferences ()
+		{
+			var xmlManager = new XmlNamespaceManager (this.UnderlyingObject.UnderlyingObject.NameTable);
+			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
+
+			foreach (XmlNode xmlNode in this.UnderlyingObject.UnderlyingObject.SelectNodes (@"//prefix:Reference", xmlManager)) {
+				string textOfInclude = xmlNode.Attributes.GetNamedItem ("Include").InnerText;
+				project_references.Add (new ProjectAssemblyProjectReference (textOfInclude));
+			}
+		}
+
+		void ParsePackageReferences ()
+		{
+			var xmlManager = new XmlNamespaceManager (this.UnderlyingObject.UnderlyingObject.NameTable);
+			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
+
+			foreach (XmlNode xmlNode in this.UnderlyingObject.UnderlyingObject.SelectNodes (@"//prefix:Reference", xmlManager)) {
+				string name_of_package = xmlNode.Attributes.GetNamedItem ("Include").InnerText;
+				string version_of_package = xmlNode.Attributes.GetNamedItem ("Version").InnerText;
+				package_references.Add (new ProjectAssemblyPackageReference (name_of_package, version_of_package));
+			}
+		}
+
 		public void Dispose()
 		{
-			uo.Dispose();
+			this.UnderlyingObject.Dispose();
 		}
 
 		public void InjectProjectImport(string import_name)
 		{
 			// construct new import
-			MSBuildImport newImport = uo.CreateImport();
+			MSBuildImport newImport = this.UnderlyingObject.CreateImport();
 			newImport.Project = import_name;
 			// insert import
-			MSBuildImport existingImport = uo.FindImport("$(MSBuildBinPath)\\Microsoft.CSharp.targets");
+			MSBuildImport existingImport = this.UnderlyingObject.FindImport("$(MSBuildBinPath)\\Microsoft.CSharp.targets");
 			if (existingImport == null)
 			{
-				uo.InsertImport(newImport);
+				this.UnderlyingObject.InsertImport(newImport);
 			}
 			else
 			{
-				uo.InsertImportAfter(existingImport, newImport);
+				this.UnderlyingObject.InsertImportAfter(existingImport, newImport);
 			}
 		}
 
@@ -86,7 +142,7 @@
 					</AssemblyInfo>
 				</Target>
 			*/
-			MSBuildTarget targ = uo.CreateTarget();
+			MSBuildTarget targ = this.UnderlyingObject.CreateTarget();
 			targ.Name = "MyAssemblyVersion";
 			{
 				MSBuildTask task = targ.CreateTask();
@@ -118,15 +174,15 @@
 				}
 				targ.AppendTask(task);
 			}
-			uo.EnsureTargetExists("BeforeBuild");
-			uo.InsertTarget(targ);
-			uo.AddDependOnTarget("BeforeBuild", targ.Name);
+			this.UnderlyingObject.EnsureTargetExists("BeforeBuild");
+			this.UnderlyingObject.InsertTarget(targ);
+			this.UnderlyingObject.AddDependOnTarget("BeforeBuild", targ.Name);
 		}
 
 		// http://stackoverflow.com/questions/30943342/how-to-use-internalsvisibleto-attribute-with-strongly-named-assembly
 		public void InjectInternalsVisibleTo(string assemblyName, string assemblyPublicKey)
 		{
-			MSBuildTarget targ = uo.CreateTarget();
+			MSBuildTarget targ = this.UnderlyingObject.CreateTarget();
 			targ.Name = "MyInsertInternalsTo";
 			{
 				MSBuildTask task = targ.CreateTask(); // '$(SignAssembly)' == 'true'
@@ -160,55 +216,9 @@
 				}
 				targ.AppendTask(task);
 			}
-			uo.EnsureTargetExists("BeforeBuild");
-			uo.InsertTarget(targ);
-			uo.AddDependOnTarget("BeforeBuild", targ.Name);
-		}
-
-		FuncKeyedCollection<string, ProjectAssemblyReference> references
-			= new FuncKeyedCollection<string, ProjectAssemblyReference>(ProjectAssemblyReference.GetKeyForItem);
-
-		public IEnumerable<ProjectAssemblyReference> References
-		{
-			get
-			{
-				return references;
-			}
-		}
-		public IEnumerable<ProjectAssemblyCSharp> Dependencies
-		{
-			get
-			{
-				throw new NotImplementedException();
-				/*
-				var docManaged = this.uo.UnderlyingObject;
-
-				var xmlManager = new XmlNamespaceManager(docManaged.NameTable);
-				xmlManager.AddNamespace("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
-
-				foreach (XmlNode xmlNode in docManaged.SelectNodes(@"//prefix:ProjectReference", xmlManager))
-				{
-					// SelectSingleNode - Selects the first XmlNode that matches the XPath expression.
-					var nodeProject = xmlNode.SelectSingleNode(@"prefix:Project", xmlManager);
-					if (nodeProject == null)
-					{
-						Console.WriteLine($"Unexpected syntax of reference {xmlNode.OuterXml}");
-						continue;
-					}
-					string dependencyGuid = nodeProject.InnerText == null ? string.Empty : nodeProject.InnerText.Trim(); // TODO handle null
-					var nodeName = xmlNode.SelectSingleNode(@"prefix:Name", xmlManager);
-					string dependencyName = nodeName.InnerText == null ? string.Empty : nodeName.InnerText.Trim(); // TODO handle null
-					yield return FindProjectInContainer(
-								dependencyGuid,
-								"Cannot find one of the dependency of project '{0}'.\nProject guid: {1}\nDependency guid: {2}\nDependency name: {3}\nReference found in: ProjectReference node of file '{4}'",
-								m_projectName,
-								r_projectGuid,
-								dependencyGuid,
-								dependencyName,
-								this.FullPath);
-				}
-				*/
-			}
+			this.UnderlyingObject.EnsureTargetExists("BeforeBuild");
+			this.UnderlyingObject.InsertTarget(targ);
+			this.UnderlyingObject.AddDependOnTarget("BeforeBuild", targ.Name);
 		}
 	}
 }

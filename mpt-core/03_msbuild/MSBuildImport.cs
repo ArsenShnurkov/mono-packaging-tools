@@ -32,16 +32,9 @@
 			uo = (XmlElement)file.UnderlyingObject.CreateNode(XmlNodeType.Element, "Import", MSBuildFile.NamespaceName);
 		}
 
-		/*void SetProject(string value)
+		public static XmlElement GetKeyForItem(MSBuildImport item)
 		{
-			if (uo.HasAttribute("Project))" +
-			{
-				uo.Attributes["Project"].Value = value;
-			}
-			else
-			{
-				uo.SetAttribute("Project", value);
-			}
-		}*/
+			return item.UnderlyingObject;
+		}
 	}
 }

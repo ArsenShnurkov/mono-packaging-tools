@@ -42,5 +42,10 @@
 				oldItem.ParentNode.ReplaceChild(uo, oldItem);
 			}
 		}
+
+		public static string GetKeyForItem(MSBuildProperty item)
+		{
+			return item.Name;
+		}
 	}
 }

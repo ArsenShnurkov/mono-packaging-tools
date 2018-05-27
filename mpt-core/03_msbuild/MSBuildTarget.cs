@@ -110,5 +110,10 @@
 		{
 			AppendListOfTargets("DependsOnTargets", name);
 		}
+
+		public static XmlElement GetKeyForItem(MSBuildTarget item)
+		{
+			return item.UnderlyingObject;
+		}
 	}
 }

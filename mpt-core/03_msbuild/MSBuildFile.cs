@@ -5,14 +5,25 @@
 	using System.Xml.XPath;
 	using System.Xml;
 
-	public class MSBuildFile : IDisposable
+	public class MSBuildFile : IDisposable, ICanHaveProperties
 	{
 		public const string NamespaceName = "http://schemas.microsoft.com/developer/msbuild/2003";
 		XmlDocument doc;
 		bool bSaveRequired = false;
 		string filename = null;
-		List<MSBuildImport> importNodes = new List<MSBuildImport>();
-		List<MSBuildTarget> targetNodes = new List<MSBuildTarget>();
+
+		FuncKeyedCollection<XmlElement, MSBuildPropertyGroup> propertyGroups
+		= new FuncKeyedCollection<XmlElement, MSBuildPropertyGroup>(MSBuildPropertyGroup.GetKeyForItem);
+
+		FuncKeyedCollection<string, MSBuildProperty> properties
+		= new FuncKeyedCollection<string, MSBuildProperty>(MSBuildProperty.GetKeyForItem);
+
+		FuncKeyedCollection<XmlElement, MSBuildImport> importNodes
+		= new FuncKeyedCollection<XmlElement, MSBuildImport>(MSBuildImport.GetKeyForItem);
+
+		FuncKeyedCollection<XmlElement, MSBuildTarget> targetNodes
+		= new FuncKeyedCollection<XmlElement, MSBuildTarget>(MSBuildTarget.GetKeyForItem);
+
 		public XmlDocument UnderlyingObject
 		{
 			get
@@ -20,6 +31,15 @@
 				return doc;
 			}
 		}
+
+		public XmlNode UnderlyingNode
+		{
+			get
+			{
+				return doc.DocumentElement;
+			}
+		}
+
 		public string FileName
 		{
 			get
@@ -46,8 +66,85 @@
 		{
 			this.doc.Load(filename);
 			this.filename = filename;
+			ParsePropertyGroupsAndProperties();
 			FindAllImports();
 			FindAllTargets();
+		}
+
+		void ParsePropertyGroupsAndProperties()
+		{
+			var xmlManager = new XmlNamespaceManager (this.UnderlyingObject.NameTable);
+			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
+
+			foreach (XmlNode xmlNode in this.UnderlyingObject.SelectNodes (@"//prefix:PropertyGroup", xmlManager)) {
+				var propertyGroup = new MSBuildPropertyGroup(this);
+				this.propertyGroups.Add(propertyGroup);
+				foreach (XmlNode xmlNodeProperty in xmlNode.ChildNodes)
+				{
+					var propertyInstance = new MSBuildProperty(propertyGroup);
+					this.properties.Add(propertyInstance);
+				}
+			}
+		}
+
+		void FindAllImports()
+		{
+			var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
+			xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
+
+			XPathNavigator navigator = doc.CreateNavigator();
+			navigator.MoveToRoot();
+
+			var xpath = "/ns:Project/ns:Import[@Project]";
+			XPathExpression expr = navigator.Compile(xpath);
+			expr.SetContext(xmlNamespaceManager);
+
+			var nodeIterator = navigator.Select(expr);
+			if (nodeIterator.Count == 0)
+			{
+				return;
+			}
+			while (nodeIterator.MoveNext())
+			{
+				if (nodeIterator.Current is IHasXmlNode)
+				{
+					XmlNode node = ((IHasXmlNode)nodeIterator.Current).GetNode();
+					XmlElement element = (XmlElement)node;
+					MSBuildImport wrapperObject = new MSBuildImport(this, element);
+					importNodes.Add(wrapperObject);
+				}
+			}
+			// see also https://weblogs.asp.net/cazzu/86609
+		}
+
+		public void FindAllTargets()
+		{
+			var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
+			xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
+
+			XPathNavigator navigator = doc.CreateNavigator();
+			navigator.MoveToRoot();
+
+			var xpath = "/ns:Project/ns:Target[@Name]";
+			XPathExpression expr = navigator.Compile(xpath);
+			expr.SetContext(xmlNamespaceManager);
+
+			var nodeIterator = navigator.Select(expr);
+			if (nodeIterator.Count == 0)
+			{
+				return;
+			}
+			while (nodeIterator.MoveNext())
+			{
+				if (nodeIterator.Current is IHasXmlNode)
+				{
+					XmlNode node = ((IHasXmlNode)nodeIterator.Current).GetNode();
+					XmlElement element = (XmlElement)node;
+					MSBuildTarget wrapperObject = new MSBuildTarget(this, element);
+					targetNodes.Add(wrapperObject);
+				}
+			}
+			// see also https://weblogs.asp.net/cazzu/86609
 		}
 
 		public void Dispose()
@@ -96,36 +193,6 @@
 		{
 			var result = new MSBuildImport(this);
 			return result;
-		}
-
-		public void FindAllImports()
-		{
-			var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
-			xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
-
-			XPathNavigator navigator = doc.CreateNavigator();
-			navigator.MoveToRoot();
-
-			var xpath = "/ns:Project/ns:Import[@Project]";
-			XPathExpression expr = navigator.Compile(xpath);
-			expr.SetContext(xmlNamespaceManager);
-
-			var nodeIterator = navigator.Select(expr);
-			if (nodeIterator.Count == 0)
-			{
-				return;
-			}
-			while (nodeIterator.MoveNext())
-			{
-				if (nodeIterator.Current is IHasXmlNode)
-				{
-					XmlNode node = ((IHasXmlNode)nodeIterator.Current).GetNode();
-					XmlElement element = (XmlElement)node;
-					MSBuildImport wrapperObject = new MSBuildImport(this, element);
-					importNodes.Add(wrapperObject);
-				}
-			}
-			// see also https://weblogs.asp.net/cazzu/86609
 		}
 
 		// locate if there is import of Microsoft.CSharp.targets
@@ -180,36 +247,6 @@
 		{
 			var result = new MSBuildTarget(this);
 			return result;
-		}
-
-		public void FindAllTargets()
-		{
-			var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
-			xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
-
-			XPathNavigator navigator = doc.CreateNavigator();
-			navigator.MoveToRoot();
-
-			var xpath = "/ns:Project/ns:Target[@Name]";
-			XPathExpression expr = navigator.Compile(xpath);
-			expr.SetContext(xmlNamespaceManager);
-
-			var nodeIterator = navigator.Select(expr);
-			if (nodeIterator.Count == 0)
-			{
-				return;
-			}
-			while (nodeIterator.MoveNext())
-			{
-				if (nodeIterator.Current is IHasXmlNode)
-				{
-					XmlNode node = ((IHasXmlNode)nodeIterator.Current).GetNode();
-					XmlElement element = (XmlElement)node;
-					MSBuildTarget wrapperObject = new MSBuildTarget(this, element);
-					targetNodes.Add(wrapperObject);
-				}
-			}
-			// see also https://weblogs.asp.net/cazzu/86609
 		}
 
 		public MSBuildTarget FindTarget(string v)
