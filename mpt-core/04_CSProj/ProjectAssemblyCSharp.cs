@@ -17,8 +17,31 @@
 
 		public ProjectAssemblyCSharp (string csproj_file)
 		{
-			configurations = new ConfigurationHashList(this);
-			uo = new MSBuildFile(csproj_file);
+			configurations = new ConfigurationHashList (this);
+			uo = new MSBuildFile (csproj_file);
+			PrepareReferences ();
+		}
+
+		void PrepareReferences ()
+		{
+			string filename = uo.FileName;
+			if (!File.Exists (filename)) {
+				throw new FileNotFoundException ($"Cannot detect references of project '{filename}' because the project file cannot be found.");
+			}
+
+			var docManaged = uo.UnderlyingObject;
+
+			var xmlManager = new XmlNamespaceManager (docManaged.NameTable);
+			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
+
+			foreach (XmlNode xmlNode in docManaged.SelectNodes (@"//prefix:Reference", xmlManager)) {
+				string referenceInclude = xmlNode.Attributes.GetNamedItem ("Include").InnerText;
+				string referencePackage = xmlNode.SelectSingleNode (@"prefix:Package", xmlManager)?.InnerText.Trim (); // TODO handle null
+				references.Add (new ProjectAssemblyReference (
+					referenceInclude,
+					null,
+					referencePackage));
+			}
 		}
 
 		public void Dispose()
@@ -137,30 +160,14 @@
 			uo.AddDependOnTarget("BeforeBuild", targ.Name);
 		}
 
+		FuncKeyedCollection<string, ProjectAssemblyReference> references
+			= new FuncKeyedCollection<string, ProjectAssemblyReference>(ProjectAssemblyReference.GetKeyForItem);
+
 		public IEnumerable<ProjectAssemblyReference> References
 		{
 			get
 			{
-				string filename = uo.FileName;
-				if (!File.Exists(filename))
-				{
-					throw new FileNotFoundException($"Cannot detect references of project '{filename}' because the project file cannot be found.");
-				}
-				var docManaged = new XmlDocument();
-				docManaged.Load(filename);
-
-				var xmlManager = new XmlNamespaceManager(docManaged.NameTable);
-				xmlManager.AddNamespace("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
-
-				foreach (XmlNode xmlNode in docManaged.SelectNodes(@"//prefix:Reference", xmlManager))
-				{
-					string referenceInclude = xmlNode.Attributes.GetNamedItem("Include").InnerText;
-					string referencePackage = xmlNode.SelectSingleNode(@"prefix:Package", xmlManager)?.InnerText.Trim(); // TODO handle null
-					yield return new ProjectAssemblyReference(
-							referenceInclude,
-							null,
-							referencePackage);
-				}
+				return references;
 			}
 		}
 		public IEnumerable<ProjectAssemblyCSharp> Dependencies

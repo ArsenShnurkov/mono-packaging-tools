@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace BuildAutomation
+﻿namespace BuildAutomation
 {
+	using System;
+
 	/// <remarks>
 	/// How this class is different from AssemblyInfo?
 	/// <br />
@@ -53,6 +53,16 @@ namespace BuildAutomation
 		string IAssemblyVersion.ToString ()
 		{
 			throw new NotImplementedException ();
+		}
+
+		string IAssemblyVersion.AssemblyName {
+			get {
+				return this.Name;
+			}
+
+			set {
+				this.Name = value;
+			}
 		}
 	}
 }

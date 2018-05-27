@@ -128,6 +128,7 @@
     <Compile Include="04_CSProj\ProjectAssemblyReference.cs" />
     <Compile Include="04_CSProj\ProjectAssemblyPackageReference.cs" />
     <Compile Include="04_CSProj\ProjectAssemblyProjectReference.cs" />
+    <Compile Include="FuncKeyedCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PackageProcessing\" />

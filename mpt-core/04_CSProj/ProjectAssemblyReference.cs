@@ -50,5 +50,9 @@
 				package_name = (value==null)?String.Empty:value;
 			}
 		}
+		public static string GetKeyForItem(ProjectAssemblyReference item)
+		{
+			return item.assembly_version.AssemblyName;
+		}
 	}
 }

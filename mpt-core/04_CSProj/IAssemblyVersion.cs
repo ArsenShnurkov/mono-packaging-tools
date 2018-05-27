@@ -9,5 +9,6 @@
 		/// <param name="value">Value.</param>
 		void Parse(string value);
 		string ToString();
+		string AssemblyName { get; set; }
 	}
 }
