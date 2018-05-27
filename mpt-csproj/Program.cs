@@ -301,8 +301,9 @@ namespace mptcsproj
 				foreach (var csproj_file in listOfCsproj)
 				{
 					Console.WriteLine($"into file {csproj_file}");
-					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
+					using (var file = new ProjectAssemblyCSharp())
 					{
+						file.Load(csproj_file);
 						file.InjectProjectImport(import_name);
 					}
 				}
@@ -313,8 +314,9 @@ namespace mptcsproj
 				foreach (var csproj_file in listOfCsproj)
 				{
 					Console.WriteLine($"into file {csproj_file}");
-					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
+					using (var file = new ProjectAssemblyCSharp())
 					{
+						file.Load(csproj_file);
 						file.InjectVersioning(version_string);
 					}
 				}
@@ -329,8 +331,9 @@ namespace mptcsproj
 				foreach (var csproj_file in listOfCsproj)
 				{
 					Console.WriteLine($"into file {csproj_file}");
-					using (CSharpLibraryProject file = new CSharpLibraryProject(csproj_file))
+					using (var file = new ProjectAssemblyCSharp())
 					{
+						file.Load(csproj_file);
 						// null is ok - http://stackoverflow.com/questions/637308/why-is-adding-null-to-a-string-legal
 						string publicKey = null;
 						if (String.IsNullOrEmpty(AssemblyOriginatorKeyFile) == false)
