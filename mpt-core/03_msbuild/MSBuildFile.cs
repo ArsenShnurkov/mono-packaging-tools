@@ -32,15 +32,19 @@
 			}
 		}
 
+		public MSBuildFile()
+		{
+			this.doc = new XmlDocument();
+		}
+
 		public MSBuildFile(XmlDocument d)
 		{
 			this.doc = d;
 		}
-		public MSBuildFile(string filename)
+
+		public virtual void Load (string filename)
 		{
-			XmlDocument d = new XmlDocument();
-			d.Load(filename);
-			this.doc = d;
+			this.doc.Load(filename);
 			this.filename = filename;
 			FindAllImports();
 			FindAllTargets();

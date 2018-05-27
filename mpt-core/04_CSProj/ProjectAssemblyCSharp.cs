@@ -15,10 +15,15 @@
 
 		public string FileName { get { return uo.FileName; } set { uo.FileName = value; } }
 
-		public ProjectAssemblyCSharp (string csproj_file)
+		public ProjectAssemblyCSharp ()
 		{
+			uo = new MSBuildFile ();
+		}
+
+		public virtual void Load (string filename)
+		{
+			uo.Load(filename);
 			configurations = new ConfigurationHashList (this);
-			uo = new MSBuildFile (csproj_file);
 			PrepareReferences ();
 		}
 
