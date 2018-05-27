@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle ("mono-packaging-tools")]
-[assembly: AssemblyCopyright ("2015, Gentoo Foundation")]
+[assembly: AssemblyCopyright ("2015-2018, Gentoo Foundation")]
 [assembly: AssemblyDescription ("")]
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("")]

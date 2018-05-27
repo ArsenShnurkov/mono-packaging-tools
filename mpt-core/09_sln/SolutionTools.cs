@@ -33,7 +33,7 @@ public class SolutionTools
 		{
 			string fileNath = p.FullPath;
 			Console.WriteLine(fileNath);
-			var cslib = new CSharpLibraryProject(fileNath);
+			var cslib = new ProjectAssemblyCSharp (fileNath);
 			foreach (var configuration in cslib.Configurations)
 			{
 				Console.WriteLine($"{configuration.Name} -> { configuration.GetAssemblyName()}");

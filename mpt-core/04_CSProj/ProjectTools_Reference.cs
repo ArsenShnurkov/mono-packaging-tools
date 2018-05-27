@@ -13,7 +13,7 @@ namespace BuildAutomation
 		protected static bool RemoveReference(XDocument document, string reference_name)
 		{
 			bool bWasRemoved = false;
-			var newname = new AssemblyNameInGAC(reference_name);
+			var newname = new AssemblyVersionSigned (reference_name);
 			var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
 			xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
 
@@ -41,7 +41,7 @@ namespace BuildAutomation
 			foreach (var el in listOfReferences)
 			{
 				string assRef = el.Attribute("Include").Value;
-				var name = new AssemblyNameInGAC(assRef);
+				var name = new AssemblyVersionSigned (assRef);
 				if (string.Compare(newname.Name, name.Name) == 0)
 				{
 					itemsToRemove.Add(el);
@@ -91,7 +91,7 @@ namespace BuildAutomation
 			{
 				XNamespace ns = document.Root.Name.Namespace;
 				var newEl = new XElement(ns + "Reference");
-				var newname = new AssemblyNameInGAC(reference_name);
+				var newname = new AssemblyVersionSigned (reference_name);
 				newEl.Add(new XAttribute("Include", newname.Generate()));
 				group.Add(newEl);
 				bRequiresSave = true;

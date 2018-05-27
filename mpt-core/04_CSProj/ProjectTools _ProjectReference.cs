@@ -13,7 +13,7 @@ namespace BuildAutomation
 		protected static bool RemoveProjectReference(XDocument document, string reference_name)
 		{
 			bool bWasRemoved = false;
-			var newname = new AssemblyNameInGAC(reference_name);
+			var newname = new AssemblyVersionSigned (reference_name);
 			var xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
 			xmlNamespaceManager.AddNamespace("ns", MSBuildFile.NamespaceName);
 

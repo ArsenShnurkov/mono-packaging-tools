@@ -6,7 +6,7 @@
 	using System.Xml;
 	using CWDev.SLNTools.Core;
 
-	public class CSharpLibraryProject : IDisposable
+	public class ProjectAssemblyCSharp : IDisposable
 	{
 		MSBuildFile uo;
 
@@ -15,7 +15,7 @@
 
 		public string FileName { get { return uo.FileName; } set { uo.FileName = value; } }
 
-		public CSharpLibraryProject(string csproj_file)
+		public ProjectAssemblyCSharp (string csproj_file)
 		{
 			configurations = new ConfigurationHashList(this);
 			uo = new MSBuildFile(csproj_file);
@@ -137,7 +137,7 @@
 			uo.AddDependOnTarget("BeforeBuild", targ.Name);
 		}
 
-		public IEnumerable<ReferencedAssembly> References
+		public IEnumerable<ProjectAssemblyReference> References
 		{
 			get
 			{
@@ -156,13 +156,14 @@
 				{
 					string referenceInclude = xmlNode.Attributes.GetNamedItem("Include").InnerText;
 					string referencePackage = xmlNode.SelectSingleNode(@"prefix:Package", xmlManager)?.InnerText.Trim(); // TODO handle null
-					yield return new ReferencedAssembly(
+					yield return new ProjectAssemblyReference(
 							referenceInclude,
+							null,
 							referencePackage);
 				}
 			}
 		}
-		public IEnumerable<CSharpLibraryProject> Dependencies
+		public IEnumerable<ProjectAssemblyCSharp> Dependencies
 		{
 			get
 			{
