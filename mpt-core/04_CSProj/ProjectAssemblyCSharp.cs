@@ -73,12 +73,8 @@
 			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
 
 			foreach (XmlNode xmlNode in this.UnderlyingObject.UnderlyingObject.SelectNodes (@"//prefix:Reference", xmlManager)) {
-				string referenceInclude = xmlNode.Attributes.GetNamedItem ("Include").InnerText;
-				string referencePackage = xmlNode.SelectSingleNode (@"prefix:Package", xmlManager)?.InnerText.Trim (); // TODO handle null
-				references.Add (new ProjectAssemblyReference (
-					referenceInclude,
-					null,
-					referencePackage));
+				var par = new ProjectAssemblyReference (this, (XmlElement)xmlNode);
+				references.Add (par);
 			}
 		}
 

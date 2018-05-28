@@ -9,6 +9,7 @@
     <RootNamespace>mptcore</RootNamespace>
     <UseMSBuildEngine>false</UseMSBuildEngine>
     <ReleaseVersion>0.765</ReleaseVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,6 +41,7 @@
     <Reference Include="Mono.TextTemplating">
       <HintPath>..\..\..\..\..\..\share\dev-dotnet\t4\Mono.TextTemplating.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../AssemblyInfo.cs">
@@ -129,6 +131,7 @@
     <Compile Include="04_CSProj\ProjectAssemblyPackageReference.cs" />
     <Compile Include="04_CSProj\ProjectAssemblyProjectReference.cs" />
     <Compile Include="FuncKeyedCollection.cs" />
+    <Compile Include="04_CSProj\ObservableReference.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PackageProcessing\" />

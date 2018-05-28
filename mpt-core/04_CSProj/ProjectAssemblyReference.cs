@@ -1,58 +1,112 @@
 ﻿namespace BuildAutomation
 {
 	using System;
+	using System.ComponentModel;
+	using System.Windows;
+	using System.Xml;
 
 	public class ProjectAssemblyReference
 	{
-		IAssemblyVersion assembly_version;
-		string hint_path = string.Empty;
-		string package_name = string.Empty;
-		public ProjectAssemblyReference(string assembly_version_specification, string hint_path = "", string package_name = "")
+		ProjectAssemblyCSharp parent;
+		XmlElement underlying_object = null;
+		ObservableReference aggregated_object = null;
+
+		public ProjectAssemblyReference(ProjectAssemblyCSharp parent, XmlElement underlying_object)
 		{
-			this.AssemblyVersion = AssemblyVersionSpecification.Parse(assembly_version_specification);
-			this.HintPath = hint_path;
-			this.PackageName = package_name;
+			this.parent = parent;
+			this.underlying_object = underlying_object;
+			Load();
+			//this.aggregated_object.PropertyChanged += PropertyChangedEventHandler;
+			WeakEventManager<INotifyPropertyChanged,PropertyChangedEventArgs>.AddHandler(
+				this.aggregated_object, 
+				nameof(INotifyPropertyChanged.PropertyChanged), 
+				PropertyChangedEventHandler);
+		}
+
+		public XmlElement UnderlyingObject
+		{
+			get
+			{
+				return underlying_object;
+			}
+			set
+			{
+				underlying_object = value;
+			}
+		}
+		public ProjectAssemblyCSharp Parent
+		{
+			get
+			{
+				return parent;
+			}
+			set
+			{
+				parent = value;
+			}
 		}
 		public IAssemblyVersion AssemblyVersion
 		{
 			get
 			{
-				return assembly_version;
+				return aggregated_object.AssemblyVersion;
 			}
 			set
 			{
-				if (value == null)
-				{
-					throw new System.NullReferenceException($"{nameof(AssemblyVersion)} has value of {value}");
-				}
-				assembly_version = value;
+				aggregated_object.AssemblyVersion = value;
 			}
 		}
 		public string HintPath
 		{
 			get
 			{
-				return hint_path;
+				return aggregated_object.HintPath;
 			}
 			set
 			{
-				hint_path = (value==null)?String.Empty:value;
+				aggregated_object.HintPath = value;
 			}
 		}
 		public string PackageName
 		{
 			get
 			{
-				return package_name;
+				return aggregated_object.PackageName;
 			}
 			set
 			{
-				package_name = (value==null)?String.Empty:value;
+				aggregated_object.PackageName = value;
 			}
 		}
 		public static string GetKeyForItem(ProjectAssemblyReference item)
 		{
-			return item.assembly_version.AssemblyName;
+			return ObservableReference.GetKeyForItem(item.aggregated_object);
+		}
+
+		void Load ()
+		{
+			var xmlManager = new XmlNamespaceManager (this.UnderlyingObject.OwnerDocument.NameTable);
+			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
+
+			string referenceInclude = this.UnderlyingObject.Attributes.GetNamedItem ("Include").InnerText;
+
+			string refInnerText = this.UnderlyingObject.SelectSingleNode (@"prefix:HintPath", xmlManager)?.InnerText;
+			string referenceHintPath = string.IsNullOrWhiteSpace(refInnerText)?null:refInnerText.Trim();
+
+			string pkgInnerText = this.UnderlyingObject.SelectSingleNode (@"prefix:Package", xmlManager)?.InnerText?.Trim ();
+			string referencePackage = string.IsNullOrWhiteSpace(pkgInnerText)?null:pkgInnerText.Trim();
+
+			this.aggregated_object = new ObservableReference(referenceInclude, referenceHintPath, referencePackage);
+		}
+
+		void PropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
+		{
+			Save();
+		}
+
+		void Save ()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

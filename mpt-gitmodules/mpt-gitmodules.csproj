@@ -7,7 +7,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>mptgitmodules</RootNamespace>
     <AssemblyName>mpt-gitmodules</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <UseMSBuildEngine>false</UseMSBuildEngine>
     <ReleaseVersion>0.765</ReleaseVersion>
   </PropertyGroup>
@@ -36,6 +36,7 @@
     <Reference Include="System" />
     <Reference Include="Eto.Parse">
       <HintPath>/usr/lib64/dev-dotnet/eto-parse-1/Eto.Parse.dll</HintPath>
+      <Package>dev-dotnet-eto-parse-1</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
