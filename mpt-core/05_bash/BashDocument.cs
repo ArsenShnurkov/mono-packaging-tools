@@ -2,6 +2,8 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.IO;
+
 	public class BashDocument : IScopeOfVisibility
 	{
 		public BashDocument ()
@@ -43,6 +45,15 @@
 				return variables;
 			}
 		}
-
+		public void SaveTo(string fileName)
+		{
+			using(StreamWriter writetext = new StreamWriter(fileName))
+			{
+				foreach (var p in Parts)
+				{
+					writetext.WriteLine(p.ToString());
+				}
+			}
+		}
 	}
 }

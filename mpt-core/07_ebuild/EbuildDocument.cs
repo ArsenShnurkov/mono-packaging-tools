@@ -27,6 +27,10 @@
 		public InheritanceDeclaration InheritLines {get;}
 		public List<BashFunction> HelperFunctions { get; }
 		public List<PhaseFunction> Phases { get; }
+		public void SaveTo(string fileName)
+		{
+			UnderlayingObject.SaveTo(fileName);
+		}
 	}
 }
 
