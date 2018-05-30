@@ -76,13 +76,16 @@
 			var xmlManager = new XmlNamespaceManager (this.UnderlyingObject.NameTable);
 			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
 
-			foreach (XmlNode xmlNode in this.UnderlyingObject.SelectNodes (@"//prefix:PropertyGroup", xmlManager)) {
+			foreach (XmlElement xmlNode in this.UnderlyingObject.SelectNodes (@"//prefix:PropertyGroup", xmlManager)) {
 				var propertyGroup = new MSBuildPropertyGroup(this);
 				this.propertyGroups.Add(propertyGroup);
-				foreach (XmlNode xmlNodeProperty in xmlNode.ChildNodes)
+				foreach (XmlElement xmlNodeProperty in xmlNode.ChildNodes)
 				{
-					var propertyInstance = new MSBuildProperty(propertyGroup);
-					this.properties.Add(propertyInstance);
+					var propertyInstance = new MSBuildProperty(propertyGroup, xmlNodeProperty);
+					if (this.properties.Contains(propertyInstance.Name) == false)
+					{
+						this.properties.Add(propertyInstance);
+					}
 				}
 			}
 		}

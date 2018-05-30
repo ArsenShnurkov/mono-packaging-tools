@@ -8,7 +8,6 @@
     <AssemblyName>mpt-core</AssemblyName>
     <RootNamespace>mptcore</RootNamespace>
     <UseMSBuildEngine>false</UseMSBuildEngine>
-    <ReleaseVersion>0.765</ReleaseVersion>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

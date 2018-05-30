@@ -16,11 +16,14 @@
 			this.parent = parent;
 			this.underlying_object = underlying_object;
 			Load();
-			//this.aggregated_object.PropertyChanged += PropertyChangedEventHandler;
+#if true
+			this.aggregated_object.PropertyChanged += PropertyChangedEventHandler;
+#else
 			WeakEventManager<INotifyPropertyChanged,PropertyChangedEventArgs>.AddHandler(
 				this.aggregated_object, 
 				nameof(INotifyPropertyChanged.PropertyChanged), 
 				PropertyChangedEventHandler);
+#endif
 		}
 
 		public XmlElement UnderlyingObject

@@ -69,21 +69,18 @@
 
 		void ParseReferences ()
 		{
-			var xmlManager = new XmlNamespaceManager (this.UnderlyingObject.UnderlyingObject.NameTable);
-			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
-
-			foreach (XmlNode xmlNode in this.UnderlyingObject.UnderlyingObject.SelectNodes (@"//prefix:Reference", xmlManager)) {
-				var par = new ProjectAssemblyReference (this, (XmlElement)xmlNode);
-				references.Add (par);
+			foreach (XmlElement xmlNode in this.UnderlyingObject.UnderlyingObject.SelectNodes (@"//*[local-name() = 'Reference']")) {
+				var par = new ProjectAssemblyReference (this, xmlNode);
+				if (references.Contains(par.AssemblyVersion.AssemblyName) == false)
+				{
+					references.Add (par);
+				}
 			}
 		}
 
 		void ParseProjectReferences ()
 		{
-			var xmlManager = new XmlNamespaceManager (this.UnderlyingObject.UnderlyingObject.NameTable);
-			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
-
-			foreach (XmlNode xmlNode in this.UnderlyingObject.UnderlyingObject.SelectNodes (@"//prefix:Reference", xmlManager)) {
+			foreach (XmlNode xmlNode in this.UnderlyingObject.UnderlyingObject.SelectNodes (@"//*[local-name() = 'ProjectReference']")) {
 				string textOfInclude = xmlNode.Attributes.GetNamedItem ("Include").InnerText;
 				project_references.Add (new ProjectAssemblyProjectReference (textOfInclude));
 			}
@@ -91,10 +88,7 @@
 
 		void ParsePackageReferences ()
 		{
-			var xmlManager = new XmlNamespaceManager (this.UnderlyingObject.UnderlyingObject.NameTable);
-			xmlManager.AddNamespace ("prefix", "http://schemas.microsoft.com/developer/msbuild/2003");
-
-			foreach (XmlNode xmlNode in this.UnderlyingObject.UnderlyingObject.SelectNodes (@"//prefix:Reference", xmlManager)) {
+			foreach (XmlNode xmlNode in this.UnderlyingObject.UnderlyingObject.SelectNodes (@"//*[local-name() = 'PackageReference']")) {
 				string name_of_package = xmlNode.Attributes.GetNamedItem ("Include").InnerText;
 				string version_of_package = xmlNode.Attributes.GetNamedItem ("Version").InnerText;
 				package_references.Add (new ProjectAssemblyPackageReference (name_of_package, version_of_package));

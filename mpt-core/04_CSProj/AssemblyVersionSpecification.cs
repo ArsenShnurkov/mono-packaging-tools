@@ -6,7 +6,14 @@
 	{
 		public static IAssemblyVersion Parse(string some_string)
 		{
-			throw new NotImplementedException();
+			if (some_string.IndexOf(",", StringComparison.InvariantCulture) < 0)
+			{
+				return new AssemblyVersion(some_string);
+			}
+			else
+			{
+				return new AssemblyVersionSigned(some_string);
+			}
 		}
 	}
 }

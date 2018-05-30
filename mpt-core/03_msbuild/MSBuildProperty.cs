@@ -18,6 +18,11 @@
 			uo = (XmlElement)doc.CreateNode(XmlNodeType.Element, "UndefilnedPropertyName", MSBuildFile.NamespaceName);
 		}
 
+		public MSBuildProperty(MSBuildPropertyGroup parent, XmlElement uo)
+		{
+			this.uo = uo;
+		}
+
 		void SetName(string name)
 		{
 			// replace underlaying object to change it's name
