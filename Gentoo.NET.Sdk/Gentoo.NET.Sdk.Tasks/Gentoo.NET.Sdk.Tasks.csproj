@@ -1,0 +1,43 @@
+<Project ToolsVersion="15.9" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<!--
+		https://docs.microsoft.com/en-US/visualstudio/msbuild/walkthrough-creating-an-msbuild-project-file-from-scratch?view=vs-2019
+	-->
+	<PropertyGroup>
+		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+		<OutputPath Condition="'$(OutputPath)' == ''">bin/$(Configuration)</OutputPath>
+		<OutputType>Library</OutputType>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(OutputType)' == 'Library' ">
+		<AssemblyName>$(MSBuildProjectName).dll</AssemblyName>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(OutputType)' == 'Exe' ">
+		<AssemblyName>$(MSBuildProjectName).exe</AssemblyName>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	  <Optimize>true</Optimize>
+	  <DebugType>pdbonly</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
+	  <Optimize>false</Optimize>
+	  <DebugType>full</DebugType>
+	  <DebugSymbols>true</DebugSymbols>
+	  <DefineConstants>DEBUG;$(DefineConstants)</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="**/*.cs" />
+	</ItemGroup>
+	<Target Name="Build">
+		<MakeDir Directories="$(OutputPath)"/>
+		<Csc
+			ToolPath="$(CscToolPath)"
+			DefineConstants="$(DefineConstants)"
+			Sources="@(Compile)"
+			TargetType="$(OutputType)"
+			OutputAssembly="$(OutputPath)/$(AssemblyName)"
+			Optimize="$(Optimize)"
+			DebugType="$(DebugType)"
+			EmitDebugInformation="$(DebugSymbols)"
+		/>
+	</Target>
+</Project>

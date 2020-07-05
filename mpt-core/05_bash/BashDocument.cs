@@ -10,7 +10,7 @@
 		{
 			Parts = new List<IPartOfScript> ();
 		}
-		public List<IPartOfScript> Parts { get; }
+		public ICollection<IPartOfScript> Parts { get; }
 		public Dictionary<string, BashFunction> Functions
 		{ 
 			get

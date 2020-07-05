@@ -1,7 +1,8 @@
 ﻿namespace Bash
 {
 	using System.Collections.Generic;
-	public class SimpleInvocationOfExternalTool : IBashCommand
+
+	public class SimpleInvocationOfExternalTool : IPartOfScript /*, IBashCommand */
 	{
 		public SimpleInvocationOfExternalTool (string name) : this()
 		{
@@ -12,7 +13,7 @@
 			this.Parameters = new List<ICommandLineParameter>();
 		}
 		public string ToolNameOfPathName { get; set; }
-		List<ICommandLineParameter> Parameters { get; }
+		public ICollection<ICommandLineParameter> Parameters { get; }
 	}
 }
 

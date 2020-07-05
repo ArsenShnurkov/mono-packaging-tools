@@ -109,7 +109,7 @@
     <Compile Include="05_bash\30_Statements\Expressions\Strings\SingleQuotedString.cs" />
     <Compile Include="05_bash\30_Statements\Expressions\Strings\UnquotedString.cs" />
     <Compile Include="05_bash\20_Commands\SimpleInvocationOfExternalTool.cs" />
-    <Compile Include="05_bash\20_Commands\CommandLineParameter.cs" />
+    <Compile Include="05_bash\20_Commands\ICommandLineParameter.cs" />
     <Compile Include="05_bash\20_Commands\MultipleInvocationsWithPipelines.cs" />
     <Compile Include="05_bash\20_Commands\NonZeroExitCodeStartCondition.cs" />
     <Compile Include="05_bash\20_Commands\ZeroExitCodeStartCondition.cs" />
@@ -131,6 +131,7 @@
     <Compile Include="04_CSProj\ProjectAssemblyProjectReference.cs" />
     <Compile Include="FuncKeyedCollection.cs" />
     <Compile Include="04_CSProj\ObservableReference.cs" />
+    <Compile Include="05_bash\20_Commands\CommandLineParameter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PackageProcessing\" />

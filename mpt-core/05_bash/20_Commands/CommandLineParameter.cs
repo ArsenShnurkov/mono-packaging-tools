@@ -1,7 +1,11 @@
 ﻿namespace Bash
 {
-	public interface ICommandLineParameter
+	public class CommandLineParameter : ICommandLineParameter
 	{
-		string Text { get; set; }
+		public CommandLineParameter(string text)
+		{
+			this.Text = text;
+		}
+		public string Text { get; set; }
 	}
 }
