@@ -1,7 +1,4 @@
 <Project ToolsVersion="15.9" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<!--
-		https://docs.microsoft.com/en-US/visualstudio/msbuild/walkthrough-creating-an-msbuild-project-file-from-scratch?view=vs-2019
-	-->
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
 		<OutputPath Condition="'$(OutputPath)' == ''">bin/$(Configuration)</OutputPath>
@@ -27,11 +24,27 @@
 	<ItemGroup>
 		<Compile Include="**/*.cs" />
 	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="Microsoft.Build.Utilities.Core">
+			<HintPath>/usr/lib/mono/msbuild-tasks-api/Microsoft.Build.Utilities.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Build.Framework">
+			<HintPath>/usr/lib/mono/msbuild-tasks-api/Microsoft.Build.Framework.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 	<Target Name="Build">
 		<MakeDir Directories="$(OutputPath)"/>
+		<ResolveAssemblyReference
+			Assemblies="@(Reference)"
+			SearchPaths="{HintPathFromItem}"
+			>
+			<Output TaskParameter="ResolvedFiles" ItemName="ReferencePath"/>
+			<Output TaskParameter="ResolvedDependencyFiles" ItemName="ReferenceDependencyPaths"/>
+		</ResolveAssemblyReference>
 		<Csc
 			ToolPath="$(CscToolPath)"
 			DefineConstants="$(DefineConstants)"
+			References="@(ReferencePath);@(ReferenceDependencyPaths)"
 			Sources="@(Compile)"
 			TargetType="$(OutputType)"
 			OutputAssembly="$(OutputPath)/$(AssemblyName)"
