@@ -5,7 +5,7 @@
 using Microsoft.Build.Utilities;
 using Microsoft.Build.Framework;
 
-public class MyTask : Task
+public class ResolveAssemblyReference : Task
 {
 	private ITaskItem[] packageReferences;
         private ITaskItem[] referencesComputed;
