@@ -1,3 +1,54 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<UsingTask Name="ResolvePackageReferencesViaPkgConfig" AssemblyFile="$(MSBuildExtensionsPath)/Gentoo.NET.Sdk.Tasks.dll" />
+	<ItemGroup>
+	    <Compile Include="**/*.cs" />
+	</ItemGroup>
+
+	<PropertyGroup Condition=" '$(OutputType)' == 'Library' ">
+		<AssemblyName>$(MSBuildProjectName).dll</AssemblyName>
+		<DelaySign Condition="'$(SignAssembly)' != 'true'">false</DelaySign>
+		<DelaySign Condition="'$(SignAssembly)' == 'true'">true</DelaySign>
+		<KeyOriginatorFile Condition=" '$(SignAssembly)' == 'true' ">$(AssemblyOriginatorKeyFile)</KeyOriginatorFile>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(OutputType)' == 'Exe' ">
+		<AssemblyName>$(MSBuildProjectName).exe</AssemblyName>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	  <Optimize>true</Optimize>
+	  <DebugType>pdbonly</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
+	  <Optimize>false</Optimize>
+	  <DebugType>full</DebugType>
+	  <DebugSymbols>true</DebugSymbols>
+	  <DefineConstants>DEBUG;$(DefineConstants)</DefineConstants>
+	</PropertyGroup>
+
+
+	<Target Name="Build" >
+		<Message
+			Text="$(DefineConstants)"
+		/>
+<!--
+		<Message
+			Text="@(Compile)"
+		/>
+-->
+		<MakeDir Directories="$(OutputPath)"/>
+		<Csc
+			ToolPath="$(CscToolPath)"
+			DefineConstants="$(DefineConstants)"
+			Sources="@(Compile)"
+			TargetType="$(OutputType)"
+			OutputAssembly="$(OutputPath)/$(AssemblyName)"
+			Optimize="$(Optimize)"
+			DebugType="$(DebugType)"
+			EmitDebugInformation="$(DebugSymbols)"
+			DelaySign="$(DelaySign)"
+			KeyFile="$(KeyOriginatorFile)" 
+		/>
+	</Target>
+<!--
+	<UsingTask TaskName="ResolvePackageReferencesViaPkgConfig" AssemblyFile="$(MSBuildExtensionsPath)/Gentoo.NET.Sdk.Tasks.dll" />
+	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+-->
 </Project>

@@ -1,2 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+		<OutputPath Condition="'$(OutputPath)' == ''">bin/$(Configuration)</OutputPath>
+		<OutputType>Library</OutputType>
+		<DefineConstants>TRACE</DefineConstants>
+		<TargetFramework>net40</TargetFramework>
+	</PropertyGroup>
 </Project>
+
