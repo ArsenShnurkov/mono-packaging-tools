@@ -1,6 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Build.Framework" />
+<!--
+		<PackageReference Include="Microsoft.Build.Framework" version="15.9" />
+		<PackageReference Include="package2" />
+		<PackageReference Include="package3" />
+		<PackageReference Include="package4" />
+		<PackageReference Include="package5" />
+-->
+	</ItemGroup>
 	<Target Name="Build">
 		<ResolvePackageReferencesViaPkgConfig
+			PackageReferences="@(PackageReference)"
 			/>
 	</Target>
 </Project>

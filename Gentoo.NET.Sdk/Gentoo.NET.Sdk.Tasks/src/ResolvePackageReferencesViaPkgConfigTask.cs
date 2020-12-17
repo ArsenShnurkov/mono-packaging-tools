@@ -1,14 +1,47 @@
-//using System;
+using System;
 //using System.IO;
 //using System.Security;
-//using System.Collections;
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.Build.Utilities;
 using Microsoft.Build.Framework;
+using Mono.PkgConfig;
+
+class PcFileCacheContext : IPcFileCacheContext<LibraryPackageInfo>
+{
+	public static TaskLoggingHelper Log = null;
+
+	// In the implementation of this method, the host application can extract
+	// information from the pc file and store it in the PackageInfo object
+	public void StoreCustomData (PcFile pcfile, LibraryPackageInfo pkg)
+	{
+	}
+
+	// Should return false if the provided package does not have required
+	// custom data
+	public bool IsCustomDataComplete (string pcfile, LibraryPackageInfo pkg)
+	{
+		return true;
+	}
+
+	// Called to report errors
+	public void ReportError (string message, Exception ex)
+	{
+		// Log message is not an extension method
+		// https://github.com/microsoft/msbuild/blob/d993d35514934744f0ef69674d17809c49572799/src/Shared/TaskLoggingHelper.cs#L271
+		// so "Log" static member should be initialized
+		if (Log != null)
+		{
+			Log.LogMessage (MessageImportance.Low, "Error loading pkg-config files: {0} : {1}", 
+				message,
+				ex.ToString ());
+		}
+	}
+}
 
 public class ResolvePackageReferencesViaPkgConfig : Task
 {
 	private ITaskItem[] packageReferences;
-        private ITaskItem[] referencesComputed;
 
         // The Required attribute indicates the following to MSBuild:
         //	     - if the parameter is a scalar type, and it is not supplied, fail the build immediately
@@ -31,16 +64,17 @@ public class ResolvePackageReferencesViaPkgConfig : Task
             }
         }
 
+        private ITaskItem[] referencePaths;
 	// The Output attribute indicates to MSBuild that the value of this property can be gathered after the
         // task has returned from Execute(), 
 	// if the project has an <Output> tag under this task's element for this property.
         [Output]
         // A project may need the subset of the inputs that were actually created, so make that available here.
-        public ITaskItem[] References
+        public ITaskItem[] ReferencePaths
         {
             get
             {
-                return referencesComputed;
+                return referencePaths;
             }
         }
 
@@ -51,6 +85,30 @@ public class ResolvePackageReferencesViaPkgConfig : Task
         /// </summary>
         public override bool Execute()
         {
+		var assembly_resolver = new AssemblyResolver ();
+		assembly_resolver.Log = this.Log;
+		assembly_resolver.ResetSearchLogger ();
+		//
+		var outputItems = new List<ITaskItem>();
+		foreach (var packageReference in PackageReferences)
+		{
+			Log.LogMessage ("PackageReference \"{0}\"", $"{packageReference.ItemSpec}");
+
+			TaskItem reference = new TaskItem() { ItemSpec = packageReference.ItemSpec };
+			string specific_version = packageReference.GetMetadata("version");
+			Log.LogMessage ("specific_version \"{0}\"", $"{specific_version}");
+			IEnumerable<ResolvedReference> refs = assembly_resolver.GetReferencesForPackage(reference, specific_version);
+			int count = 0;
+			foreach (ResolvedReference rr in refs)
+			{
+				TaskItem referencePath = new TaskItem() { ItemSpec = rr.TaskItem.ItemSpec };
+				outputItems.Add(referencePath);
+				Log.LogMessage ("referencePath \"{0}\"", $"{referencePath.ItemSpec}");
+				count ++;
+			}
+			Log.LogMessage("{0} refs added", count);
+		}
+		referencePaths = outputItems.ToArray();
 		return true;
 	}
 }
