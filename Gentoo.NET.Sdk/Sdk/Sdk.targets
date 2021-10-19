@@ -25,17 +25,11 @@
 
 
 	<Target Name="Build" >
-		<Message
-			Text="$(DefineConstants)"
-		/>
-<!--
-		<Message
-			Text="@(Compile)"
-		/>
--->
+		<Message Text="Build target" Importance="High" />
 		<MakeDir Directories="$(OutputPath)"/>
 		<Csc
 			ToolPath="$(CscToolPath)"
+			References="@(ReferencePaths)"
 			DefineConstants="$(DefineConstants)"
 			Sources="@(Compile)"
 			TargetType="$(OutputType)"
@@ -47,8 +41,19 @@
 			KeyFile="$(KeyOriginatorFile)" 
 		/>
 	</Target>
+	<!--
+		 TaskFactory="ResolveReferencesViaPkgConfig"
+	-->
+	<UsingTask TaskName="ResolveReferencesViaPkgConfig" AssemblyFile="$(MSBuildExtensionsPath)/Gentoo.NET.Sdk.Tasks.dll" />
+
+	<Target Name="BeforeBuild" BeforeTargets="Build">
+		<Message Text="Before Build target" Importance="High" />
+		<ResolveReferencesViaPkgConfig
+			References="@(Reference)">
+			<Output ItemName="ReferencePaths" TaskParameter="ReferencePaths" />
+		</ResolveReferencesViaPkgConfig>
+	</Target>
 <!--
-	<UsingTask TaskName="ResolvePackageReferencesViaPkgConfig" AssemblyFile="$(MSBuildExtensionsPath)/Gentoo.NET.Sdk.Tasks.dll" />
 	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 -->
 </Project>

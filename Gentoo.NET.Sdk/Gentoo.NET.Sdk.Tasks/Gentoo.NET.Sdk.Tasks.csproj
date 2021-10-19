@@ -25,17 +25,17 @@
 		<Compile Include="**/*.cs" />
 	</ItemGroup>
 	<ItemGroup>
-<!--
-		<Reference Include="System.Runtime">
-			<HintPath>/usr/lib/mono/4.8-api/Facades/System.Runtime.dll</HintPath>
-		</Reference>
--->
 		<Reference Include="Microsoft.Build.Utilities.Core">
 			<HintPath>/usr/lib/mono/msbuild-tasks-api/Microsoft.Build.Utilities.Core.dll</HintPath>
 		</Reference>
 		<Reference Include="Microsoft.Build.Framework">
 			<HintPath>/usr/lib/mono/msbuild-tasks-api/Microsoft.Build.Framework.dll</HintPath>
 		</Reference>
+<!--
+		<Reference Include="System.Runtime">
+			<HintPath>/usr/lib/mono/4.8-api/Facades/System.Runtime.dll</HintPath>
+		</Reference>
+-->
 <!--
 		<Reference Include="Microsoft.XBuild.Tasks">
 			<HintPath>/usr/lib/mono/4.5/Mono.XBuild.Tasks.dll</HintPath>
