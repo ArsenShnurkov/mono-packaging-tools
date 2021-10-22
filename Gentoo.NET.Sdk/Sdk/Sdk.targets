@@ -29,7 +29,7 @@
 		<MakeDir Directories="$(OutputPath)"/>
 		<Csc
 			ToolPath="$(CscToolPath)"
-			References="@(ReferencePaths)"
+			References="@(ReferencePaths);@(PackageReferencePaths)"
 			DefineConstants="$(DefineConstants)"
 			Sources="@(Compile)"
 			TargetType="$(OutputType)"
@@ -45,15 +45,22 @@
 		 TaskFactory="ResolveReferencesViaPkgConfig"
 	-->
 	<UsingTask TaskName="ResolveReferencesViaPkgConfig" AssemblyFile="$(MSBuildExtensionsPath)/Gentoo.NET.Sdk.Tasks.dll" />
+	<UsingTask TaskName="ResolvePackageReferencesViaPkgConfig" AssemblyFile="$(MSBuildExtensionsPath)/Gentoo.NET.Sdk.Tasks.dll" />
 
-	<Target Name="BeforeBuild" BeforeTargets="Build">
-		<Message Text="Before Build target" Importance="High" />
+	<Target Name="ResolveReferences" BeforeTargets="Build">
+		<Message Text="Resolving references" Importance="High" />
 		<ResolveReferencesViaPkgConfig
 			References="@(Reference)">
 			<Output ItemName="ReferencePaths" TaskParameter="ReferencePaths" />
 		</ResolveReferencesViaPkgConfig>
 	</Target>
-<!--
-	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
--->
+
+	<Target Name="ResolvePackageReferences" BeforeTargets="Build">
+		<Message Text="Resolving package references" Importance="High" />
+		<ResolvePackageReferencesViaPkgConfig
+			PackageReferences="@(PackageReference)">
+			<Output ItemName="PackageReferencePaths" TaskParameter="ReferencePaths" />
+		</ResolvePackageReferencesViaPkgConfig>
+	</Target>
+
 </Project>
