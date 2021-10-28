@@ -1,5 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<ItemGroup>
+	<ItemGroup Condition="'@(Compile)'==''">
 	    <Compile Include="**/*.cs" />
 	</ItemGroup>
 
@@ -24,12 +24,19 @@
 	</PropertyGroup>
 
 
-	<Target Name="Build" >
-		<Message Text="Build target" Importance="High" />
+	<Target Name="Build"
+		Outputs="@(Result->'%(FullPath)')">
+
+		<Message
+			Text="AssembliesBuiltByChildProjects [$(MSBuildProjectFile)]= '@(AssembliesBuiltByChildProjects)' "
+			Condition=" '@(AssembliesBuiltByChildProjects)' != '' "
+			Importance="High"
+		/>
+
 		<MakeDir Directories="$(OutputPath)"/>
 		<Csc
 			ToolPath="$(CscToolPath)"
-			References="@(ReferencePaths);@(PackageReferencePaths)"
+			References="@(ReferencePaths);@(PackageReferencePaths);@(AssembliesBuiltByChildProjects)"
 			DefineConstants="$(DefineConstants)"
 			Sources="@(Compile)"
 			TargetType="$(OutputType)"
@@ -39,7 +46,12 @@
 			EmitDebugInformation="$(DebugSymbols)"
 			DelaySign="$(DelaySign)"
 			KeyFile="$(KeyOriginatorFile)" 
-		/>
+		>
+<!--
+			<Output TaskParameter="CommandLineArgs" ItemName="CscCommandLineArgs" />
+-->
+			<Output TaskParameter="OutputAssembly" ItemName="Result" />
+		</Csc>
 	</Target>
 	<!--
 		 TaskFactory="ResolveReferencesViaPkgConfig"
@@ -61,6 +73,39 @@
 			PackageReferences="@(PackageReference)">
 			<Output ItemName="PackageReferencePaths" TaskParameter="ReferencePaths" />
 		</ResolvePackageReferencesViaPkgConfig>
+	</Target>
+
+	<Target
+		Name="ResolveProjectReferences" DependsOnTargets="AssignProjectConfiguration;BuildProjectReferences;">
+	</Target>
+<!--
+		Condition="'@(ProjectReference)'!=''"
+-->
+	<Target
+		BeforeTargets="BuildProjectReferences"
+		Name="AssignProjectConfiguration">
+		<ItemGroup>
+			<ProjectReferenceWithConfiguration Include="@(ProjectReference)">
+				<Properties>Configuration=$(Configuration);</Properties>
+			</ProjectReferenceWithConfiguration>
+		</ItemGroup>
+	</Target>
+
+<!--
+		Condition="'@(ProjectReferenceWithConfiguration)'!=''"
+-->
+	<Target
+		Name="BuildProjectReferences"
+		DependsOnTargets="AssignProjectConfiguration"
+		BeforeTargets="Build"
+		>
+        	<MSBuild
+			Projects="@(ProjectReferenceWithConfiguration)"
+			Targets="Build">
+			<Output
+				TaskParameter="TargetOutputs"
+				ItemName="AssembliesBuiltByChildProjects" />
+		</MSBuild>
 	</Target>
 
 </Project>
