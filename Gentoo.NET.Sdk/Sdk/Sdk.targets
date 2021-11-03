@@ -2,6 +2,9 @@
 	<ItemGroup Condition="'@(Compile)'==''">
 	    <Compile Include="**/*.cs" />
 	</ItemGroup>
+	<PropertyGroup Condition=" '$(AllowUnsafeBlocks)' == ''">
+		<AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(OutputType)' == 'Library' ">
 		<AssemblyName>$(MSBuildProjectName).dll</AssemblyName>
@@ -39,6 +42,7 @@
 			References="@(ReferencePaths);@(PackageReferencePaths);@(AssembliesBuiltByChildProjects)"
 			DefineConstants="$(DefineConstants)"
 			Sources="@(Compile)"
+			AllowUnsafeBlocks="$(AllowUnsafeBlocks)"
 			TargetType="$(OutputType)"
 			OutputAssembly="$(OutputPath)/$(AssemblyName)"
 			Optimize="$(Optimize)"
