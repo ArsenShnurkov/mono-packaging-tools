@@ -5,6 +5,9 @@
 	<PropertyGroup Condition=" '$(AllowUnsafeBlocks)' == ''">
 		<AllowUnsafeBlocks>false</AllowUnsafeBlocks>
 	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Nullable)' == ''">
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(OutputType)' == 'Library' ">
 		<AssemblyName>$(MSBuildProjectName).dll</AssemblyName>
@@ -43,6 +46,7 @@
 			DefineConstants="$(DefineConstants)"
 			Sources="@(Compile)"
 			AllowUnsafeBlocks="$(AllowUnsafeBlocks)"
+			Nullable="$(Nullable)"
 			TargetType="$(OutputType)"
 			OutputAssembly="$(OutputPath)/$(AssemblyName)"
 			Optimize="$(Optimize)"
