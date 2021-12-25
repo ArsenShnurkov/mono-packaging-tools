@@ -1,0 +1,91 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	<ItemGroup Condition="'@(Compile)'==''">
+	    <Compile Include="**/*.il" />
+	</ItemGroup>
+	<PropertyGroup>
+		<CoreCompileDependsOn Condition="'$(ILAsmToolPath)' == ''">$(CoreCompileDependsOn);ResolveIlAsmToolPaths</CoreCompileDependsOn>
+	</PropertyGroup>
+	<PropertyGroup>
+		<PlatformName Condition=" '$(PlatformName)' == '' ">AnyCPU</PlatformName>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<Optimize>true</Optimize>
+		<DebugType>pdbonly</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
+		<Optimize>false</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<DefineConstants>DEBUG;$(DefineConstants)</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(OutputType)' == 'Library' ">
+		<AssemblyName>$(MSBuildProjectName).dll</AssemblyName>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(OutputType)' == 'Exe' ">
+		<AssemblyName>$(MSBuildProjectName).exe</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(MSBuildThisFileDirectory)obj</BaseIntermediateOutputPath>
+		<BaseIntermediateOutputPath Condition="!HasTrailingSlash('$(BaseIntermediateOutputPath)')">$(BaseIntermediateOutputPath)/</BaseIntermediateOutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" $(IntermediateOutputPath) == '' ">
+		<IntermediateOutputPath Condition=" '$(PlatformName)' == 'AnyCPU' ">$(BaseIntermediateOutputPath)$(Configuration)</IntermediateOutputPath>
+		<IntermediateOutputPath Condition=" '$(PlatformName)' != 'AnyCPU' ">$(BaseIntermediateOutputPath)$(PlatformName)/$(Configuration)</IntermediateOutputPath>
+		<IntermediateOutputPath Condition="!HasTrailingSlash('$(IntermediateOutputPath)')">$(IntermediateOutputPath)/</IntermediateOutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DelaySign Condition="'$(SignAssembly)' != 'true'">false</DelaySign>
+		<DelaySign Condition="'$(SignAssembly)' == 'true'">true</DelaySign>
+		<KeyOriginatorFile Condition=" '$(SignAssembly)' == 'true' ">$(AssemblyOriginatorKeyFile)</KeyOriginatorFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<IntermediateAssembly Include="$(IntermediateOutputPath)$(AssemblyName)"/>
+	</ItemGroup>
+
+	<Target Name="Build" Outputs="@(Result->'%(FullPath)')" DependsOnTargets="$(CoreCompileDependsOn)">
+		<MakeDir Directories="$(IntermediateOutputPath)"/>
+		<MakeDir Directories="$(OutputPath)"/>
+
+
+		<PropertyGroup>
+			<_OutputTypeArgument Condition="'$(OutputType)' == 'Library'">/dll</_OutputTypeArgument>
+			<_OutputTypeArgument Condition="'$(OutputType)' == 'Exe'">/exe</_OutputTypeArgument>
+			
+			<_KeyFileArgument Condition="'$(KeyOriginatorFile)' != ''">/key:"$(KeyOriginatorFile)"</_KeyFileArgument>
+			<!--
+			<_IlasmSwitches>/quiet /nologo</_IlasmSwitches>
+			-->
+			<_IlasmSwitches Condition="'$(FoldIdenticalMethods)' == 'True'">$(_IlasmSwitches) /fold</_IlasmSwitches>
+			<_IlasmSwitches Condition="'$(SizeOfStackReserve)' != ''">$(_IlasmSwitches) /stack:$(SizeOfStackReserve)</_IlasmSwitches>
+			<_IlasmSwitches Condition="'$(DebugType)' == 'Full'">$(_IlasmSwitches) /debug</_IlasmSwitches>
+			<_IlasmSwitches Condition="'$(DebugType)' == 'Impl'">$(_IlasmSwitches) /debug:impl</_IlasmSwitches>
+			<_IlasmSwitches Condition="'$(DebugType)' == 'PdbOnly'">$(_IlasmSwitches) /debug:opt</_IlasmSwitches>
+			<_IlasmSwitches Condition="'$(Optimize)' == 'True'">$(_IlasmSwitches) /optimize</_IlasmSwitches>
+			<_IlasmSwitches Condition="'$(IlasmResourceFile)' != ''">$(_IlasmSwitches) /resources:"$(IlasmResourceFile)"</_IlasmSwitches>
+		</PropertyGroup>
+		
+		<Exec Command="&quot;$(_IlasmDir)/ilasm&quot; $(_IlasmSwitches) $(_OutputTypeArgument) $(IlasmFlags) /output:&quot;@(IntermediateAssembly)&quot; $(_KeyFileArgument) @(Compile, ' ')">
+			<Output TaskParameter="ExitCode" PropertyName="_ILAsmExitCode" />
+		</Exec>
+		
+		<Error Text="ILAsm failed" Condition="'$(_ILAsmExitCode)' != '0'" />
+		
+		<CallTarget Targets="$(TargetsTriggeredByCompilation)" Condition="'$(TargetsTriggeredByCompilation)' != ''"/>
+
+	</Target>
+	<Target Name="ResolveIlAsmToolPaths">
+		<PropertyGroup>
+			<_IlasmDir>/usr/bin</_IlasmDir>
+		</PropertyGroup>
+	</Target>
+</Project>
