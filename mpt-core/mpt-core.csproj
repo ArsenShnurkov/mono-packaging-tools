@@ -113,7 +113,7 @@
     <Compile Include="05_bash\20_Commands\MultipleInvocationsWithPipelines.cs" />
     <Compile Include="05_bash\20_Commands\NonZeroExitCodeStartCondition.cs" />
     <Compile Include="05_bash\20_Commands\ZeroExitCodeStartCondition.cs" />
-    <Compile Include="04_CSProj\ProjectTools _ProjectReference.cs" />
+    <Compile Include="04_CSProj\ProjectTools_ProjectReference.cs" />
     <Compile Include="04_CSProj\ProjectTools_Reference.cs" />
     <Compile Include="05_bash\10_Wildcards\GlobbingPattern.cs" />
     <Compile Include="08_nupkg\PackageVersion.cs" />
