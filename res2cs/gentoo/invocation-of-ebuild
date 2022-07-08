@@ -1,0 +1,37 @@
+#!/bin/bash
+
+STARTING_FILENAME="${BASH_SOURCE[0]##*/}"
+export PV="${STARTING_FILENAME##*-}"
+echo "PV=""$PV"""
+
+COMMANDS=""
+
+if [ $# -eq 0 ]; then
+	COMMANDS="clean compile"
+else
+	COMMANDS=$@
+fi
+
+#echo 'whoami says "'`whoami`'"'
+
+OVERLAY_NAME=shnurise
+PACKAGE_CATEGORY=dev-util
+PN=res2cs
+PVR=${PN}-${PV}
+
+DIRNAME=/var/db/repos/${OVERLAY_NAME}/${PACKAGE_CATEGORY}/${PN}
+cd ${DIRNAME}
+if [ $? -ne 0 ]; then
+	echo не удалось перейти в директорию ${DIRNAME}
+	exit
+else
+	echo DONE: cd ${DIRNAME}
+fi 
+
+sudo -u root ebuild ${PVR}.ebuild ${COMMANDS}
+if [ $? -ne 0 ]; then
+	echo не удалось скомпилировать программу
+	exit
+else
+	echo DONE: ebuild ${PVR}.ebuild $@
+fi
