@@ -6,5 +6,8 @@
 		<DefineConstants>TRACE</DefineConstants>
 		<TargetFramework>net40</TargetFramework>
 	</PropertyGroup>
+	<PropertyGroup>
+		<_hostOS Condition="$([MSBuild]::IsOSPlatform('LINUX'))">Linux</_hostOS>
+		<TargetOS Condition="'$(TargetOS)' == ''">$(_hostOS)</TargetOS>
+	</PropertyGroup>
 </Project>
-
