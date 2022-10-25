@@ -1,7 +1,14 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-		<OutputPath Condition="'$(OutputPath)' == ''">bin/$(Configuration)</OutputPath>
+
+		<BaseOutputPath Condition="'$(BaseOutputPath)' == ''">bin/</BaseOutputPath>
+		<BaseOutputPath Condition="!HasTrailingSlash('$(BaseOutputPath)')">$(BaseOutputPath)/</BaseOutputPath>
+
+		<OutputPath Condition="'$(OutputPath)' == '' and '$(PlatformName)' == 'AnyCPU'">$(BaseOutputPath)$(Configuration)/</OutputPath>
+		<OutputPath Condition="'$(OutputPath)' == '' and '$(PlatformName)' != 'AnyCPU'">$(BaseOutputPath)$(PlatformName)/$(Configuration)/</OutputPath>
+		<OutputPath Condition="!HasTrailingSlash('$(OutputPath)')">$(OutputPath)/</OutputPath>
+
 		<OutputType>Library</OutputType>
 		<DefineConstants>TRACE</DefineConstants>
 		<TargetFramework>net40</TargetFramework>
